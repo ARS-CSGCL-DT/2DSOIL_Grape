@@ -106,9 +106,10 @@ C
       close(40)
 
 c DT 12/7/2018 removed element file reading     Only need to initialize root weight now
-      Do n=1,NumNP
-        RTWT(n)=0
-      Enddo
+c this is done in the crop model now
+c      Do n=1,NumNP
+c        RTWT(n)=0
+c      Enddo
       Close(41)
 
 

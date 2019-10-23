@@ -12,22 +12,15 @@ c     for writing frequency to output
       open(9,file=RunFile,status='old', ERR=10)
 	read(9,'(A132)')WeatherFile
 	read(9,'(A132)')TimeFile
-	read(9,'(A132)')BiologyFile
 	read(9,'(A132)')ClimateFile
-	read(9,'(A132)')NitrogenFile
-	read(9,'(A132)')SoluteFile
 	read(9,'(A132)')SoilFile
-	read(9,'(A132)')ManagementFile
-      read(9,'(A132)')DripFile
 	read(9,'(A132)')WaterFile
 	read(9,'(A132)')WaterBoundaryFile
 	read(9,'(A132)')InitialsFile
-	read(9,'(A132)')VarietyFile
+      read(9,'(A132)')VarietyFile
 	read(9,'(A132)')GeometryFile
       read(9,'(A132)')NodeGeomFile   
-      read(9,'(A132)')MassBalanceFile
-	read(9,'(A132)')PlantGraphics
-      read(9,'(A132)')LeafGraphics 	
+      read(9,'(A132)')MassBalanceFile	
        read(9,'(A132)')NodeGraphics   
 C15    Continue 
       read(9,'(A132)')ElemGraphics

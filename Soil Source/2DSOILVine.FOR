@@ -33,17 +33,12 @@ C SetSurfaceH --  reading hourly weather
       if (HourlyWeather.eq.1) Call SetSurfaceH()
       if (DailyWeather.eq.1) Call SetSurfaceD()                         
       Call SetTDB()
-      Call Mngm()
       Call CROP
       Call Carbon_Partitioning_New()   
       Call Rootgrow_New()
       call Root_Mover_New()
       Call WaterUptake_New()
-      Call SoluteUptake_New()
       Call WaterMover_New()
-      Call SoluteMover_New()
-      Call HeatMover()
-      Call SoilNitrogen() 
       if (outputSoilYes.gt.0) then 
          Call Output()
         endif
