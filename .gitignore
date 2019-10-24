@@ -264,3 +264,4 @@ __pycache__/
 # 2DSOIL output files
 *.G0*
 
+/Iowa06/Iowa06.zip

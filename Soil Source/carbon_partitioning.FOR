@@ -263,8 +263,11 @@ c     EO is in g/plant. Multiply g/plant x plant/m2 x 1 m2/10000 cm2 x rowsp
 c     EOR : = EO*ROWSP if the plant is not at the border of the soil slab,
 c           = 0.5 * EO*ROWSP, if the plant is at the left or right border.
 c      EOR = EO*poprow/rowsp*100*rowsp*EOMult/10000
-c       1 over area per plant is poprow*100/rowsp
-       EOR = ET_demand*poprow*(100/rowsp)*(EOMult*rowsp/10000) ! potential transportation rate
+c      poprow*100/rowsp gives plants m-2
+c      ET_demand is units of grams m-2 day-1
+c     EoMult*rowsp/10000/24 converts to g slab-1 (rowsp * 1cm strip for the finite element domain)
+ 
+       EOR = ET_demand*poprow*(100/rowsp)*(EOMult*rowsp/10000) ! potential transportation rate per slab
 c       EOR = ET_demand
 c      PCRL = PCRL*12*poprow/rowsp*100*rowsp*EOMult/10000
 c      PCRQ = PCRQ*12*poprow/rowsp*100*rowsp*EOMult/10000
