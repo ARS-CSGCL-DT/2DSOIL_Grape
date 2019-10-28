@@ -1,0 +1,187 @@
+Silverfrost FTN95/x64 Ver 8.50.0  Crop.for  Sun Oct 27 15:06:01 2019
+
+Compiler used    [C:\Program Files (x86)\Silverfrost\FTN95\FTN95.EXE]
+Salflibc path    [C:\Program Files (x86)\Silverfrost\FTN95\salflibc.dll]
+Salflibc version [21.4.29.16]
+Compiler options in effect:
+    64;BINARY;CFPP;ERROR_NUMBERS;FIXED_FORMAT;FPP;IGNORE;LIST;
+    LIST_INSERT_FILES;NO_BANNER;TABS;UNLIMITED_ERRORS;VS7;XREF;
+
+   0001         Subroutine Crop()                                                                AT 0
+   0002         Include 'Public.ins'                                                             AT c5
+ 1/0001   c  dt ToDo - simplyfy common blocks so only variables needed in plant model            AT c5
+ 1/0002   c dt ToDo May 2016 added VarBW_old for debugging purposes can be removed later         AT c5
+ 1/0003   c   will be transferred.                                                               AT c5
+ 1/0004         Parameter (NumNPD=4000, NumElD=3500, NumBPD=600, NSeepD = 2,                     AT c5
+ 1/0005        &           NumSPD= 30, NumSD =10, NDrainD=2,NumDR=30,                            AT c5
+ 1/0006        &           NumGD = 3, NumPlD=100,                                                AT c5
+ 1/0007        &           NMatD=15,MNorth=4,                                                    AT c5
+ 1/0008        &           NumModD=20, MBandD=15,  NumSurfDatD=3+NumGD+NumSD)                    AT c5
+ 1/0009                                                                                          AT c5
+ 1/0010                                                                                          AT c5
+ 1/0011         Double precision Time,Step,tNext,                                                AT c5
+ 1/0012        &             dtOpt,dtMin,dMul1,dMul2,dtMx,tTDB,tFin,tatm                         AT c5
+ 1/0013         Double precision  A1,B1,VRV,RES,RQI,RQ,QI,QQ,RQIDOT                              AT c5
+ 1/0014         Double precision  ECNVRG, RCNVRG,ACNVRG                                          AT c5
+ 1/0015         Double precision Starter, TimeStep                                               AT c5
+ 1/0016                                                                                          AT c5
+ 1/0017         Real BlkDn, FracSind, FracClay, FracOM, hCritS,hCritA                            AT c5
+ 1/0018         Real nodeArea                                                                    AT c5
+ 1/0019         Integer CodeW,CodeS,CodeT,CodeG,errPlant                                         AT c5
+ 1/0020         Integer MaxItO, OutPutSoilNo, OutPutSoilYes                                      AT c5
+ 1/0021         Logical*1 lOrt                                                                   AT c5
+ 1/0022         Integer DailyOutput, HourlyOutput,RunFlag,                                       AT c5
+ 1/0023        &  DailyWeather,HourlyWeather,ITIME, IDAWN, IDUSK,                                AT c5
+ 1/0024        &  beginDay, sowingDay, endDay,year                                               AT c5
+ 1/0025                                                                                          AT c5
+ 1/0026         character WeatherFile*132, TimeFile*132, BiologyFile*132,                        AT c5
+ 1/0027        &          ClimateFile*132, NitrogenFile*132, SoluteFile*132,                     AT c5
+ 1/0028        &          SoilFile*132,                                                          AT c5
+ 1/0029        &          ManagementFile*132,DripFile*132,                                       AT c5
+ 1/0030        &          WaterFile*132, WaterBoundaryFile*132,                                  AT c5
+ 1/0031        &          PlantGraphics*132,InitialsFile*132,  VarietyFile*132,                  AT c5
+ 1/0032        &          NodeGraphics*132,ElemGraphics*132,                                     AT c5
+ 1/0033        &          NodeGeomFile*132,                                                      AT c5
+ 1/0034        &          GeometryFile*132,SurfaceGraphics*132,                                  AT c5
+ 1/0035        &          FluxGraphics*132,MassBalanceFile*132,                                  AT c5
+ 1/0036        &          MassBalanceFileOut*132,LeafGraphics*132,                               AT c5
+ 1/0037        &          RunFile*132                                                            AT c5
+ 1/0038         Common /grid_public/  NumNP, NumEl, IJ, KAT, MBand,Nmat,                         AT c5
+ 1/0039        &        KX(NumElD,4),x(NumNPD), y(NumNPD), Area(NumElD),                         AT c5
+ 1/0040        &        nodeArea(NumNPD)                                                         AT c5
+ 1/0041         Common /nodal_public/ NumSol,NumG,ListN(NumNPD),ListNE(NumNPD),                  AT c5
+ 1/0042        &       MatNumN(NumNPD),hNew(NumNPD),ThNew(NumNPD), Vx(NumNPD),                   AT c5
+ 1/0043        &       Vz(NumNPD),Q(NumNPD), Conc(NumNPD,NumSD),                                 AT c5
+ 1/0044        &       g(NumNPD,NumGD), Tmpr(NumNPD), Con(NumNPD),TcsXX(NumNPD),                 AT c5
+ 1/0045        &       RO(NumNPD), hNew_org(NumNPD),QAct(NumNPD),ThetaAvail,                     AT c5
+ 1/0046        &       ThetaFull, ThAvail(NumNPD),ThFull(NMAtD),  lOrt                           AT c5
+ 1/0047         Common /elem_public/  MatNumE(NumElD),Sink(NumNPD),                              AT c5
+ 1/0048        &       cSink(NumNPD,NumSD),gSink(NumNPD,NumGD),tSink(NumNPD),                    AT c5
+ 1/0049        &       RTWT(NumNPD),RUTDEN(NumNPD),RMassM(NumNPD),RDenM(NumNPD),                 AT c5
+ 1/0050        &       RMassY(NumNPD), RDenY(NumNPD)                                             AT c5
+ 1/0051         Common /bound_public/ NumBP, NSurf, NVarBW,NVarBS,NVarBT,NVarBG,                 AT c5
+ 1/0052        &       NumSurfDat, NSeep, NSP(NSeepD), NP(NSeepD,NumSPD),                        AT c5
+ 1/0053        &       NDrain,NDR(NDrainD),ND(NDrainD,NumDR),                                    AT c5
+ 1/0054        &       KXB(NumBPD),                                                              AT c5
+ 1/0055        &       CodeW(NumNPD),CodeS(NumNPD),CodeT(NumNPD),CodeG(NumNPD),                  AT c5
+ 1/0056        &       PCodeW(NumNPD),Width(NumBPD),                                             AT c5
+ 1/0057        &       VarBW(NumBPD,3),VarBW_Old(NumBPD,3),                                      AT c5
+ 1/0058        &       VarBS(NumBPD,NumSD),VarBT(NumBPD,4),                                      AT c5
+ 1/0059        &       VarBG(NumBPD,NumGD,3),EO,Tpot                                             AT c5
+ 1/0060         Common /time_public/tNext(NumModD),dtMx(4),Time,Step,dtOpt,                      AT c5
+ 1/0061        &        dtMin, dMul1, dMul2,  tTDB(4), Tfin,tAtm, Tinit,                         AT c5
+ 1/0062        &        lInput,Iter,DailyOutput,HourlyOutput,RunFlag,                            AT c5
+ 1/0063        &          DailyWeather,HourlyWeather,                                            AT c5
+ 1/0064        &          beginDay, sowingDay, endDay,                                           AT c5
+ 1/0065        &          OutputSoilNo, OutPutSoilYes, Year,                                     AT c5
+ 1/0066        &           iTime, iDawn, iDusk, dumpad, TimeStep                                 AT c5
+ 1/0067         Common /module_public/  NumMod,Movers(4), NShoot                                 AT c5
+ 1/0068         Common /error_public/errPlant                                                    AT c5
+ 1/0069         Common /Solver_public/IAD(MBandD,NumNPD), IADN(NumNPD),                          AT c5
+ 1/0070        &        IADD(NumNPD),A1(MBandD,NumNPD),B1(NumNPD),                               AT c5
+ 1/0071        &        VRV(NumNPD),RES(NumNPD),RQI(NumNPD,MNorth),                              AT c5
+ 1/0072        &        QQ(NumNPD), RQ(NumNPD),QI(NumNPD,MNorth), RQIDOT(MNorth)                 AT c5
+ 1/0073                                                                                          AT c5
+ 1/0074         Common /Initvar/ ECNVRG, RCNVRG, ACNVRG, MaxItO,EPSI_Heat,                       AT c5
+ 1/0075        &                 EPSI_Solute, hCritS, hCritA                                     AT c5
+ 1/0076                                                                                          AT c5
+ 1/0077         Common /DataFilenames/ Starter, WeatherFile, TimeFile,                           AT c5
+ 1/0078        &          BiologyFile,ClimateFile, NitrogenFile, SoluteFile,                     AT c5
+ 1/0079        &          SoilFile,                                                              AT c5
+ 1/0080        &          ManagementFile,DripFile,                                               AT c5
+ 1/0081        &          WaterFile, WaterBoundaryFile,                                          AT c5
+ 1/0082        &          PlantGraphics,InitialsFile,VarietyFile,                                AT c5
+ 1/0083        &          NodeGraphics,ElemGraphics,NodeGeomFile,                                AT c5
+ 1/0084        &          GeometryFile,SurfaceGraphics,                                          AT c5
+ 1/0085        &          FluxGraphics, MassBalanceFile,MassBalanceFileOut,                      AT c5
+ 1/0086        &          LeafGraphics,RunFile                                                   AT c5
+ 1/0087                                                                                          AT c5
+ 1/0088   c the following blocks are not passed to the crop model                                AT c5
+ 1/0089         Common /Nodal_pub_Aux/ ROForInfil(NumBPD)                                        AT c5
+ 1/0090                                                                                          AT c5
+ 1/0091         Common /Materials/BlkDn(NMatD),FracSind(NMatD), FracClay(NMatD),                 AT c5
+ 1/0092        &           FracOM(NMatD),TUpperLimit(NMatD), TLowerLimit(NMatD)                  AT c5
+   0003         Include 'puplant.ins'                                                            AT c5
+ 1/0001                                                                                          AT c5
+ 1/0002         REAL*8 PCRL, PCRQ,PCRS,ET_demand,LCAI,COVER,CONVR                                AT c5
+ 1/0003         Real*8 HourlyCarboUsed                                                           AT c5
+ 1/0004         REAL*4 SHADE,HEIGHT,LAI,AWUPS,NitroDemand,NDemandError                           AT c5
+ 1/0005         REAL LAREAT, MaxRootDepth, InitialRootCarbo                                      AT c5
+ 1/0006         integer isGerminated, isEmerged                                                  AT c5
+ 1/0007                                                                                          AT c5
+ 1/0008   C includes variables shared with crop model                                            AT c5
+ 1/0009         Common /ShootR/   PCRL,PCRQ,PCRS,HourlyCarboUsed, ET_demand,                     AT c5
+ 1/0010        &                  LCAI,COVER,CONVR,                                              AT c5
+ 1/0011        &                  MaxRootDepth,SHADE,HEIGHT,LAI,AWUPS,                           AT c5
+ 1/0012        &                  NitroDemand,xBSTEM,yBSTEM,SGT,PSIM,                            AT c5
+ 1/0013        &                  LAREAT,POPROW,ROWSP,ROWANG,PopArea,                            AT c5
+ 1/0014        &                  CEC,EORSCS,AWUPSS,SOLRAD,                                      AT c5
+ 1/0015        &                  Total_Eor,Total_Pcrs,sincrsink,PSILD,                          AT c5
+ 1/0016        &                  OSMFAC,EOMULT,PSIL_,NDemandError,                              AT c5
+ 1/0017        &                  CumulativeNDemandError,TotalRootWeight,                        AT c5
+ 1/0018        &                  InitialRootCarbo,                                              AT c5
+ 1/0019        &                  ConstI(2),constK(2), Cmin0(2),                                 AT c5
+ 1/0020        &                  isGerminated, isEmerged                                        AT c5
+ 1/0021                                                                                          AT c5
+ 1/0022                                                                                          AT c5
+ 1/0023   C includes variables only used inside 2dsoil                                           AT c5
+ 1/0024         Common /shtR_public/ RVR(NumNPD), AWUP(NumELD),PSISM,PSILT,EOR,                  AT c5
+ 1/0025        &                     YRL(NumNPD), RGCF(NumNPD),iFavRoot(NumNPD),                 AT c5
+ 1/0026        &                     PSIS(NumNPD), TS(NumNPD),COND(NumNPD),                      AT c5
+ 1/0027        &                     PDWR(NumNPD),                                               AT c5
+ 1/0028        &                     DRL(NumNPD),WUPM(NumNPD),                                   AT c5
+ 1/0029        &                     WUPN(NumNPD),WUPT(NumNPD),TPL,PPDRL(NumNPD),                AT c5
+ 1/0030        &                     ADWR(NumNPD), AWR(NumNPD), ADRL(NumNPD),RTWL,               AT c5
+ 1/0031        &                     RtMinWtPerUnitArea,Wl,Wa,Wr,Wb,ALPY,                        AT c5
+ 1/0032        &                     WidthE(NumEld),HeightE(NumEld),                             AT c5
+ 1/0033        &                  PILD,VMAX,vegsrc, potential_T,                                 AT c5
+ 1/0034        &                   potential_T_EO,                                               AT c5
+ 1/0035        &                  AWUPS_old, WUPMS, EORSCF,WUPDS, WUP2S,                         AT c5
+ 1/0036        &                 WUP0S, DPSI02,SCF, PSIST,PROPAR,                                AT c5
+ 1/0037        &                 VUP(NumNPD,2),FUP(NumNPD,2)                                     AT c5
+ 1/0038   c      end                                                                             AT c5
+   0004         real difx, dify, Yr(NumNP),root1 root2,M                                         AT c5
+D:\2DSOIL_Grape\Soil Source\Crop.for(4) : warning 242 - Variable YR has been given a value but never used 
+D:\2DSOIL_Grape\Soil Source\Crop.for(4) : warning 197 - Variable ROOT1ROOT2 has been declared but not used 
+   0005         Character*12 VarietyName                                                         AT 106
+   0006   c initialize here                                                                      AT 106
+   0007         If (lInput.eq.1) then                                                            AT 106
+   0008          open(40,File=VarietyFile,err=10)                                                AT 106
+   0009           read(40,*) VarietyName, LAI                                                    AT 164
+   0010           close(40)                                                                      AT 1be
+   0011           cec=0.65                                                                       AT 215
+   0012           nShoot=1                                                                       AT 215
+   0013           isGerminated=1                                                                 AT 215
+   0014           RootsInitiated=0 ! need to do initiation in carbon partitioning                AT 215
+D:\2DSOIL_Grape\Soil Source\Crop.for(14) : warning 242 - Variable ROOTSINITIATED has been given a value but never used 
+   0015           ET_demand=2.5 !just a stub for now, need to get this from weather.             AT 274
+   0016           Convr=1.0   ! conversion efficiency for new roots                              AT 274
+   0017                                                                                          AT 274
+   0018           PCRQ=0.0                                                                       AT 274
+   0019           PCRL=0.0 ! no carbon for root growth                                           AT 274
+   0020   c        initialize roots                                                              AT 274
+   0021           difx = 20.0                                                                    AT 274
+   0022           dify = 55.0                                                                    AT 287
+   0023           M=50.0                                                                         AT 29a
+   0024           rootTime=100  ! assume a fully developed root system                           AT 2ad
+   0025           COVER=1.0 - exp (-CEC*LAI)                                                     AT 325
+   0026           Do i= 1, NumNP                                                                 AT 325
+   0027                                                                                          AT 340
+   0028            Yr(i)=  y(1)-y(i)  ! 0 is relative to bottom in grid but must be relative to the surface for root calcs AT 340
+   0029            root2=1.0/(4.0*rootTime)*(x(i)*x(i)/difx+y(i)*y(i)/dify)                      AT 3a0
+   0030            root1 = M / (4.0 * 3.1415 * rootTime * Sqrt(difx * dify))                     AT 447
+   0031            RTWT(i) = root1*Exp(-root2)                                                   AT 49b
+   0032          End Do                                                                          AT 4df
+   0033         End If                                                                           AT 553
+   0034           ET_demand=2.5 !just a stub for now, need to get this from weather.             AT 553
+   0035   c     TPot is g plant-1 day-1, ET_demand should be g m-2 day                           AT 553
+   0036   c     1/poprow*100/Rowsp converts to g m-2 day-1                                       AT 553
+   0037         ET_Demand=TPot/poprow*100/RowSp                                                  AT 553
+   0038         Return                                                                           AT 553
+   0039   10    stop "error in crop file"                                                        AT 558
+   0040         End                                                                              AT 603
+
+
+
+
+End of Compilation - Clocked 0.03 seconds

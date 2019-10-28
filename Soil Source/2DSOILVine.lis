@@ -1,0 +1,216 @@
+Silverfrost FTN95/x64 Ver 8.50.0  2DSOILVine.FOR  Sun Oct 27 15:06:46 2019
+
+Compiler used    [C:\Program Files (x86)\Silverfrost\FTN95\FTN95.EXE]
+Salflibc path    [C:\Program Files (x86)\Silverfrost\FTN95\salflibc.dll]
+Salflibc version [21.4.29.16]
+Compiler options in effect:
+    64;BINARY;CFPP;ERROR_NUMBERS;FIXED_FORMAT;FPP;IGNORE;LIST;
+    LIST_INSERT_FILES;NO_BANNER;TABS;UNLIMITED_ERRORS;VS7;XREF;
+
+   0001   *||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*               AT 0
+   0002   *                                                                      *               AT 6d
+   0003   *     2DSOIL  - Numerical model of two-dimensional soil environment    *               AT 6d
+   0004   *                           for field crops                            *               AT 6d
+   0005   *                                                                      *               AT 6d
+   0006   *                              Release 1.1.4                              *            AT 6d
+   0007   c||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*               AT 6d
+   0008         Include 'public.ins'                                                             AT 6d
+ 1/0001   c  dt ToDo - simplyfy common blocks so only variables needed in plant model            AT 6d
+ 1/0002   c dt ToDo May 2016 added VarBW_old for debugging purposes can be removed later         AT 6d
+ 1/0003   c   will be transferred.                                                               AT 6d
+ 1/0004         Parameter (NumNPD=4000, NumElD=3500, NumBPD=600, NSeepD = 2,                     AT 6d
+ 1/0005        &           NumSPD= 30, NumSD =10, NDrainD=2,NumDR=30,                            AT 6d
+ 1/0006        &           NumGD = 3, NumPlD=100,                                                AT 6d
+ 1/0007        &           NMatD=15,MNorth=4,                                                    AT 6d
+ 1/0008        &           NumModD=20, MBandD=15,  NumSurfDatD=3+NumGD+NumSD)                    AT 6d
+ 1/0009                                                                                          AT 6d
+ 1/0010                                                                                          AT 6d
+ 1/0011         Double precision Time,Step,tNext,                                                AT 6d
+ 1/0012        &             dtOpt,dtMin,dMul1,dMul2,dtMx,tTDB,tFin,tatm                         AT 6d
+ 1/0013         Double precision  A1,B1,VRV,RES,RQI,RQ,QI,QQ,RQIDOT                              AT 6d
+ 1/0014         Double precision  ECNVRG, RCNVRG,ACNVRG                                          AT 6d
+ 1/0015         Double precision Starter, TimeStep                                               AT 6d
+ 1/0016                                                                                          AT 6d
+ 1/0017         Real BlkDn, FracSind, FracClay, FracOM, hCritS,hCritA                            AT 6d
+ 1/0018         Real nodeArea                                                                    AT 6d
+ 1/0019         Integer CodeW,CodeS,CodeT,CodeG,errPlant                                         AT 6d
+ 1/0020         Integer MaxItO, OutPutSoilNo, OutPutSoilYes                                      AT 6d
+ 1/0021         Logical*1 lOrt                                                                   AT 6d
+ 1/0022         Integer DailyOutput, HourlyOutput,RunFlag,                                       AT 6d
+ 1/0023        &  DailyWeather,HourlyWeather,ITIME, IDAWN, IDUSK,                                AT 6d
+ 1/0024        &  beginDay, sowingDay, endDay,year                                               AT 6d
+ 1/0025                                                                                          AT 6d
+ 1/0026         character WeatherFile*132, TimeFile*132, BiologyFile*132,                        AT 6d
+ 1/0027        &          ClimateFile*132, NitrogenFile*132, SoluteFile*132,                     AT 6d
+ 1/0028        &          SoilFile*132,                                                          AT 6d
+ 1/0029        &          ManagementFile*132,DripFile*132,                                       AT 6d
+ 1/0030        &          WaterFile*132, WaterBoundaryFile*132,                                  AT 6d
+ 1/0031        &          PlantGraphics*132,InitialsFile*132,  VarietyFile*132,                  AT 6d
+ 1/0032        &          NodeGraphics*132,ElemGraphics*132,                                     AT 6d
+ 1/0033        &          NodeGeomFile*132,                                                      AT 6d
+ 1/0034        &          GeometryFile*132,SurfaceGraphics*132,                                  AT 6d
+ 1/0035        &          FluxGraphics*132,MassBalanceFile*132,                                  AT 6d
+ 1/0036        &          MassBalanceFileOut*132,LeafGraphics*132,                               AT 6d
+ 1/0037        &          RunFile*132                                                            AT 6d
+ 1/0038         Common /grid_public/  NumNP, NumEl, IJ, KAT, MBand,Nmat,                         AT 6d
+ 1/0039        &        KX(NumElD,4),x(NumNPD), y(NumNPD), Area(NumElD),                         AT 6d
+ 1/0040        &        nodeArea(NumNPD)                                                         AT 6d
+ 1/0041         Common /nodal_public/ NumSol,NumG,ListN(NumNPD),ListNE(NumNPD),                  AT 6d
+ 1/0042        &       MatNumN(NumNPD),hNew(NumNPD),ThNew(NumNPD), Vx(NumNPD),                   AT 6d
+ 1/0043        &       Vz(NumNPD),Q(NumNPD), Conc(NumNPD,NumSD),                                 AT 6d
+ 1/0044        &       g(NumNPD,NumGD), Tmpr(NumNPD), Con(NumNPD),TcsXX(NumNPD),                 AT 6d
+ 1/0045        &       RO(NumNPD), hNew_org(NumNPD),QAct(NumNPD),ThetaAvail,                     AT 6d
+ 1/0046        &       ThetaFull, ThAvail(NumNPD),ThFull(NMAtD),  lOrt                           AT 6d
+ 1/0047         Common /elem_public/  MatNumE(NumElD),Sink(NumNPD),                              AT 6d
+ 1/0048        &       cSink(NumNPD,NumSD),gSink(NumNPD,NumGD),tSink(NumNPD),                    AT 6d
+ 1/0049        &       RTWT(NumNPD),RUTDEN(NumNPD),RMassM(NumNPD),RDenM(NumNPD),                 AT 6d
+ 1/0050        &       RMassY(NumNPD), RDenY(NumNPD)                                             AT 6d
+ 1/0051         Common /bound_public/ NumBP, NSurf, NVarBW,NVarBS,NVarBT,NVarBG,                 AT 6d
+ 1/0052        &       NumSurfDat, NSeep, NSP(NSeepD), NP(NSeepD,NumSPD),                        AT 6d
+ 1/0053        &       NDrain,NDR(NDrainD),ND(NDrainD,NumDR),                                    AT 6d
+ 1/0054        &       KXB(NumBPD),                                                              AT 6d
+ 1/0055        &       CodeW(NumNPD),CodeS(NumNPD),CodeT(NumNPD),CodeG(NumNPD),                  AT 6d
+ 1/0056        &       PCodeW(NumNPD),Width(NumBPD),                                             AT 6d
+ 1/0057        &       VarBW(NumBPD,3),VarBW_Old(NumBPD,3),                                      AT 6d
+ 1/0058        &       VarBS(NumBPD,NumSD),VarBT(NumBPD,4),                                      AT 6d
+ 1/0059        &       VarBG(NumBPD,NumGD,3),EO,Tpot                                             AT 6d
+ 1/0060         Common /time_public/tNext(NumModD),dtMx(4),Time,Step,dtOpt,                      AT 6d
+ 1/0061        &        dtMin, dMul1, dMul2,  tTDB(4), Tfin,tAtm, Tinit,                         AT 6d
+ 1/0062        &        lInput,Iter,DailyOutput,HourlyOutput,RunFlag,                            AT 6d
+ 1/0063        &          DailyWeather,HourlyWeather,                                            AT 6d
+ 1/0064        &          beginDay, sowingDay, endDay,                                           AT 6d
+ 1/0065        &          OutputSoilNo, OutPutSoilYes, Year,                                     AT 6d
+ 1/0066        &           iTime, iDawn, iDusk, dumpad, TimeStep                                 AT 6d
+ 1/0067         Common /module_public/  NumMod,Movers(4), NShoot                                 AT 6d
+ 1/0068         Common /error_public/errPlant                                                    AT 6d
+ 1/0069         Common /Solver_public/IAD(MBandD,NumNPD), IADN(NumNPD),                          AT 6d
+ 1/0070        &        IADD(NumNPD),A1(MBandD,NumNPD),B1(NumNPD),                               AT 6d
+ 1/0071        &        VRV(NumNPD),RES(NumNPD),RQI(NumNPD,MNorth),                              AT 6d
+ 1/0072        &        QQ(NumNPD), RQ(NumNPD),QI(NumNPD,MNorth), RQIDOT(MNorth)                 AT 6d
+ 1/0073                                                                                          AT 6d
+ 1/0074         Common /Initvar/ ECNVRG, RCNVRG, ACNVRG, MaxItO,EPSI_Heat,                       AT 6d
+ 1/0075        &                 EPSI_Solute, hCritS, hCritA                                     AT 6d
+ 1/0076                                                                                          AT 6d
+ 1/0077         Common /DataFilenames/ Starter, WeatherFile, TimeFile,                           AT 6d
+ 1/0078        &          BiologyFile,ClimateFile, NitrogenFile, SoluteFile,                     AT 6d
+ 1/0079        &          SoilFile,                                                              AT 6d
+ 1/0080        &          ManagementFile,DripFile,                                               AT 6d
+ 1/0081        &          WaterFile, WaterBoundaryFile,                                          AT 6d
+ 1/0082        &          PlantGraphics,InitialsFile,VarietyFile,                                AT 6d
+ 1/0083        &          NodeGraphics,ElemGraphics,NodeGeomFile,                                AT 6d
+ 1/0084        &          GeometryFile,SurfaceGraphics,                                          AT 6d
+ 1/0085        &          FluxGraphics, MassBalanceFile,MassBalanceFileOut,                      AT 6d
+ 1/0086        &          LeafGraphics,RunFile                                                   AT 6d
+ 1/0087                                                                                          AT 6d
+ 1/0088   c the following blocks are not passed to the crop model                                AT 6d
+ 1/0089         Common /Nodal_pub_Aux/ ROForInfil(NumBPD)                                        AT 6d
+ 1/0090                                                                                          AT 6d
+ 1/0091         Common /Materials/BlkDn(NMatD),FracSind(NMatD), FracClay(NMatD),                 AT 6d
+ 1/0092        &           FracOM(NMatD),TUpperLimit(NMatD), TLowerLimit(NMatD)                  AT 6d
+   0009         include 'puplant.ins'                                                            AT 6d
+ 1/0001                                                                                          AT 6d
+ 1/0002         REAL*8 PCRL, PCRQ,PCRS,ET_demand,LCAI,COVER,CONVR                                AT 6d
+ 1/0003         Real*8 HourlyCarboUsed                                                           AT 6d
+ 1/0004         REAL*4 SHADE,HEIGHT,LAI,AWUPS,NitroDemand,NDemandError                           AT 6d
+ 1/0005         REAL LAREAT, MaxRootDepth, InitialRootCarbo                                      AT 6d
+ 1/0006         integer isGerminated, isEmerged                                                  AT 6d
+ 1/0007                                                                                          AT 6d
+ 1/0008   C includes variables shared with crop model                                            AT 6d
+ 1/0009         Common /ShootR/   PCRL,PCRQ,PCRS,HourlyCarboUsed, ET_demand,                     AT 6d
+ 1/0010        &                  LCAI,COVER,CONVR,                                              AT 6d
+ 1/0011        &                  MaxRootDepth,SHADE,HEIGHT,LAI,AWUPS,                           AT 6d
+ 1/0012        &                  NitroDemand,xBSTEM,yBSTEM,SGT,PSIM,                            AT 6d
+ 1/0013        &                  LAREAT,POPROW,ROWSP,ROWANG,PopArea,                            AT 6d
+ 1/0014        &                  CEC,EORSCS,AWUPSS,SOLRAD,                                      AT 6d
+ 1/0015        &                  Total_Eor,Total_Pcrs,sincrsink,PSILD,                          AT 6d
+ 1/0016        &                  OSMFAC,EOMULT,PSIL_,NDemandError,                              AT 6d
+ 1/0017        &                  CumulativeNDemandError,TotalRootWeight,                        AT 6d
+ 1/0018        &                  InitialRootCarbo,                                              AT 6d
+ 1/0019        &                  ConstI(2),constK(2), Cmin0(2),                                 AT 6d
+ 1/0020        &                  isGerminated, isEmerged                                        AT 6d
+ 1/0021                                                                                          AT 6d
+ 1/0022                                                                                          AT 6d
+ 1/0023   C includes variables only used inside 2dsoil                                           AT 6d
+ 1/0024         Common /shtR_public/ RVR(NumNPD), AWUP(NumELD),PSISM,PSILT,EOR,                  AT 6d
+ 1/0025        &                     YRL(NumNPD), RGCF(NumNPD),iFavRoot(NumNPD),                 AT 6d
+ 1/0026        &                     PSIS(NumNPD), TS(NumNPD),COND(NumNPD),                      AT 6d
+ 1/0027        &                     PDWR(NumNPD),                                               AT 6d
+ 1/0028        &                     DRL(NumNPD),WUPM(NumNPD),                                   AT 6d
+ 1/0029        &                     WUPN(NumNPD),WUPT(NumNPD),TPL,PPDRL(NumNPD),                AT 6d
+ 1/0030        &                     ADWR(NumNPD), AWR(NumNPD), ADRL(NumNPD),RTWL,               AT 6d
+ 1/0031        &                     RtMinWtPerUnitArea,Wl,Wa,Wr,Wb,ALPY,                        AT 6d
+ 1/0032        &                     WidthE(NumEld),HeightE(NumEld),                             AT 6d
+ 1/0033        &                  PILD,VMAX,vegsrc, potential_T,                                 AT 6d
+ 1/0034        &                   potential_T_EO,                                               AT 6d
+ 1/0035        &                  AWUPS_old, WUPMS, EORSCF,WUPDS, WUP2S,                         AT 6d
+ 1/0036        &                 WUP0S, DPSI02,SCF, PSIST,PROPAR,                                AT 6d
+ 1/0037        &                 VUP(NumNPD,2),FUP(NumNPD,2)                                     AT 6d
+ 1/0038   c      end                                                                             AT 6d
+   0010         Include 'Puweath.ins'                                                            AT 6d
+   0011   C      Include 'Nitvar.ins'                                                            AT 6d
+   0012                                                                                          AT 6d
+ 1/0001         REAL IRAV,IR,LAMDAS,LAMDAC,LATUDE,Longitude                                      AT 6d
+ 1/0002         REAL WATACT,WATRAT,WATPOT                                                        AT 6d
+ 1/0003         Integer AutoIrrigateF                                                            AT 6d
+ 1/0004                                                                                          AT 6d
+ 1/0005         Common /Weath/ MSW1,MSW2,MSW3,MSW4,MSW5,MSW6,                                    AT 6d
+ 1/0006        &               MSW7,BSOLAR,ETCORR,                                               AT 6d
+ 1/0007        &               BTEMP,ATEMP,ERAIN,BWIND,BIR,WINDA,IRAV,JDAY,                      AT 6d
+ 1/0008        &               NCD,JDLAST, CLDFAC,DEL(24),RINT(24),GAMMA,RNS,                    AT 6d
+ 1/0009        &               RNC,RAIN,IR,WIND,CO2,TDUSK,TDUSKY,                                AT 6d
+ 1/0010        &               TWET,TDRY,CPREC(NumSD),TAIR(24),VPD(24),ROUGH,                    AT 6d
+ 1/0011        &               RADINT(24),WATTSM(24),DIFINT(24),                                 AT 6d
+ 1/0012        &               ROWINC(24),CLOUD,SHADOW(24),DIFWAT(24),                           AT 6d
+ 1/0013        &               DIRINT(24),WATACT,WATRAT,WATPOT,RNLU,                             AT 6d
+ 1/0014        &               NumF(40),NumFP,hFur(40),QF,IFUR,GAIR(NumGD),PG,                   AT 6d
+ 1/0015        &               LATUDE,Longitude, Altitude, RI,PAR(24),                           AT 6d
+ 1/0016        &               PARINT(24),daylng,AutoIrrigAmt,                                   AT 6d
+ 1/0017        &               AutoIrrigateF                                                     AT 6d
+   0013         character*132 RunDat                                                             AT 6d
+   0014         integer len, status                                                              AT 6d
+   0015         RunFile="Run.Dat"                                                                AT 6d
+   0016         Call get_command_argument(1, RunDat, len, status)                                AT 6d
+   0017         if (len.gt.0) then                                                               AT 94
+   0018           RunFile=RunDat                                                                 AT bf
+   0019         endif                                                                            AT bf
+   0020                                                                                          AT bf
+   0021   c dt comment                                                                           AT bf
+   0022          Call Initialize()                                                               AT bf
+   0023          Call Get_Grid_and_Boundary()                                                    AT c4
+   0024                                                                                          AT c9
+   0025    1     Call Synchronizer()                                                             AT c9
+   0026                                                                                          AT 115
+   0027   C                                                                                      AT 115
+   0028   C SetSurfaceD --  reading daily weather                                                AT 115
+   0029   C SetSurfaceH --  reading hourly weather                                               AT 115
+   0030                                                                                          AT 115
+D:\2DSOIL_Grape\Soil Source\2DSOILVine.FOR(25) : warning 21 - Label 1 is declared, but not used 
+   0031         if ((HourlyWeather+DailyWeather.gt.1).or.                                        AT 115
+   0032        &   ((HourlyWeather+DailyWeather).eq.0))then                                      AT 115
+   0033                 Write (*,*) "error in weather file type"                                 AT 115
+   0034         Endif                                                                            AT 14f
+   0035                                                                                          AT 167
+   0036         if (HourlyWeather.eq.1) Call SetSurfaceH()                                       AT 167
+   0037         if (DailyWeather.eq.1) Call SetSurfaceD()                                        AT 185
+   0038                                                                                          AT 18a
+   0039         Call SetTDB()                                                                    AT 18a
+   0040         Call CROP()                                                                      AT 18f
+   0041         Call Carbon_Partitioning_New()                                                   AT 194
+   0042         Call Root_diff_New()                                                             AT 199
+   0043         call Root_Mover_New()                                                            AT 19e
+   0044         write(*, *) "Calling WaterUptake_New"                                            AT 1a3
+   0045         Call WaterUptake_New()                                                           AT 1dd
+   0046         write(*,*) 'Return from WaterUptake_New'                                         AT 1e2
+   0047   C$$$$$$       Call WaterMover_New()                                                    AT 25c
+   0048   C$$$$$$       if (outputSoilYes.gt.0) then                                             AT 0
+   0049   C$$$$$$          Call Output()                                                         AT 25c
+   0050   C$$$$$$       endif                                                                    AT 25c
+   0051   C$$$$$$                                                                                AT 25c
+   0052   C$$$$$$                                                                                AT 25c
+   0053   C$$$$$$         Goto 1                                                                 AT 25c
+   0054         End                                                                              AT 25c
+
+
+
+
+End of Compilation - Clocked 0.03 seconds

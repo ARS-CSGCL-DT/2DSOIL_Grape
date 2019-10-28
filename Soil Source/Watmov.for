@@ -20,7 +20,7 @@
       Dimension Bii(3),Cii(3)
       Common /WaterM/ ThOld(NumNPD),hOld(NumNPD),hTemp(NumNPD),
      !                ConAxx(NumElD),ConAzz(NumElD),ConAxz(NumElD),
-     !                MaxIt,TolTh,TolH,dt,dtOld,tOld,
+     !                MaxIt,TolTh,TolH,dumdt,dt,dtOld,tOld,
      !                thR(NMatD),hSat(NMatD),thSat(NMatD),
      !                 isat(NumBPD),FreeD, CriticalH
       If (lInput.eq.0) goto 11  

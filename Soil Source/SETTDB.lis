@@ -1,0 +1,259 @@
+Silverfrost FTN95/x64 Ver 8.50.0  SETTDB.FOR  Sun Oct 27 15:06:02 2019
+
+Compiler used    [C:\Program Files (x86)\Silverfrost\FTN95\FTN95.EXE]
+Salflibc path    [C:\Program Files (x86)\Silverfrost\FTN95\salflibc.dll]
+Salflibc version [21.4.29.16]
+Compiler options in effect:
+    64;BINARY;CFPP;ERROR_NUMBERS;FIXED_FORMAT;FPP;IGNORE;LIST;
+    LIST_INSERT_FILES;NO_BANNER;TABS;UNLIMITED_ERRORS;VS7;XREF;
+
+   0001         Subroutine SetTDB()                                                              AT 0
+   0002         Include 'public.ins'                                                             AT ba
+ 1/0001   c  dt ToDo - simplyfy common blocks so only variables needed in plant model            AT ba
+ 1/0002   c dt ToDo May 2016 added VarBW_old for debugging purposes can be removed later         AT ba
+ 1/0003   c   will be transferred.                                                               AT ba
+ 1/0004         Parameter (NumNPD=4000, NumElD=3500, NumBPD=600, NSeepD = 2,                     AT ba
+ 1/0005        &           NumSPD= 30, NumSD =10, NDrainD=2,NumDR=30,                            AT ba
+ 1/0006        &           NumGD = 3, NumPlD=100,                                                AT ba
+ 1/0007        &           NMatD=15,MNorth=4,                                                    AT ba
+ 1/0008        &           NumModD=20, MBandD=15,  NumSurfDatD=3+NumGD+NumSD)                    AT ba
+ 1/0009                                                                                          AT ba
+ 1/0010                                                                                          AT ba
+ 1/0011         Double precision Time,Step,tNext,                                                AT ba
+ 1/0012        &             dtOpt,dtMin,dMul1,dMul2,dtMx,tTDB,tFin,tatm                         AT ba
+ 1/0013         Double precision  A1,B1,VRV,RES,RQI,RQ,QI,QQ,RQIDOT                              AT ba
+ 1/0014         Double precision  ECNVRG, RCNVRG,ACNVRG                                          AT ba
+ 1/0015         Double precision Starter, TimeStep                                               AT ba
+ 1/0016                                                                                          AT ba
+ 1/0017         Real BlkDn, FracSind, FracClay, FracOM, hCritS,hCritA                            AT ba
+ 1/0018         Real nodeArea                                                                    AT ba
+ 1/0019         Integer CodeW,CodeS,CodeT,CodeG,errPlant                                         AT ba
+ 1/0020         Integer MaxItO, OutPutSoilNo, OutPutSoilYes                                      AT ba
+ 1/0021         Logical*1 lOrt                                                                   AT ba
+ 1/0022         Integer DailyOutput, HourlyOutput,RunFlag,                                       AT ba
+ 1/0023        &  DailyWeather,HourlyWeather,ITIME, IDAWN, IDUSK,                                AT ba
+ 1/0024        &  beginDay, sowingDay, endDay,year                                               AT ba
+ 1/0025                                                                                          AT ba
+ 1/0026         character WeatherFile*132, TimeFile*132, BiologyFile*132,                        AT ba
+ 1/0027        &          ClimateFile*132, NitrogenFile*132, SoluteFile*132,                     AT ba
+ 1/0028        &          SoilFile*132,                                                          AT ba
+ 1/0029        &          ManagementFile*132,DripFile*132,                                       AT ba
+ 1/0030        &          WaterFile*132, WaterBoundaryFile*132,                                  AT ba
+ 1/0031        &          PlantGraphics*132,InitialsFile*132,  VarietyFile*132,                  AT ba
+ 1/0032        &          NodeGraphics*132,ElemGraphics*132,                                     AT ba
+ 1/0033        &          NodeGeomFile*132,                                                      AT ba
+ 1/0034        &          GeometryFile*132,SurfaceGraphics*132,                                  AT ba
+ 1/0035        &          FluxGraphics*132,MassBalanceFile*132,                                  AT ba
+ 1/0036        &          MassBalanceFileOut*132,LeafGraphics*132,                               AT ba
+ 1/0037        &          RunFile*132                                                            AT ba
+ 1/0038         Common /grid_public/  NumNP, NumEl, IJ, KAT, MBand,Nmat,                         AT ba
+ 1/0039        &        KX(NumElD,4),x(NumNPD), y(NumNPD), Area(NumElD),                         AT ba
+ 1/0040        &        nodeArea(NumNPD)                                                         AT ba
+ 1/0041         Common /nodal_public/ NumSol,NumG,ListN(NumNPD),ListNE(NumNPD),                  AT ba
+ 1/0042        &       MatNumN(NumNPD),hNew(NumNPD),ThNew(NumNPD), Vx(NumNPD),                   AT ba
+ 1/0043        &       Vz(NumNPD),Q(NumNPD), Conc(NumNPD,NumSD),                                 AT ba
+ 1/0044        &       g(NumNPD,NumGD), Tmpr(NumNPD), Con(NumNPD),TcsXX(NumNPD),                 AT ba
+ 1/0045        &       RO(NumNPD), hNew_org(NumNPD),QAct(NumNPD),ThetaAvail,                     AT ba
+ 1/0046        &       ThetaFull, ThAvail(NumNPD),ThFull(NMAtD),  lOrt                           AT ba
+ 1/0047         Common /elem_public/  MatNumE(NumElD),Sink(NumNPD),                              AT ba
+ 1/0048        &       cSink(NumNPD,NumSD),gSink(NumNPD,NumGD),tSink(NumNPD),                    AT ba
+ 1/0049        &       RTWT(NumNPD),RUTDEN(NumNPD),RMassM(NumNPD),RDenM(NumNPD),                 AT ba
+ 1/0050        &       RMassY(NumNPD), RDenY(NumNPD)                                             AT ba
+ 1/0051         Common /bound_public/ NumBP, NSurf, NVarBW,NVarBS,NVarBT,NVarBG,                 AT ba
+ 1/0052        &       NumSurfDat, NSeep, NSP(NSeepD), NP(NSeepD,NumSPD),                        AT ba
+ 1/0053        &       NDrain,NDR(NDrainD),ND(NDrainD,NumDR),                                    AT ba
+ 1/0054        &       KXB(NumBPD),                                                              AT ba
+ 1/0055        &       CodeW(NumNPD),CodeS(NumNPD),CodeT(NumNPD),CodeG(NumNPD),                  AT ba
+ 1/0056        &       PCodeW(NumNPD),Width(NumBPD),                                             AT ba
+ 1/0057        &       VarBW(NumBPD,3),VarBW_Old(NumBPD,3),                                      AT ba
+ 1/0058        &       VarBS(NumBPD,NumSD),VarBT(NumBPD,4),                                      AT ba
+ 1/0059        &       VarBG(NumBPD,NumGD,3),EO,Tpot                                             AT ba
+ 1/0060         Common /time_public/tNext(NumModD),dtMx(4),Time,Step,dtOpt,                      AT ba
+ 1/0061        &        dtMin, dMul1, dMul2,  tTDB(4), Tfin,tAtm, Tinit,                         AT ba
+ 1/0062        &        lInput,Iter,DailyOutput,HourlyOutput,RunFlag,                            AT ba
+ 1/0063        &          DailyWeather,HourlyWeather,                                            AT ba
+ 1/0064        &          beginDay, sowingDay, endDay,                                           AT ba
+ 1/0065        &          OutputSoilNo, OutPutSoilYes, Year,                                     AT ba
+ 1/0066        &           iTime, iDawn, iDusk, dumpad, TimeStep                                 AT ba
+ 1/0067         Common /module_public/  NumMod,Movers(4), NShoot                                 AT ba
+ 1/0068         Common /error_public/errPlant                                                    AT ba
+ 1/0069         Common /Solver_public/IAD(MBandD,NumNPD), IADN(NumNPD),                          AT ba
+ 1/0070        &        IADD(NumNPD),A1(MBandD,NumNPD),B1(NumNPD),                               AT ba
+ 1/0071        &        VRV(NumNPD),RES(NumNPD),RQI(NumNPD,MNorth),                              AT ba
+ 1/0072        &        QQ(NumNPD), RQ(NumNPD),QI(NumNPD,MNorth), RQIDOT(MNorth)                 AT ba
+ 1/0073                                                                                          AT ba
+ 1/0074         Common /Initvar/ ECNVRG, RCNVRG, ACNVRG, MaxItO,EPSI_Heat,                       AT ba
+ 1/0075        &                 EPSI_Solute, hCritS, hCritA                                     AT ba
+ 1/0076                                                                                          AT ba
+ 1/0077         Common /DataFilenames/ Starter, WeatherFile, TimeFile,                           AT ba
+ 1/0078        &          BiologyFile,ClimateFile, NitrogenFile, SoluteFile,                     AT ba
+ 1/0079        &          SoilFile,                                                              AT ba
+ 1/0080        &          ManagementFile,DripFile,                                               AT ba
+ 1/0081        &          WaterFile, WaterBoundaryFile,                                          AT ba
+ 1/0082        &          PlantGraphics,InitialsFile,VarietyFile,                                AT ba
+ 1/0083        &          NodeGraphics,ElemGraphics,NodeGeomFile,                                AT ba
+ 1/0084        &          GeometryFile,SurfaceGraphics,                                          AT ba
+ 1/0085        &          FluxGraphics, MassBalanceFile,MassBalanceFileOut,                      AT ba
+ 1/0086        &          LeafGraphics,RunFile                                                   AT ba
+ 1/0087                                                                                          AT ba
+ 1/0088   c the following blocks are not passed to the crop model                                AT ba
+ 1/0089         Common /Nodal_pub_Aux/ ROForInfil(NumBPD)                                        AT ba
+ 1/0090                                                                                          AT ba
+ 1/0091         Common /Materials/BlkDn(NMatD),FracSind(NMatD), FracClay(NMatD),                 AT ba
+ 1/0092        &           FracOM(NMatD),TUpperLimit(NMatD), TLowerLimit(NMatD)                  AT ba
+   0003         Dimension Dummy(NumSurfDatD,3)                                                   AT ba
+   0004         Common /std/im1,im2,im3,im4,il1,il2,il3,il4                                      AT ba
+   0005         If(NVarBW.ne.0) then                                                             AT ba
+   0006           If(lInput.eq.1) then                                                           AT ba
+   0007             im1=300                                                                      AT ba
+   0008             il1=0                                                                        AT ba
+   0009             Open(6,file=WaterBoundaryFile,status='old',ERR=200)                          AT ba
+   0010             im1=im1+1                                                                    AT 168
+   0011             il1=il1+1                                                                    AT 168
+   0012             Read(6,*,ERR=100)                                                            AT 168
+   0013             im1=im1+1                                                                    AT 1cb
+   0014             il1=il1+1                                                                    AT 1cb
+   0015             Read(6,*,ERR=100)                                                            AT 1cb
+   0016           Endif                                                                          AT 202
+   0017           If(abs(Time-tTDB(1)).lt.0.001*Step.or.lInput.eq.1) then                        AT 29f
+   0018             im1=im1+1                                                                    AT 29f
+   0019             il1=il1+1                                                                    AT 29f
+   0020             Read(6,*,ERR=100) tTDB(1)                                                    AT 29f
+   0021             im1=im1+1                                                                    AT 333
+   0022             Do 11 j=1,NVarBW                                                             AT 333
+   0023               il1=il1+1                                                                  AT 369
+   0024               Read(6,*,ERR=100) n,VarB                                                   AT 369
+   0025               Do 12 i=1,NumBP                                                            AT 3de
+   0026                 k=KXB(i)                                                                 AT 40f
+   0027                 If(k.eq.n) then                                                          AT 42e
+   0028                   If(CodeW(n).eq.3.or.CodeW(n).eq.6) hNew(n)=VarB                        AT 44b
+   0029                   If(CodeW(n).eq.-3) Q(n)=Width(i)*VarB                                  AT 4dd
+   0030                   If(CodeW(n).eq.-6) Q(n)=VarB                                           AT 567
+   0031                   Goto 11                                                                AT 5ba
+   0032                 Endif                                                                    AT 5bf
+   0033   12          Continue                                                                   AT 5bf
+   0034   11        Continue                                                                     AT 5da
+   0035           Endif                                                                          AT 645
+   0036         Endif                                                                            AT 645
+   0037         If(NVarBS.ne.0) then                                                             AT 645
+   0038           If(lInput.eq.1) then                                                           AT 645
+   0039             im2=325                                                                      AT 645
+   0040             il2=0                                                                        AT 645
+   0041             Open(7,file='VarBS.dat',status='old',ERR=200)                                AT 645
+   0042             im2=im2+1                                                                    AT 6eb
+   0043             il2=il2+1                                                                    AT 6eb
+   0044             Read(7,*,ERR=200)                                                            AT 6eb
+   0045             im2=im2+1                                                                    AT 74e
+   0046             il2=il2+1                                                                    AT 74e
+   0047             Read(7,*,ERR=200)                                                            AT 74e
+   0048           Endif                                                                          AT 785
+   0049           If(abs(Time-tTDB(2)).lt.0.001*Step.or.lInput.eq.1) then                        AT 822
+   0050             im2=im2+1                                                                    AT 822
+   0051             il2=il2+1                                                                    AT 822
+   0052             Read(7,*,ERR=200) tTDB(2)                                                    AT 822
+   0053             im2=im2+1                                                                    AT 8b6
+   0054             Do 21 j=1,NVarBS                                                             AT 8b6
+   0055               il2=il2+1                                                                  AT 8e9
+   0056               Read(7,*,ERR=200) n,(Dummy(jjj,1),jjj=1,NumSol)                            AT 8e9
+   0057               Do 22 i=1,NumBP                                                            AT 9b3
+   0058                 k=KXB(i)                                                                 AT 9df
+   0059                 If(k.eq.n) then                                                          AT 9fd
+   0060                   Do jjj=1,NumSol                                                        AT a21
+   0061                     VarBS(i,jjj)=Dummy(jjj,1)                                            AT a4f
+   0062                   Enddo                                                                  AT a98
+   0063                   If (CodeS(n).eq.3) then                                                AT ac4
+   0064                     Do jjj=1,NumSol                                                      AT afb
+   0065                       Conc(n,jjj)=Dummy(jjj,1)                                           AT b2f
+   0066                     Enddo                                                                AT b78
+   0067                   Endif                                                                  AT b95
+   0068                   Goto 21                                                                AT b95
+   0069                 Endif                                                                    AT b9a
+   0070   22          Continue                                                                   AT b9a
+   0071   21        Continue                                                                     AT bb5
+   0072           Endif                                                                          AT c20
+   0073         Endif                                                                            AT c20
+   0074         If(NVarBT.ne.0) then                                                             AT c20
+   0075           If(lInput.eq.1) then                                                           AT c20
+   0076             im3=350                                                                      AT c20
+   0077             il3=0                                                                        AT c20
+   0078             Open(8,file='VarBT.dat',status='old',ERR=300)                                AT c20
+   0079             im3=im3+1                                                                    AT cc2
+   0080             il3=il3+1                                                                    AT cc2
+   0081             Read(8,*,ERR=300)                                                            AT cc2
+   0082             im3=im3+1                                                                    AT d25
+   0083             il3=il3+1                                                                    AT d25
+   0084             Read(8,*,ERR=300)                                                            AT d25
+   0085           Endif                                                                          AT d5c
+   0086           If(abs(Time-tTDB(3)).lt.0.001*Step.or.lInput.eq.1) then                        AT df9
+   0087             im3=im3+1                                                                    AT df9
+   0088             il3=il3+1                                                                    AT df9
+   0089             Read(8,*,ERR=300) tTDB(3)                                                    AT df9
+   0090             im3=im3+1                                                                    AT e8d
+   0091             Do 31 j=1,NVarBT                                                             AT e8d
+   0092               il3=il3+1                                                                  AT ec9
+   0093               Read(8,*,ERR=300) n,VarB1,VarB2,VarB3                                      AT ec9
+   0094               Do 32 i=1,NumBP                                                            AT f66
+   0095                 k=KXB(i)                                                                 AT f8f
+   0096                 If(k.eq.n) then                                                          AT fae
+   0097                   VarBT(i,1)=VarB1                                                       AT fcb
+   0098                   VarBT(i,2)=VarB2                                                       AT ff6
+   0099                   VarBT(i,3)=VarB3                                                       AT 1021
+   0100                   If(CodeT(n).eq.3.or.CodeT(n).eq.6) Tmpr(n)=VarB1                       AT 104c
+   0101                   Goto 31                                                                AT 10ce
+   0102                 Endif                                                                    AT 10d3
+   0103   32          Continue                                                                   AT 10d3
+   0104   31        Continue                                                                     AT 10ee
+   0105           Endif                                                                          AT 1159
+   0106         Endif                                                                            AT 1159
+   0107         If(NVarBG.ne.0) then                                                             AT 1159
+   0108           If(lInput.eq.1) then                                                           AT 1159
+   0109             im4=375                                                                      AT 1159
+   0110             il4=0                                                                        AT 1159
+   0111             Open(9,file='VarBG.dat',status='old',ERR=400)                                AT 1159
+   0112             im4=im4+1                                                                    AT 11ff
+   0113             il4=il4+1                                                                    AT 11ff
+   0114             Read(9,*,ERR=400)                                                            AT 11ff
+   0115             im4=im4+1                                                                    AT 1262
+   0116             il4=il4+1                                                                    AT 1262
+   0117             Read(9,*,ERR=400)                                                            AT 1262
+   0118           Endif                                                                          AT 1299
+   0119           If(abs(Time-tTDB(4)).lt.0.001*Step.or.lInput.eq.1) then                        AT 1336
+   0120             im4=im4+1                                                                    AT 1336
+   0121             il4=il4+1                                                                    AT 1336
+   0122             Read(9,*,ERR=400) tTDB(4)                                                    AT 1336
+   0123             im4=im4+1                                                                    AT 13ca
+   0124             Do 41 j=1,NVarBG                                                             AT 13ca
+   0125               il4=il4+1                                                                  AT 1409
+   0126               Read(9,*,ERR=400) n,((Dummy(jjj,m),m=1,3),jjj=1,NumG)                      AT 1409
+   0127               Do 42 i=1,NumBP                                                            AT 1511
+   0128                 k=KXB(i)                                                                 AT 153f
+   0129                 If(k.eq.n) then                                                          AT 155d
+   0130                   Do jjj=1,NumG                                                          AT 1581
+   0131                     Do m=1,3                                                             AT 15a0
+   0132                       VarBG(i,jjj,m)=Dummy(jjj,m)                                        AT 15bf
+   0133                     Enddo                                                                AT 1636
+   0134                   Enddo                                                                  AT 164e
+   0135                   If (CodeG(n).eq.3) then                                                AT 1678
+   0136                     Do jjj=1,NumG                                                        AT 16af
+   0137                       g(n,jjj)=Dummy(jjj,1)                                              AT 16df
+   0138                     Enddo                                                                AT 1728
+   0139                   Endif                                                                  AT 1745
+   0140                   Goto 41                                                                AT 1745
+   0141                 Endif                                                                    AT 174a
+   0142   42          Continue                                                                   AT 174a
+   0143   41        Continue                                                                     AT 1765
+   0144           Endif                                                                          AT 1782
+   0145         Endif                                                                            AT 1782
+   0146         Return                                                                           AT 1782
+   0147   100   Call errmes(im1,il1)                                                             AT 1787
+   0148   200   Call errmes(im2,il2)                                                             AT 17a3
+   0149   300   Call errmes(im3,il3)                                                             AT 17bf
+   0150   400   Call errmes(im4,il4)                                                             AT 17db
+   0151         Return                                                                           AT 17f7
+   0152         End                                                                              AT 1862
+   0153                                                                                          AT 0
+
+
+
+
+End of Compilation - Clocked 0.03 seconds

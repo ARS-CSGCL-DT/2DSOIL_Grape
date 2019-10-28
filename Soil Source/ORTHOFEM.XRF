@@ -1,0 +1,833 @@
+Silverfrost FTN95 Ver  8.50.0  Cross reference information for ORTHOFEM.FOR  Sun Oct 27 15:06:02 2019
+
+
+Line numbers followed by ~ refer to include files.
+Line numbers followed by * represent variable assignments and label definitions.
+
+Generating information for SUBROUTINE IADMAKE
+
+INTEGER :: E
+   168,     177*,    179,     181,     182,     184   
+
+INTEGER :: I
+   169*,    170,     171,     173,     181*,    185,     186,  
+   187,     188,     196*,    198,     199   
+
+INTEGER, ARGUMENT, DIMENSION(1:,1:) :: IAD
+   163,     173*,    185,     186,     187,     188,     189,  
+   190,     198   
+
+INTEGER, ARGUMENT, DIMENSION(1:) :: IADD
+   163,     171*,    199*  
+
+SUBROUTINE IADMAKE
+
+INTEGER, ARGUMENT, DIMENSION(1:) :: IADN
+   163,     170*,    185,     186,     187,     188,     189,  
+   190,     198   
+
+SUBROUTINE INSERT
+
+INTEGER :: J
+   172*,    173,     182*,    185,     186,     189,     190   
+
+INTEGER :: K
+   184*,    187,     188,     189,     190   
+
+INTEGER :: KK
+   185,     186,     187,     188,     189,     190,     198,  
+   199   
+
+INTEGER, ARGUMENT, DIMENSION(1:,4) :: KX
+   163,     179,     181,     182,     184   
+
+INTEGER, ARGUMENT :: MAXNB
+   163,     172,     185,     186,     187,     188,     189,  
+   190,     198   
+
+INTEGER :: N
+   180*,    182,     184   
+
+INTEGER :: NCORN
+   178*,    179*,    180   
+
+INTEGER, ARGUMENT :: NUMEL
+   177   
+
+INTEGER, ARGUMENT :: NUMELD
+   163   
+
+INTEGER, ARGUMENT :: NUMNP
+   163,     169,     185,     186,     187,     188,     189,  
+   190,     196,     198   
+
+Label 11
+   172,     174*, 
+
+Label 12
+   169,     176*, 
+
+Label 13
+   180,     191*, 
+
+Label 14
+   177,     195*, 
+
+Label 15
+   196,     200*  
+
+Generating information for SUBROUTINE INSERT
+
+LOGICAL :: FOUND
+   215,     219*,    229*,    238   
+
+INTEGER, ARGUMENT :: I
+   220,     226,     242,     243,     249,     251,     253   
+
+INTEGER, ARGUMENT, DIMENSION(1:,1:) :: IAD
+   214,     226,     251*,    253*  
+
+INTEGER, ARGUMENT, DIMENSION(1:) :: IADN
+   214,     220,     249*  
+
+INTEGER :: INODE
+   226*,    227,     229   
+
+SUBROUTINE INSERT
+
+INTEGER, ARGUMENT :: J
+   227,     229,     253   
+
+INTEGER, ARGUMENT :: K
+   224*,    228*,    250,     253   
+
+INTEGER :: L
+   225*,    226,     228,     250*,    251   
+
+INTEGER, ARGUMENT :: MAXNB
+   214,     241,     242,     243   
+
+INTEGER :: N
+   220*,    224,     225,     241,     249,     250   
+
+INTEGER, ARGUMENT :: NN
+   214   
+
+SUBROUTINE __save_rbp
+
+Label 10
+   225,     233*, 
+
+Label 15
+   230,     237*, 
+
+Label 20
+   250,     252*, 
+
+Label 601
+   242,     243,     245*  
+
+Generating information for SUBROUTINE FIND
+
+SUBROUTINE FIND
+
+INTEGER, ARGUMENT :: I
+   220,     226,     242,     243,     249,     251,     253,  
+   271,     274,     279   
+
+INTEGER, ARGUMENT, DIMENSION(1:,1:) :: IAD
+   214,     226,     251*,    253*,    271,     279   
+
+INTEGER, ARGUMENT, DIMENSION(1:) :: IADN
+   214,     220,     249*,    271,     274   
+
+INTEGER :: INODE
+   279*,    280,     281   
+
+INTEGER, ARGUMENT :: J
+   227,     229,     253,     280,     281   
+
+INTEGER, ARGUMENT :: K
+   224*,    228*,    250,     253,     272*,    281*  
+
+INTEGER :: L
+   275*,    279,     281   
+
+INTEGER, ARGUMENT :: MAXNB
+   214,     241,     242,     243,     271   
+
+INTEGER :: N
+   274*,    275   
+
+INTEGER, ARGUMENT :: NN
+   214,     271   
+
+Label 10
+   275,     285*, 
+
+Label 20
+   282,     287*  
+
+Generating information for SUBROUTINE ILU
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:,1:) :: B
+   214,     220,     249*,    271,     274,     304,     307*, 
+   326,     328*,    336,     343*,    349,     351*  
+
+DOUBLE PRECISION :: D
+   338*,    343,     351   
+
+DOUBLE PRECISION :: FUNCTION DU
+   326,     336,     349   
+
+INTEGER :: I
+   305*,    307,     315*,    316,     320,     322,     323,  
+   325,     326,     328,     333,     335,     336,     343,  
+   345,     346,     348,     349,     351   
+
+INTEGER, ARGUMENT, DIMENSION(1:,1:) :: IAD
+   214,     271,     304,     323,     325,     326,     335,  
+   336,     346,     348,     349   
+
+INTEGER, ARGUMENT, DIMENSION(1:) :: IADD
+   214,     226,     251*,    253*,    271,     279,     304,  
+   320,     326,     336,     349   
+
+INTEGER, ARGUMENT, DIMENSION(1:) :: IADN
+   214,     241,     242,     243,     271,     304,     316,  
+   326,     336,     349   
+
+INTEGER :: ICUR
+   323*,    326,     346*,    349   
+
+SUBROUTINE ILU
+
+INTEGER :: INODE
+   325*,    326,     335*,    336,     348*,    349   
+
+INTEGER :: J
+   306*,    307,     321*,    322,     323,     324,     328,  
+   344*,    345,     346,     351   
+
+INTEGER :: K
+   320*,    321,     333,     334,     343,     344,     347   
+
+INTEGER :: L
+   324*,    325,     326,     334*,    335,     336,     347*, 
+   348,     349   
+
+INTEGER, ARGUMENT :: MAXNB
+   224*,    228*,    250,     253,     272*,    281*,    304,  
+   306,     326,     336,     349   
+
+INTEGER :: N
+   316*,    344   
+
+INTEGER, ARGUMENT :: NN
+   227,     229,     253,     280,     281,     304,     305,  
+   315,     326,     336,     349   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:,1:) :: R
+   220,     226,     242,     243,     249,     251,     253,  
+   271,     274,     279,     304,     322,     333,     345   
+
+DOUBLE PRECISION :: SUM
+   322*,    326*,    328,     333*,    336*,    338,     345*, 
+   349*,    351   
+
+Label 10
+   305,     306,     311*, 
+
+Label 20
+   315,     355*, 
+
+Label 30
+   321,     332*, 
+
+Label 40
+   324,     327*, 
+
+Label 50
+   334,     337*, 
+
+Label 60
+   344,     353*, 
+
+Label 70
+   347,     350*  
+
+Generating information for DOUBLE PRECISION :: FUNCTION DU
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:,1:) :: B
+   370,     382   
+
+DOUBLE PRECISION :: FUNCTION DU
+
+INTEGER, ARGUMENT :: I
+   372,     374,     375,     381,     382   
+
+INTEGER, ARGUMENT, DIMENSION(1:,1:) :: IAD
+   370,     381   
+
+INTEGER, ARGUMENT, DIMENSION(1:) :: IADD
+   370,     374   
+
+INTEGER, ARGUMENT, DIMENSION(1:) :: IADN
+   370,     372   
+
+INTEGER, ARGUMENT :: INODE
+   375,     381   
+
+INTEGER :: J
+   380*,    381,     382   
+
+INTEGER :: K
+   374*,    380   
+
+INTEGER, ARGUMENT :: MAXNB
+   370   
+
+INTEGER :: N
+   372*,    380   
+
+INTEGER, ARGUMENT :: NN
+   370   
+
+DOUBLE PRECISION :: TEMP
+   371*,    376*,    382*,    389   
+
+Label 10
+   380,     386*, 
+
+Label 20
+   377,     383,     387*  
+
+Generating information for SUBROUTINE ORTHOMIN
+
+REAL, PURE, ELEMENTAL :: FUNCTION ABS
+   420   
+
+DOUBLE PRECISION, ARGUMENT :: ACNVRG
+   538   
+
+DOUBLE PRECISION :: ALPHA
+   472*,    481*,    486,     488   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:,1:) :: B
+   413,     442   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:) :: C
+   227,     229,     253,     280,     281,     304,     305,  
+   315,     326,     336,     349,     413,     416,     424*, 
+   521,     528   
+
+DOUBLE PRECISION :: CNORM
+   528*,    534   
+
+DOUBLE PRECISION, PURE, ELEMENTAL :: FUNCTION DABS
+   527   
+
+DOUBLE PRECISION :: DOT
+   457*,    459,     472,     476,     479*,    481,     497*, 
+   501,     504*,    507   
+
+DOUBLE PRECISION :: DXNORM
+   527*,    534,     538,     543,     545   
+
+DOUBLE PRECISION, ARGUMENT :: ECNVRG
+   535   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:) :: GT
+   224*,    228*,    250,     253,     272*,    281*,    304,  
+   306,     326,     336,     349,     413,     419,     420,  
+   424   
+
+INTEGER :: I
+   418*,    419,     420,     423*,    424   
+
+INTEGER, ARGUMENT, DIMENSION(1:,1:) :: IAD
+   214,     220,     249*,    271,     274,     304,     307*, 
+   326,     328*,    336,     343*,    349,     351*,    413,  
+   416,     442,     450   
+
+INTEGER, ARGUMENT, DIMENSION(1:) :: IADD
+   413,     442   
+
+INTEGER, ARGUMENT, DIMENSION(1:) :: IADN
+   413,     416,     442,     450   
+
+INTEGER :: IHOMOG
+   417*,    420*,    422   
+
+INTEGER :: ITER
+   436*,    559   
+
+INTEGER :: ITERP
+   559*  
+
+INTEGER :: K
+   465*,    469,     479,     481,     486,     488,     489*  
+
+SUBROUTINE LUSOLV
+
+SUBROUTINE MATM2
+
+INTEGER, ARGUMENT :: MAXIT
+   436,     543,     545   
+
+INTEGER, ARGUMENT :: MAXNB
+   214,     241,     242,     243,     271,     304,     316,  
+   326,     336,     349,     413,     416,     442,     450   
+
+INTEGER, ARGUMENT :: MAXNN
+   214,     226,     251*,    253*,    271,     279,     304,  
+   320,     326,     336,     349,     413,     479,     486,  
+   488,     515,     516,     521,     525   
+
+INTEGER, ARGUMENT :: MNORTH
+   413,     479,     486,     488,     515,     516,     521,  
+   525   
+
+INTEGER, ARGUMENT :: NN
+   214,     271,     304,     323,     325,     326,     335,  
+   336,     346,     348,     349,     413,     416,     418,  
+   423,     438,     442,     446,     450,     454,     457,  
+   479,     486,     488,     497,     504,     505,     515,  
+   516,     521,     525,     526,     527,     528   
+
+INTEGER :: NORCUR
+   432*,    459,     469,     512*,    514*,    515,     516,  
+   520,     521,     525   
+
+INTEGER, ARGUMENT :: NORTH
+   456,     471,     496,     514   
+
+DOUBLE PRECISION :: OMEGA
+   501*,    507*,    521,     525,     527   
+
+SUBROUTINE ORTHOMIN
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:) :: Q
+   413,     446,     450,     457,     486,     497,     515,  
+   527   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:,1:) :: QI
+   413,     486,     515,     521   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:,1:) :: R
+   220,     226,     242,     243,     249,     251,     253,  
+   271,     274,     279,     304,     322,     333,     345,  
+   413,     416,     450   
+
+DOUBLE PRECISION, ARGUMENT :: RCNVRG
+   536   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:) :: RES
+   413,     416,     419*,    438,     457,     504,     525,  
+   526   
+
+DOUBLE PRECISION :: RESMAX
+   526*,    535,     543,     545   
+
+DOUBLE PRECISION :: RESV
+   459*,    472,     476*,    501   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:) :: RQ
+   413,     454,     488,     497,     504,     505,     516   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:,1:) :: RQI
+   413,     479,     488,     516,     525   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:) :: RQIDOT
+   413,     481,     520*  
+
+DOUBLE PRECISION :: RQNORM
+   505*,    507,     520   
+
+SUBROUTINE SAXPYK
+
+SUBROUTINE SCOPY
+
+SUBROUTINE SCOPYK
+
+DOUBLE PRECISION :: FUNCTION SDOT
+   457,     497,     504,     505   
+
+DOUBLE PRECISION :: FUNCTION SDOTK
+   479   
+
+DOUBLE PRECISION :: FUNCTION SNRM
+   526,     527,     528   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:) :: VRV
+   413,     438,     442,     446,     450,     454,     479   
+
+DOUBLE PRECISION :: XRATIO
+   534*,    536,     543,     545   
+
+SUBROUTINE __save_rbp
+
+Label 10
+   418,     421*, 
+
+Label 11
+   423,     425*, 
+
+Label 20
+   469*,    490,  
+
+Label 30
+   469,     494*, 
+
+Label 100
+   436,     542*, 
+
+Label 200
+   535,     536,     538,     557*, 
+
+Label 602
+   543,     545,     551*  
+
+Generating information for SUBROUTINE LUSOLV
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:,1:) :: B
+   214,     226,     251*,    253*,    271,     279,     304,  
+   320,     326,     336,     349,     413,     479,     486,  
+   488,     515,     516,     521,     525,     577,     583,  
+   587,     598   
+
+INTEGER :: I
+   578*,    579,     580,     582,     583,     587,     592*, 
+   593,     594,     595,     597,     598,     602   
+
+INTEGER, ARGUMENT, DIMENSION(1:,1:) :: IAD
+   224*,    228*,    250,     253,     272*,    281*,    304,  
+   306,     326,     336,     349,     413,     419,     420,  
+   424,     577,     582,     597   
+
+INTEGER, ARGUMENT, DIMENSION(1:) :: IADD
+   214,     241,     242,     243,     271,     304,     316,  
+   326,     336,     349,     413,     416,     442,     450,  
+   577,     580,     595   
+
+INTEGER, ARGUMENT, DIMENSION(1:) :: IADN
+   214,     271,     304,     323,     325,     326,     335,  
+   336,     346,     348,     349,     413,     416,     418,  
+   423,     438,     442,     446,     450,     454,     457,  
+   479,     486,     488,     497,     504,     505,     515,  
+   516,     521,     525,     526,     527,     528,     577,  
+   594   
+
+INTEGER :: INODE
+   582*,    583,     597*,    598   
+
+INTEGER :: J
+   581*,    582,     583,     596*,    597,     598   
+
+INTEGER :: K
+   580*,    581,     587,     595*,    596   
+
+SUBROUTINE LUSOLV
+
+INTEGER, ARGUMENT :: MAXNB
+   227,     229,     253,     280,     281,     304,     305,  
+   315,     326,     336,     349,     413,     416,     424*, 
+   521,     528,     577   
+
+INTEGER :: N
+   594*,    596   
+
+INTEGER, ARGUMENT :: NN
+   220,     226,     242,     243,     249,     251,     253,  
+   271,     274,     279,     304,     322,     333,     345,  
+   413,     416,     450,     577,     578,     592   
+
+DOUBLE PRECISION :: SUM
+   579*,    583*,    587,     593*,    598*,    602   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:) :: VRV
+   214,     220,     249*,    271,     274,     304,     307*, 
+   326,     328*,    336,     343*,    349,     351*,    413,  
+   416,     442,     450,     577,     579,     583,     587*, 
+   593,     598,     602*  
+
+Label 20
+   578,     591*, 
+
+Label 30
+   581,     585*, 
+
+Label 40
+   592,     604*, 
+
+Label 50
+   596,     600*  
+
+Generating information for SUBROUTINE MATM2
+
+INTEGER :: I
+   578*,    579,     580,     582,     583,     587,     592*, 
+   593,     594,     595,     597,     598,     602,     617*, 
+   619,     621,     622,     625   
+
+INTEGER, ARGUMENT, DIMENSION(1:,1:) :: IAD
+   214,     241,     242,     243,     271,     304,     316,  
+   326,     336,     349,     413,     416,     442,     450,  
+   577,     580,     595,     616,     621   
+
+INTEGER, ARGUMENT, DIMENSION(1:) :: IADN
+   214,     226,     251*,    253*,    271,     279,     304,  
+   320,     326,     336,     349,     413,     479,     486,  
+   488,     515,     516,     521,     525,     577,     583,  
+   587,     598,     616,     619   
+
+INTEGER :: INODE
+   621*,    622   
+
+INTEGER :: J
+   620*,    621,     622   
+
+SUBROUTINE MATM2
+
+INTEGER, ARGUMENT :: MAXNB
+   214,     220,     249*,    271,     274,     304,     307*, 
+   326,     328*,    336,     343*,    349,     351*,    413,  
+   416,     442,     450,     577,     579,     583,     587*, 
+   593,     598,     602*,    616   
+
+INTEGER :: N
+   619*,    620   
+
+INTEGER, ARGUMENT :: NN
+   214,     271,     304,     323,     325,     326,     335,  
+   336,     346,     348,     349,     413,     416,     418,  
+   423,     438,     442,     446,     450,     454,     457,  
+   479,     486,     488,     497,     504,     505,     515,  
+   516,     521,     525,     526,     527,     528,     577,  
+   594,     616,     617   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:) :: P
+   224*,    228*,    250,     253,     272*,    281*,    304,  
+   306,     326,     336,     349,     413,     419,     420,  
+   424,     577,     582,     597,     616,     622   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:,1:) :: R
+   227,     229,     253,     280,     281,     304,     305,  
+   315,     326,     336,     349,     413,     416,     424*, 
+   521,     528,     577,     616,     622   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:) :: S1
+   220,     226,     242,     243,     249,     251,     253,  
+   271,     274,     279,     304,     322,     333,     345,  
+   413,     416,     450,     577,     578,     592,     616,  
+   625*  
+
+DOUBLE PRECISION :: SUM
+   579*,    583*,    587,     593*,    598*,    602,     618*, 
+   622*,    625   
+
+Label 30
+   617,     627*, 
+
+Label 40
+   620,     624*  
+
+Generating information for DOUBLE PRECISION :: FUNCTION SDOT
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:) :: B
+   370,     639,     642   
+
+INTEGER :: L
+   641*,    642   
+
+INTEGER, ARGUMENT :: NN
+   372,     374,     375,     381,     382,     639,     641   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:) :: R
+   375,     381,     639,     642   
+
+DOUBLE PRECISION :: FUNCTION SDOT
+
+Label 100
+   641,     644*  
+
+Generating information for DOUBLE PRECISION :: FUNCTION SDOTK
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:) :: B
+   370,     656,     659   
+
+INTEGER, ARGUMENT :: K
+   375,     381,     639,     642,     659   
+
+INTEGER :: L
+   658*,    659   
+
+INTEGER, ARGUMENT :: MAXNN
+   370,     381,     656   
+
+INTEGER, ARGUMENT :: MNORTH
+   370,     372,     656   
+
+INTEGER, ARGUMENT :: NN
+   372,     374,     375,     381,     382,     639,     641,  
+   656,     658   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:,1:) :: R
+   370,     639,     642,     656,     659   
+
+DOUBLE PRECISION :: FUNCTION SDOTK
+
+Label 100
+   658,     661*  
+
+Generating information for DOUBLE PRECISION :: FUNCTION SNRM
+
+DOUBLE PRECISION, PURE, ELEMENTAL :: FUNCTION DABS
+   676   
+
+INTEGER :: L
+   675*,    676   
+
+INTEGER, ARGUMENT :: NN
+   372,     374,     375,     381,     382,     639,     641,  
+   656,     658,     673,     675   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:) :: R
+   375,     381,     639,     642,     659,     673,     676   
+
+DOUBLE PRECISION :: FUNCTION SNRM
+
+DOUBLE PRECISION :: TEMP
+   676*,    677   
+
+Label 100
+   675,     679*  
+
+Generating information for SUBROUTINE SAXPYK
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:,1:) :: FX
+   214,     271,     304,     323,     325,     326,     335,  
+   336,     346,     348,     349,     413,     416,     418,  
+   423,     438,     442,     446,     450,     454,     457,  
+   479,     486,     488,     497,     504,     505,     515,  
+   516,     521,     525,     526,     527,     528,     577,  
+   594,     616,     617,     691,     694   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:) :: FY
+   214,     241,     242,     243,     271,     304,     316,  
+   326,     336,     349,     413,     416,     442,     450,  
+   577,     580,     595,     616,     621,     691,     694*  
+
+INTEGER :: I
+   658*,    659,     693*,    694   
+
+INTEGER, ARGUMENT :: K
+   224*,    228*,    250,     253,     272*,    281*,    304,  
+   306,     326,     336,     349,     413,     419,     420,  
+   424,     577,     582,     597,     616,     622,     694   
+
+INTEGER, ARGUMENT :: MAXNN
+   214,     226,     251*,    253*,    271,     279,     304,  
+   320,     326,     336,     349,     413,     479,     486,  
+   488,     515,     516,     521,     525,     577,     583,  
+   587,     598,     616,     619,     691   
+
+INTEGER, ARGUMENT :: MNORTH
+   214,     220,     249*,    271,     274,     304,     307*, 
+   326,     328*,    336,     343*,    349,     351*,    413,  
+   416,     442,     450,     577,     579,     583,     587*, 
+   593,     598,     602*,    616,     691   
+
+INTEGER, ARGUMENT :: NN
+   220,     226,     242,     243,     249,     251,     253,  
+   271,     274,     279,     304,     322,     333,     345,  
+   413,     416,     450,     577,     578,     592,     616,  
+   625*,    691,     692,     693   
+
+DOUBLE PRECISION, ARGUMENT :: SA
+   227,     229,     253,     280,     281,     304,     305,  
+   315,     326,     336,     349,     413,     416,     424*, 
+   521,     528,     577,     616,     622,     694   
+
+SUBROUTINE SAXPYK
+
+Label 100
+   693,     695*  
+
+Generating information for SUBROUTINE SCOPY
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:) :: FX
+   227,     229,     253,     280,     281,     304,     305,  
+   315,     326,     336,     349,     413,     416,     424*, 
+   521,     528,     577,     616,     622,     694,     709,  
+   712   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:) :: FY
+   224*,    228*,    250,     253,     272*,    281*,    304,  
+   306,     326,     336,     349,     413,     419,     420,  
+   424,     577,     582,     597,     616,     622,     694,  
+   709,     712*  
+
+INTEGER :: I
+   711*,    712   
+
+INTEGER, ARGUMENT :: NN
+   220,     226,     242,     243,     249,     251,     253,  
+   271,     274,     279,     304,     322,     333,     345,  
+   413,     416,     450,     577,     578,     592,     616,  
+   625*,    691,     692,     693,     709,     710,     711   
+
+SUBROUTINE SCOPY
+
+Label 100
+   711,     713*  
+
+Generating information for SUBROUTINE SCOPYK
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:) :: FX
+   224*,    228*,    250,     253,     272*,    281*,    304,  
+   306,     326,     336,     349,     413,     419,     420,  
+   424,     577,     582,     597,     616,     622,     694,  
+   709,     712*,    727,     730   
+
+DOUBLE PRECISION, ARGUMENT, DIMENSION(1:,1:) :: FY
+   214,     271,     304,     323,     325,     326,     335,  
+   336,     346,     348,     349,     413,     416,     418,  
+   423,     438,     442,     446,     450,     454,     457,  
+   479,     486,     488,     497,     504,     505,     515,  
+   516,     521,     525,     526,     527,     528,     577,  
+   594,     616,     617,     691,     694,     727,     730*  
+
+INTEGER :: I
+   729*,    730   
+
+INTEGER, ARGUMENT :: K
+   227,     229,     253,     280,     281,     304,     305,  
+   315,     326,     336,     349,     413,     416,     424*, 
+   521,     528,     577,     616,     622,     694,     709,  
+   712,     730   
+
+INTEGER, ARGUMENT :: MAXNN
+   214,     241,     242,     243,     271,     304,     316,  
+   326,     336,     349,     413,     416,     442,     450,  
+   577,     580,     595,     616,     621,     691,     694*, 
+   727   
+
+INTEGER, ARGUMENT :: MNORTH
+   214,     226,     251*,    253*,    271,     279,     304,  
+   320,     326,     336,     349,     413,     479,     486,  
+   488,     515,     516,     521,     525,     577,     583,  
+   587,     598,     616,     619,     691,     727   
+
+INTEGER, ARGUMENT :: N
+   220,     226,     242,     243,     249,     251,     253,  
+   271,     274,     279,     304,     322,     333,     345,  
+   413,     416,     450,     577,     578,     592,     616,  
+   625*,    691,     692,     693,     709,     710,     711,  
+   727,     728,     729   
+
+SUBROUTINE SCOPYK
+
+Label 100
+   729,     731*  
+

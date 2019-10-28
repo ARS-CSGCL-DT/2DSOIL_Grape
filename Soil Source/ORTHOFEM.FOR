@@ -242,7 +242,7 @@
           WRITE (* ,601) I,MAXNB
           WRITE (50,601) I,MAXNB
   601     FORMAT (//5X,'ERROR IN IADMAKE: NODE ',I5,' HAS > '
-     *            ,I5,' ADJACENCIES')
+     &            ,I5,' ADJACENCIES')
           STOP
         ENDIF
 
@@ -393,8 +393,8 @@ C GR
 ************************************************************************
 
       SUBROUTINE ORTHOMIN (R,C,GT,NN,MAXNB,MAXNN,IAD,IADN,IADD,B,VRV,
-     !                     RES,RQI,RQ,Q,QI,RQIDOT,ECNVRG,RCNVRG,ACNVRG,
-     !                     NORTH,MNORTH,MAXIT)
+     &                     RES,RQI,RQ,Q,QI,RQIDOT,ECNVRG,RCNVRG,ACNVRG,
+     &                     NORTH,MNORTH,MAXIT)
 
 *     ORTHOMIN OR CONJUGATE GRADIENT ACCELERATION/SOLUTION
 
@@ -406,8 +406,8 @@ C GR
 
       IMPLICIT REAL*8 (A-H,O-Z)
       DIMENSION R(MAXNB,NN),C(NN),GT(NN),IAD(MAXNB,NN),IADN(NN),
-     !          IADD(NN),B(MAXNB,NN),VRV(NN),RES(NN),RQI(MAXNN,MNORTH),
-     !          RQ(NN),Q(NN),RQIDOT(MNORTH),QI(MAXNN,MNORTH)
+     &          IADD(NN),B(MAXNB,NN),VRV(NN),RES(NN),RQI(MAXNN,MNORTH),
+     &          RQ(NN),Q(NN),RQIDOT(MNORTH),QI(MAXNN,MNORTH)
 
 *     INITIALIZE RESIDUAL VECTOR
 

@@ -13,13 +13,13 @@ c      Real PDWR_TOTAL   !for debugging
       integer InitialRootCell   ! array that holds element numbers of cells that are assigned an initial root density
       integer RootsInitiated
       double precision InitialRootWt
-      Real RRRM,RRRY; ! root radial resistance for mature and young leaves (s-1 cm-1)     cccz bar day g-1
-	Real RVRL;    !root vascular resistance s-1 cm -1                                   cccz bar day g-1
-	Real RTWL;    !Root weight per unit length (g cm-1)                                 cccz g cm-1
-	Real ALPM,ALPY; !relative growth rates for mature and young roots                   cccz day-1
-	Real RtMinWtPerUnitArea; !minimum root weight per length (g cm-1)                   cccz g cm-2
-	Real Wl,Wa,Wr,Wb; !Weighting parameters for root growth in grid used in Root_grow_c 
-	integer ISink;        ! Determines mechanism of nitrogen uptake by root
+      Real RRRM,RRRY ! root radial resistance for mature and young leaves (s-1 cm-1)     cccz bar day g-1
+      Real RVRL;    !root vascular resistance s-1 cm -1                                   cccz bar day g-1
+      Real RTWL    !Root weight per unit length (g cm-1)                                 cccz g cm-1
+      Real ALPM,ALPY !relative growth rates for mature and young roots                   cccz day-1
+      Real RtMinWtPerUnitArea !minimum root weight per length (g cm-1)                   cccz g cm-2
+      Real Wl,Wa,Wr,Wb !Weighting parameters for root growth in grid used in Root_grow_c 
+      integer ISink        ! Determines mechanism of nitrogen uptake by root
       Real InitialRootCellArea
 c	0  'passive root mass uptake' no kinetics
 c    1   Plant regulation diffusive and convective uptake
@@ -30,29 +30,29 @@ c
       Real RootRadius;  !radius of root - avg in cm                                       cccz cm
 	
       Common /CarbonPartition/ 
-     !       VH2OC(NumNPD),                               ! cccz volumetric water content cm3 cm-3 
-     !       CXT(NumNPD),                                 ! cccz oxygen concentration cm3 cm-3
-     !       PSIRD(NumNPD),                               ! cccz soil water potential @ dawn bar
-     !       TPRD(NumNPD),                                ! cccz root turger p @ dawn - threshold root growth bar
-     !       RRRM,RRRY,                                   ! cccz concentration, g cm-3
-     !       RVRL,                                        ! cccz root vascular resistance, bar day g-1 cm-1
-     !       ALPM,                                        ! cccz potentional relative old/young root grow rate, day-1
-     !       SC(NumNPD),                                  ! cccz axulliary for SR
-     !       SR(NumNPD),                                  ! cccz soil resistance water flow bar day g-1
-     !       OSMREG,                                      ! cccz osmoregulation
-     !       PILOSM,                                      ! cccz leave osmotic potential @ dawn adjusted bar
-     !       PSILZ,                                       ! cccz zero turgor leaf water potential bar
-     !       PPSILT,                                      ! cccz previous leaf water potential shoot no growth bar
-     !       PPSIL,                                       ! cccz previous leaf water potential bar
-     !       SGTLT,                                       ! cccz shoot growing time lost proportion
-     !       TPLT,                                        ! cccz leave turgor shoot no growth bar
-     !       TPLD,                                        ! cccz leave turgor @ dawn bar
-     !       BTPL,                                        ! cccz lowest leave turgor bar
-     !       ET,                                           ! cccz not evapotranspiration
-     !       InitialRootCell(NumNPD),
-     !       RootsInitiated,
-     !       iCellCount,
-     !       InitialRootCellArea
+     &       VH2OC(NumNPD),                               ! cccz volumetric water content cm3 cm-3 
+     &       CXT(NumNPD),                                 ! cccz oxygen concentration cm3 cm-3
+     &       PSIRD(NumNPD),                               ! cccz soil water potential @ dawn bar
+     &       TPRD(NumNPD),                                ! cccz root turger p @ dawn - threshold root growth bar
+     &       RRRM,RRRY,                                   ! cccz concentration, g cm-3
+     &       RVRL,                                        ! cccz root vascular resistance, bar day g-1 cm-1
+     &       ALPM,                                        ! cccz potentional relative old/young root grow rate, day-1
+     &       SC(NumNPD),                                  ! cccz axulliary for SR
+     &       SR(NumNPD),                                  ! cccz soil resistance water flow bar day g-1
+     &       OSMREG,                                      ! cccz osmoregulation
+     &       PILOSM,                                      ! cccz leave osmotic potential @ dawn adjusted bar
+     &       PSILZ,                                       ! cccz zero turgor leaf water potential bar
+     &       PPSILT,                                      ! cccz previous leaf water potential shoot no growth bar
+     &       PPSIL,                                       ! cccz previous leaf water potential bar
+     &       SGTLT,                                       ! cccz shoot growing time lost proportion
+     &       TPLT,                                        ! cccz leave turgor shoot no growth bar
+     &       TPLD,                                        ! cccz leave turgor @ dawn bar
+     &       BTPL,                                        ! cccz lowest leave turgor bar
+     &       ET,                                           ! cccz not evapotranspiration
+     &       InitialRootCell(NumNPD),
+     &       RootsInitiated,
+     &       iCellCount,
+     &       InitialRootCellArea
     
       t=sngl(Time)
       If (lInput.eq.0) goto 11
@@ -237,7 +237,7 @@ CYAP  No Plant = No Root Activity
       If((NShoot.eq.0).or.(isGerminated.eq.0)) Return
 c       PDWR_TOTAL=0.0    ! for debugging purposes  AD and zhuangji  delete it
 CYAPEND
-      If (isGerminated.and.RootsInitiated.eq.0) then
+      If (isGerminated == 0 .and. RootsInitiated == 0) then
          RootsInitiated=1
          InitialRootWt=InitialRootCarbo/InitialRootCellArea   ! calculates average root wt density
          ! Distribute this mass among cells with initial root distribution
@@ -263,8 +263,11 @@ c     EO is in g/plant. Multiply g/plant x plant/m2 x 1 m2/10000 cm2 x rowsp
 c     EOR : = EO*ROWSP if the plant is not at the border of the soil slab,
 c           = 0.5 * EO*ROWSP, if the plant is at the left or right border.
 c      EOR = EO*poprow/rowsp*100*rowsp*EOMult/10000
-c       1 over area per plant is poprow*100/rowsp
-       EOR = ET_demand*poprow*(100/rowsp)*(EOMult*rowsp/10000) ! potential transportation rate
+c      poprow*100/rowsp gives plants m-2
+c      ET_demand is units of grams m-2 day-1
+c     EoMult*rowsp/10000/24 converts to g slab-1 (rowsp * 1cm strip for the finite element domain)
+ 
+       EOR = ET_demand*poprow*(100/rowsp)*(EOMult*rowsp/10000) ! potential transportation rate per slab
 c       EOR = ET_demand
 c      PCRL = PCRL*12*poprow/rowsp*100*rowsp*EOMult/10000
 c      PCRQ = PCRQ*12*poprow/rowsp*100*rowsp*EOMult/10000
@@ -294,7 +297,7 @@ C
 C  CALCULATE PROPORTIONIAL REDUCTION OF ROOT GROWTH CAUSED BY
 C  MECHANICAL RESISTANCE AND SOIL WATER POTENTIAL ASSUMING ROOT
 C  IS AT SAME POTENTIAL AS SOIL
-C
+
          RGCF1 = ((TPRD(n)-MECHR)/2.0)-((PSIRD(n)-PSIS(n))/4.0)
 C
 C     CALCULATE PROPORTIONAL REDUCTION OF ROOT GROWTH CAUSED BY
@@ -322,6 +325,8 @@ cccz Zhuangji: AD
 c        RGCF5=(1.0-AMIN1(1.0,RMassY(n)/0.03))
          RGCF5=(1.0-AMIN1(1.0,(RMassY(n)+RMassM(n))/0.02))
 C this one for nitrogen. Use the ratio between actual uptake of N and IMax
+      write(*, *) 'Line 329'
+      write(*, *) 'amax1(0.3,dif/ConstK(1))', dif, ConstK(1)
     
          dif=amax1(0.0,Conc(n,1)-CMin0(1))
 	   RGCF6 =  amax1(0.3,dif/ConstK(1))
@@ -370,7 +375,7 @@ C   THRESHOLD TURGOR PRESSURE FOR STOPPING SHOOT GROWTH AND DIVERTING
 C   CARBOHYDRATES TO ROOTS DECREASES WITH TIME. HENCE THE ROUTINE ALSO
 C   PREDICTS CHANGES IN TOTAL POTENTIAL, OSMOTIC POTENTIAL AND TURGOR
 C   PRESSURE IN LEAVES DURING THE DAY.
-C    
+
       DO n = 1,NumNP
         SR(n)   = 0.0
         WUPM(n) = 0.0
@@ -390,7 +395,7 @@ C    THE THRESHOLD LEAF WATER POTENTIAL AND TURGOR PRESSURE THAT
 C    WILL JUST PREVENT ALL SHOOT EXPANSION ARE CALCULATED
 C
 C    CALCULATE DAWN LEAF WATER POTENTIALS ***
-C
+      write(*,*) ' Line 396'
       IF (ITIME.EQ.IDAWN) THEN
 c        PSILD = -2.0
 c since in the MAIZESIM model, the reference leaf water potential in the CGas_exchange::setleafpEffect
@@ -413,7 +418,7 @@ C
 C   CALCULATE THE THRESHOLD LEAF WATER POTENTIAL AND TURGOR
 C   PRESSURE THAT WILL JUST PREVENT ALL SHOOT GROWTH
 C 
-
+c      
       D11 = MAX (TPL, TPLT)
       D12 = (D11 - 2.0D0)*(1.0D0 - EXP(-0.7D0*Step))
       IF (D12.LE.0.0D0) D12 = 0.0D0
@@ -501,7 +506,7 @@ C
 C   DETERMINE TOTAL WATER UPTAKE BY ALL NEW ROOTS AND WEIGHTED
 C   AVERAGE SOIL WATER POTENTIAL WHEN:
 C   I. ROOTS GET ALL THE CARBON TRANSLOCATED
-C      
+C      write(*,*) 'Line 507'      
         IF(LAI.EQ.0.0) Then
         WUPT(n1) = (((PSIS(n1) - PSILT)*DRL(n1))
      &   /(SR(n1) + RRRY + RVR(n1)))
@@ -718,7 +723,7 @@ C     DESCRIBED IN MANY PROGRAMMING TEXTBOOKS.  Variables used only inside
 C     this subroutine are not listed in the dictionary for GLYCIM.
 C     ------------------------------------------------------------------
       DIMENSION LOCATE(NCR),VALUE(NCR),MARRAY(3500),NARRAY(3500),
-     !          VALAux(3500),RVR(NCR)
+     &          VALAux(3500),RVR(NCR)
 C
       M = 1
       N = NCR

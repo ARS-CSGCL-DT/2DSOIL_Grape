@@ -1,5 +1,5 @@
 *|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*
-      Subroutine Rootgrow_New ()
+      Subroutine Root_Mover_New ()
       Include 'public.ins'
       Include 'puplant.ins'
       Dimension iLoc(4)

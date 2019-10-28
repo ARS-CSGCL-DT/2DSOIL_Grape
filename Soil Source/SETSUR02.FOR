@@ -1021,7 +1021,7 @@ cdt 11/2/2016 removed summation for varbt Now is consistent with hourly
 *  units are millcal m d-1 C-1
               
                VarBT(i,2)=((0.058+1.7e-4*TAirN)+
-     !                  (0.052*EXP(.058*TAirN)))
+     &                  (0.052*EXP(.058*TAirN)))
 
 * Change units to Joules cm-2 d-1
 cdt changed 3600 to 60 based on temperature paper

@@ -1,0 +1,574 @@
+Silverfrost FTN95 Ver  8.50.0  Cross reference information for SYNCHRON.FOR  Sun Oct 27 15:06:02 2019
+
+
+Line numbers followed by ~ refer to include files.
+Line numbers followed by * represent variable assignments and label definitions.
+
+Generating information for SUBROUTINE SYNCHRONIZER
+
+DOUBLE PRECISION, {Offset 272000 in Common/SOLVER_PUBLIC/}, DIMENSION(15,4000) :: A1
+    18~,     78~  
+
+REAL, PURE, ELEMENTAL :: FUNCTION ABS
+   143   
+
+DOUBLE PRECISION, {Offset 16 in Common/INITVAR/} :: ACNVRG
+    19~,     81~  
+
+REAL, PURE, ELEMENTAL :: FUNCTION ANINT
+   147   
+
+REAL, {Offset 88024 in Common/GRID_PUBLIC/}, DIMENSION(3500) :: AREA
+    45~  
+
+DOUBLE PRECISION, {Offset 752000 in Common/SOLVER_PUBLIC/}, DIMENSION(4000) :: B1
+    18~,     78~  
+
+INTEGER, {Offset 320 in Common/TIME_PUBLIC/} :: BEGINDAY
+    30~,     71~  
+
+CHARACTER(132), {Offset 272 in Common/DATAFILENAMES/} :: BIOLOGYFILE
+    42~,     93~  
+
+REAL, {Offset 0 in Common/MATERIALS/}, DIMENSION(15) :: BLKDN
+    22~,     97~  
+
+CHARACTER(132), {Offset 404 in Common/DATAFILENAMES/} :: CLIMATEFILE
+    42~,     93~  
+
+INTEGER, {Offset 50932 in Common/BOUND_PUBLIC/}, DIMENSION(4000) :: CODEG
+    24~,     64~  
+
+INTEGER, {Offset 18932 in Common/BOUND_PUBLIC/}, DIMENSION(4000) :: CODES
+    24~,     64~  
+
+INTEGER, {Offset 34932 in Common/BOUND_PUBLIC/}, DIMENSION(4000) :: CODET
+    24~,     64~  
+
+INTEGER, {Offset 2932 in Common/BOUND_PUBLIC/}, DIMENSION(4000) :: CODEW
+    24~,     64~  
+
+REAL, {Offset 352008 in Common/NODAL_PUBLIC/}, DIMENSION(4000) :: CON
+    51~  
+
+REAL, {Offset 128008 in Common/NODAL_PUBLIC/}, DIMENSION(4000,10) :: CONC
+    51~  
+
+REAL, {Offset 30000 in Common/ELEM_PUBLIC/}, DIMENSION(4000,10) :: CSINK
+    55~  
+
+INTEGER, {Offset 300 in Common/TIME_PUBLIC/} :: DAILYOUTPUT
+    30~,     71~,    112   
+
+INTEGER, {Offset 312 in Common/TIME_PUBLIC/} :: DAILYWEATHER
+    30~,     71~,    114   
+
+DOUBLE PRECISION, PURE, ELEMENTAL :: FUNCTION DMAX1
+   141   
+
+DOUBLE PRECISION, PURE, ELEMENTAL :: FUNCTION DMIN1
+   136,     137,     139,     142,     147   
+
+DOUBLE PRECISION, {Offset 224 in Common/TIME_PUBLIC/} :: DMUL1
+    17~,     71~,    110,     139   
+
+DOUBLE PRECISION, {Offset 232 in Common/TIME_PUBLIC/} :: DMUL2
+    17~,     71~,    110,     141   
+
+CHARACTER(132), {Offset 1064 in Common/DATAFILENAMES/} :: DRIPFILE
+    42~,     93~  
+
+DOUBLE PRECISION :: DT
+   101,     142*,    143,     147*,    148*,    149   
+
+DOUBLE PRECISION :: DTMAX
+   101,     136*,    139,     147   
+
+DOUBLE PRECISION, {Offset 216 in Common/TIME_PUBLIC/} :: DTMIN
+    17~,     71~,    110,     141   
+
+DOUBLE PRECISION, {Offset 160 in Common/TIME_PUBLIC/}, DIMENSION(4) :: DTMX
+    17~,     71~,    136   
+
+DOUBLE PRECISION, {Offset 208 in Common/TIME_PUBLIC/} :: DTOPT
+    17~,     71~,    118*,    139*,    141*,    142   
+
+REAL, {Offset 356 in Common/TIME_PUBLIC/} :: DUMPAD
+    71~  
+
+DOUBLE PRECISION, {Offset 0 in Common/INITVAR/} :: ECNVRG
+    19~,     81~  
+
+CHARACTER(132), {Offset 1988 in Common/DATAFILENAMES/} :: ELEMGRAPHICS
+    42~,     93~  
+
+INTEGER, {Offset 328 in Common/TIME_PUBLIC/} :: ENDDAY
+    30~,     71~  
+
+REAL, {Offset 154932 in Common/BOUND_PUBLIC/} :: EO
+    64~  
+
+REAL, {Offset 28 in Common/INITVAR/} :: EPSI_HEAT
+    81~  
+
+REAL, {Offset 32 in Common/INITVAR/} :: EPSI_SOLUTE
+    81~  
+
+SUBROUTINE ERRMES
+
+INTEGER, {Offset 0 in Common/ERROR_PUBLIC/} :: ERRPLANT
+    24~,     73~  
+
+CHARACTER(10) :: FDATE
+    99,     110,     117   
+
+CHARACTER(132), {Offset 2516 in Common/DATAFILENAMES/} :: FLUXGRAPHICS
+    42~,     93~  
+
+REAL, {Offset 120 in Common/MATERIALS/}, DIMENSION(15) :: FRACCLAY
+    22~,     97~  
+
+REAL, {Offset 180 in Common/MATERIALS/}, DIMENSION(15) :: FRACOM
+    22~,     97~  
+
+REAL, {Offset 60 in Common/MATERIALS/}, DIMENSION(15) :: FRACSIND
+    22~,     97~  
+
+REAL, {Offset 288008 in Common/NODAL_PUBLIC/}, DIMENSION(4000,3) :: G
+    51~  
+
+CHARACTER(132), {Offset 2252 in Common/DATAFILENAMES/} :: GEOMETRYFILE
+    42~,     93~  
+
+REAL, {Offset 190000 in Common/ELEM_PUBLIC/}, DIMENSION(4000,3) :: GSINK
+    55~  
+
+REAL, {Offset 40 in Common/INITVAR/} :: HCRITA
+    22~,     81~  
+
+REAL, {Offset 36 in Common/INITVAR/} :: HCRITS
+    22~,     81~  
+
+REAL :: HHH
+   134*  
+
+REAL, {Offset 48008 in Common/NODAL_PUBLIC/}, DIMENSION(4000) :: HNEW
+    51~  
+
+REAL, {Offset 400008 in Common/NODAL_PUBLIC/}, DIMENSION(4000) :: HNEW_ORG
+    51~  
+
+INTEGER, {Offset 304 in Common/TIME_PUBLIC/} :: HOURLYOUTPUT
+    30~,     71~,    112   
+
+INTEGER, {Offset 316 in Common/TIME_PUBLIC/} :: HOURLYWEATHER
+    30~,     71~,    114   
+
+INTEGER, {Offset 0 in Common/SOLVER_PUBLIC/}, DIMENSION(15,4000) :: IAD
+    78~  
+
+INTEGER, {Offset 256000 in Common/SOLVER_PUBLIC/}, DIMENSION(4000) :: IADD
+    78~  
+
+INTEGER, {Offset 240000 in Common/SOLVER_PUBLIC/}, DIMENSION(4000) :: IADN
+    78~  
+
+INTEGER, {Offset 348 in Common/TIME_PUBLIC/} :: IDAWN
+    30~,     71~  
+
+INTEGER, {Offset 352 in Common/TIME_PUBLIC/} :: IDUSK
+    30~,     71~  
+
+INTEGER, {Offset 8 in Common/GRID_PUBLIC/} :: IJ
+    45~  
+
+INTEGER :: IM
+   105*,    107*,    109*,    123   
+
+CHARACTER(132), {Offset 1592 in Common/DATAFILENAMES/} :: INITIALSFILE
+    42~,     93~  
+
+INTEGER, {Offset 296 in Common/TIME_PUBLIC/} :: ITER
+    71~,    139,     141   
+
+INTEGER, {Offset 344 in Common/TIME_PUBLIC/} :: ITIME
+    30~,     71~  
+
+INTEGER :: J
+   130*,    131   
+
+INTEGER :: FUNCTION JULDAY
+   116,     117   
+
+INTEGER, {Offset 12 in Common/GRID_PUBLIC/} :: KAT
+    45~  
+
+INTEGER, {Offset 24 in Common/GRID_PUBLIC/}, DIMENSION(3500,4) :: KX
+    45~  
+
+INTEGER, {Offset 532 in Common/BOUND_PUBLIC/}, DIMENSION(600) :: KXB
+    64~  
+
+CHARACTER(132), {Offset 2912 in Common/DATAFILENAMES/} :: LEAFGRAPHICS
+    42~,     93~  
+
+CHARACTER(40) :: LINE
+    98   
+
+INTEGER, {Offset 292 in Common/TIME_PUBLIC/} :: LINPUT
+    71~,    102,     125*  
+
+INTEGER, {Offset 8 in Common/NODAL_PUBLIC/}, DIMENSION(4000) :: LISTN
+    51~  
+
+INTEGER, {Offset 16008 in Common/NODAL_PUBLIC/}, DIMENSION(4000) :: LISTNE
+    51~  
+
+LOGICAL(KIND=1), {Offset 448076 in Common/NODAL_PUBLIC/} :: LORT
+    26~,     51~  
+
+CHARACTER(132), {Offset 932 in Common/DATAFILENAMES/} :: MANAGEMENTFILE
+    42~,     93~  
+
+CHARACTER(132), {Offset 2648 in Common/DATAFILENAMES/} :: MASSBALANCEFILE
+    42~,     93~  
+
+CHARACTER(132), {Offset 2780 in Common/DATAFILENAMES/} :: MASSBALANCEFILEOUT
+    42~,     93~  
+
+INTEGER, {Offset 0 in Common/ELEM_PUBLIC/}, DIMENSION(3500) :: MATNUME
+    55~  
+
+INTEGER, {Offset 32008 in Common/NODAL_PUBLIC/}, DIMENSION(4000) :: MATNUMN
+    51~  
+
+INTEGER, {Offset 24 in Common/INITVAR/} :: MAXITO
+    25~,     81~  
+
+INTEGER, {Offset 16 in Common/GRID_PUBLIC/} :: MBAND
+    45~  
+
+INTEGER, PARAMETER :: MBANDD
+
+INTEGER, PARAMETER :: MNORTH
+
+INTEGER, {Offset 4 in Common/MODULE_PUBLIC/}, DIMENSION(4) :: MOVERS
+    72~  
+
+INTEGER, {Offset 292 in Common/BOUND_PUBLIC/}, DIMENSION(2,30) :: ND
+    64~  
+
+INTEGER, {Offset 284 in Common/BOUND_PUBLIC/}, DIMENSION(2) :: NDR
+    64~  
+
+INTEGER, {Offset 280 in Common/BOUND_PUBLIC/} :: NDRAIN
+    64~  
+
+INTEGER, PARAMETER :: NDRAIND
+
+CHARACTER(132), {Offset 536 in Common/DATAFILENAMES/} :: NITROGENFILE
+    42~,     93~  
+
+INTEGER, {Offset 20 in Common/GRID_PUBLIC/} :: NMAT
+    45~  
+
+INTEGER, PARAMETER :: NMATD
+
+REAL, {Offset 102024 in Common/GRID_PUBLIC/}, DIMENSION(4000) :: NODEAREA
+    23~,     45~  
+
+CHARACTER(132), {Offset 2120 in Common/DATAFILENAMES/} :: NODEGEOMFILE
+    42~,     93~  
+
+CHARACTER(132), {Offset 1856 in Common/DATAFILENAMES/} :: NODEGRAPHICS
+    42~,     93~  
+
+INTEGER, {Offset 40 in Common/BOUND_PUBLIC/}, DIMENSION(2,30) :: NP
+    64~  
+
+INTEGER, {Offset 28 in Common/BOUND_PUBLIC/} :: NSEEP
+    64~  
+
+INTEGER, PARAMETER :: NSEEPD
+
+INTEGER, {Offset 20 in Common/MODULE_PUBLIC/} :: NSHOOT
+    72~  
+
+INTEGER, {Offset 32 in Common/BOUND_PUBLIC/}, DIMENSION(2) :: NSP
+    64~  
+
+INTEGER, {Offset 4 in Common/BOUND_PUBLIC/} :: NSURF
+    64~  
+
+INTEGER, {Offset 0 in Common/BOUND_PUBLIC/} :: NUMBP
+    64~  
+
+INTEGER, PARAMETER :: NUMBPD
+
+INTEGER, PARAMETER :: NUMDR
+
+INTEGER, {Offset 4 in Common/GRID_PUBLIC/} :: NUMEL
+    45~  
+
+INTEGER, PARAMETER :: NUMELD
+
+INTEGER, {Offset 4 in Common/NODAL_PUBLIC/} :: NUMG
+    51~  
+
+INTEGER, PARAMETER :: NUMGD
+
+INTEGER, {Offset 0 in Common/MODULE_PUBLIC/} :: NUMMOD
+    72~,    103,     120*,    130   
+
+INTEGER, PARAMETER :: NUMMODD
+
+INTEGER, {Offset 0 in Common/GRID_PUBLIC/} :: NUMNP
+    45~  
+
+INTEGER, PARAMETER :: NUMNPD
+
+INTEGER, PARAMETER :: NUMPLD
+
+INTEGER, PARAMETER :: NUMSD
+
+INTEGER, {Offset 0 in Common/NODAL_PUBLIC/} :: NUMSOL
+    51~  
+
+INTEGER, PARAMETER :: NUMSPD
+
+INTEGER, {Offset 24 in Common/BOUND_PUBLIC/} :: NUMSURFDAT
+    64~  
+
+INTEGER, PARAMETER :: NUMSURFDATD
+
+INTEGER, {Offset 20 in Common/BOUND_PUBLIC/} :: NVARBG
+    64~  
+
+INTEGER, {Offset 12 in Common/BOUND_PUBLIC/} :: NVARBS
+    64~  
+
+INTEGER, {Offset 16 in Common/BOUND_PUBLIC/} :: NVARBT
+    64~  
+
+INTEGER, {Offset 8 in Common/BOUND_PUBLIC/} :: NVARBW
+    64~  
+
+INTEGER, {Offset 332 in Common/TIME_PUBLIC/} :: OUTPUTSOILNO
+    25~,     71~  
+
+INTEGER, {Offset 336 in Common/TIME_PUBLIC/} :: OUTPUTSOILYES
+    25~,     71~  
+
+REAL, {Offset 66932 in Common/BOUND_PUBLIC/}, DIMENSION(4000) :: PCODEW
+    64~  
+
+CHARACTER(132), {Offset 1460 in Common/DATAFILENAMES/} :: PLANTGRAPHICS
+    42~,     93~  
+
+REAL, {Offset 112008 in Common/NODAL_PUBLIC/}, DIMENSION(4000) :: Q
+    51~  
+
+REAL, {Offset 416008 in Common/NODAL_PUBLIC/}, DIMENSION(4000) :: QACT
+    51~  
+
+DOUBLE PRECISION, {Offset 1040000 in Common/SOLVER_PUBLIC/}, DIMENSION(4000,4) :: QI
+    18~,     78~  
+
+DOUBLE PRECISION, {Offset 976000 in Common/SOLVER_PUBLIC/}, DIMENSION(4000) :: QQ
+    18~,     78~  
+
+DOUBLE PRECISION, {Offset 8 in Common/INITVAR/} :: RCNVRG
+    19~,     81~  
+
+REAL, {Offset 302000 in Common/ELEM_PUBLIC/}, DIMENSION(4000) :: RDENM
+    55~  
+
+REAL, {Offset 334000 in Common/ELEM_PUBLIC/}, DIMENSION(4000) :: RDENY
+    55~  
+
+DOUBLE PRECISION, {Offset 816000 in Common/SOLVER_PUBLIC/}, DIMENSION(4000) :: RES
+    18~,     78~  
+
+REAL, {Offset 286000 in Common/ELEM_PUBLIC/}, DIMENSION(4000) :: RMASSM
+    55~  
+
+REAL, {Offset 318000 in Common/ELEM_PUBLIC/}, DIMENSION(4000) :: RMASSY
+    55~  
+
+REAL, {Offset 384008 in Common/NODAL_PUBLIC/}, DIMENSION(4000) :: RO
+    51~  
+
+REAL, {Offset 0 in Common/NODAL_PUB_AUX/}, DIMENSION(600) :: ROFORINFIL
+    95~  
+
+DOUBLE PRECISION, {Offset 1008000 in Common/SOLVER_PUBLIC/}, DIMENSION(4000) :: RQ
+    18~,     78~  
+
+DOUBLE PRECISION, {Offset 848000 in Common/SOLVER_PUBLIC/}, DIMENSION(4000,4) :: RQI
+    18~,     78~  
+
+DOUBLE PRECISION, {Offset 1168000 in Common/SOLVER_PUBLIC/}, DIMENSION(4) :: RQIDOT
+    18~,     78~  
+
+REAL, {Offset 254000 in Common/ELEM_PUBLIC/}, DIMENSION(4000) :: RTWT
+    55~  
+
+CHARACTER(132), {Offset 3044 in Common/DATAFILENAMES/} :: RUNFILE
+    42~,     93~  
+
+INTEGER, {Offset 308 in Common/TIME_PUBLIC/} :: RUNFLAG
+    30~,     71~,    121*,    143   
+
+REAL, {Offset 270000 in Common/ELEM_PUBLIC/}, DIMENSION(4000) :: RUTDEN
+    55~  
+
+CHARACTER(10) :: SDATE
+    99,     110,     116   
+
+REAL, {Offset 14000 in Common/ELEM_PUBLIC/}, DIMENSION(4000) :: SINK
+    55~  
+
+CHARACTER(132), {Offset 800 in Common/DATAFILENAMES/} :: SOILFILE
+    42~,     93~  
+
+CHARACTER(132), {Offset 668 in Common/DATAFILENAMES/} :: SOLUTEFILE
+    42~,     93~  
+
+INTEGER, {Offset 324 in Common/TIME_PUBLIC/} :: SOWINGDAY
+    30~,     71~  
+
+DOUBLE PRECISION, {Offset 0 in Common/DATAFILENAMES/} :: STARTER
+    21~,     93~  
+
+DOUBLE PRECISION, {Offset 200 in Common/TIME_PUBLIC/} :: STEP
+    17~,     71~,    110,     118,     149*,    154   
+
+CHARACTER(132), {Offset 2384 in Common/DATAFILENAMES/} :: SURFACEGRAPHICS
+    42~,     93~  
+
+SUBROUTINE SYNCHRONIZER
+
+DOUBLE PRECISION :: T
+   101,     128*,    139,     142,     143,     147,     148   
+
+DOUBLE PRECISION, {Offset 280 in Common/TIME_PUBLIC/} :: TATM
+    17~,     71~  
+
+REAL, {Offset 368008 in Common/NODAL_PUBLIC/}, DIMENSION(4000) :: TCSXX
+    51~  
+
+DOUBLE PRECISION, {Offset 272 in Common/TIME_PUBLIC/} :: TFIN
+    17~,     71~,    117*,    137   
+
+DOUBLE PRECISION :: TFIX
+   101,     137*,    139,     142,     147,     148   
+
+REAL, {Offset 432016 in Common/NODAL_PUBLIC/}, DIMENSION(4000) :: THAVAIL
+    51~  
+
+REAL, {Offset 432008 in Common/NODAL_PUBLIC/} :: THETAAVAIL
+    51~  
+
+REAL, {Offset 432012 in Common/NODAL_PUBLIC/} :: THETAFULL
+    51~  
+
+REAL, {Offset 448016 in Common/NODAL_PUBLIC/}, DIMENSION(15) :: THFULL
+    51~  
+
+REAL, {Offset 64008 in Common/NODAL_PUBLIC/}, DIMENSION(4000) :: THNEW
+    51~  
+
+DOUBLE PRECISION, {Offset 192 in Common/TIME_PUBLIC/} :: TIME
+    17~,     71~,    116*,    119,     128,     133,     144,  
+   152,     154*  
+
+CHARACTER(132), {Offset 140 in Common/DATAFILENAMES/} :: TIMEFILE
+    42~,     93~,    104   
+
+DOUBLE PRECISION, {Offset 360 in Common/TIME_PUBLIC/} :: TIMESTEP
+    21~,     71~  
+
+REAL, {Offset 288 in Common/TIME_PUBLIC/} :: TINIT
+    71~,    119*  
+
+REAL, {Offset 300 in Common/MATERIALS/}, DIMENSION(15) :: TLOWERLIMIT
+    97~  
+
+REAL, {Offset 336008 in Common/NODAL_PUBLIC/}, DIMENSION(4000) :: TMPR
+    51~  
+
+DOUBLE PRECISION, {Offset 0 in Common/TIME_PUBLIC/}, DIMENSION(20) :: TNEXT
+    17~,     71~,    131   
+
+REAL, {Offset 154936 in Common/BOUND_PUBLIC/} :: TPOT
+    64~  
+
+DOUBLE PRECISION :: TRIGID
+   101,     129*,    131*,    137   
+
+REAL, {Offset 238000 in Common/ELEM_PUBLIC/}, DIMENSION(4000) :: TSINK
+    55~  
+
+DOUBLE PRECISION, {Offset 240 in Common/TIME_PUBLIC/}, DIMENSION(4) :: TTDB
+    17~,     71~,    137   
+
+REAL, {Offset 240 in Common/MATERIALS/}, DIMENSION(15) :: TUPPERLIMIT
+    97~  
+
+REAL, {Offset 133332 in Common/BOUND_PUBLIC/}, DIMENSION(600,3,3) :: VARBG
+    64~  
+
+REAL, {Offset 99732 in Common/BOUND_PUBLIC/}, DIMENSION(600,10) :: VARBS
+    64~  
+
+REAL, {Offset 123732 in Common/BOUND_PUBLIC/}, DIMENSION(600,4) :: VARBT
+    64~  
+
+REAL, {Offset 85332 in Common/BOUND_PUBLIC/}, DIMENSION(600,3) :: VARBW
+    64~  
+
+REAL, {Offset 92532 in Common/BOUND_PUBLIC/}, DIMENSION(600,3) :: VARBW_OLD
+    64~  
+
+CHARACTER(132), {Offset 1724 in Common/DATAFILENAMES/} :: VARIETYFILE
+    42~,     93~  
+
+DOUBLE PRECISION, {Offset 784000 in Common/SOLVER_PUBLIC/}, DIMENSION(4000) :: VRV
+    18~,     78~  
+
+REAL, {Offset 80008 in Common/NODAL_PUBLIC/}, DIMENSION(4000) :: VX
+    51~  
+
+REAL, {Offset 96008 in Common/NODAL_PUBLIC/}, DIMENSION(4000) :: VZ
+    51~  
+
+CHARACTER(132), {Offset 1328 in Common/DATAFILENAMES/} :: WATERBOUNDARYFILE
+    42~,     93~  
+
+CHARACTER(132), {Offset 1196 in Common/DATAFILENAMES/} :: WATERFILE
+    42~,     93~  
+
+CHARACTER(132), {Offset 8 in Common/DATAFILENAMES/} :: WEATHERFILE
+    42~,     93~  
+
+REAL, {Offset 82932 in Common/BOUND_PUBLIC/}, DIMENSION(600) :: WIDTH
+    64~  
+
+REAL, {Offset 56024 in Common/GRID_PUBLIC/}, DIMENSION(4000) :: X
+    45~  
+
+REAL, {Offset 72024 in Common/GRID_PUBLIC/}, DIMENSION(4000) :: Y
+    45~  
+
+INTEGER, {Offset 340 in Common/TIME_PUBLIC/} :: YEAR
+    30~,     71~  
+
+SUBROUTINE __save_rbp
+
+Label 10
+   104,     106,     108,     110,     111,     112,     113,  
+   114,     123*, 
+
+Label 100
+   155*  
+

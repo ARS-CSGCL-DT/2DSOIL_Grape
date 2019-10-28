@@ -1,0 +1,970 @@
+Silverfrost FTN95/x64 Ver 8.50.0  carbon_partitioning.FOR  Sun Oct 27 15:06:02 2019
+
+Compiler used    [C:\Program Files (x86)\Silverfrost\FTN95\FTN95.EXE]
+Salflibc path    [C:\Program Files (x86)\Silverfrost\FTN95\salflibc.dll]
+Salflibc version [21.4.29.16]
+Compiler options in effect:
+    64;BINARY;CFPP;ERROR_NUMBERS;FIXED_FORMAT;FPP;IGNORE;LIST;
+    LIST_INSERT_FILES;NO_BANNER;TABS;UNLIMITED_ERRORS;VS7;XREF;
+
+   0001                                                                                          AT 0
+   0002   CDT todo - need to take out weights and other input from the element geometry file.    AT dd
+   0003   C I am inputting dummy variables for the weights, we can                               AT dd
+   0004         Subroutine Carbon_Partitioning_New()                                             AT dd
+   0005         Include 'public.ins'                                                             AT dd
+ 1/0001   c  dt ToDo - simplyfy common blocks so only variables needed in plant model            AT dd
+ 1/0002   c dt ToDo May 2016 added VarBW_old for debugging purposes can be removed later         AT dd
+ 1/0003   c   will be transferred.                                                               AT dd
+ 1/0004         Parameter (NumNPD=4000, NumElD=3500, NumBPD=600, NSeepD = 2,                     AT dd
+ 1/0005        &           NumSPD= 30, NumSD =10, NDrainD=2,NumDR=30,                            AT dd
+ 1/0006        &           NumGD = 3, NumPlD=100,                                                AT dd
+ 1/0007        &           NMatD=15,MNorth=4,                                                    AT dd
+ 1/0008        &           NumModD=20, MBandD=15,  NumSurfDatD=3+NumGD+NumSD)                    AT dd
+ 1/0009                                                                                          AT dd
+ 1/0010                                                                                          AT dd
+ 1/0011         Double precision Time,Step,tNext,                                                AT dd
+ 1/0012        &             dtOpt,dtMin,dMul1,dMul2,dtMx,tTDB,tFin,tatm                         AT dd
+ 1/0013         Double precision  A1,B1,VRV,RES,RQI,RQ,QI,QQ,RQIDOT                              AT dd
+ 1/0014         Double precision  ECNVRG, RCNVRG,ACNVRG                                          AT dd
+ 1/0015         Double precision Starter, TimeStep                                               AT dd
+ 1/0016                                                                                          AT dd
+ 1/0017         Real BlkDn, FracSind, FracClay, FracOM, hCritS,hCritA                            AT dd
+ 1/0018         Real nodeArea                                                                    AT dd
+ 1/0019         Integer CodeW,CodeS,CodeT,CodeG,errPlant                                         AT dd
+ 1/0020         Integer MaxItO, OutPutSoilNo, OutPutSoilYes                                      AT dd
+ 1/0021         Logical*1 lOrt                                                                   AT dd
+ 1/0022         Integer DailyOutput, HourlyOutput,RunFlag,                                       AT dd
+ 1/0023        &  DailyWeather,HourlyWeather,ITIME, IDAWN, IDUSK,                                AT dd
+ 1/0024        &  beginDay, sowingDay, endDay,year                                               AT dd
+ 1/0025                                                                                          AT dd
+ 1/0026         character WeatherFile*132, TimeFile*132, BiologyFile*132,                        AT dd
+ 1/0027        &          ClimateFile*132, NitrogenFile*132, SoluteFile*132,                     AT dd
+ 1/0028        &          SoilFile*132,                                                          AT dd
+ 1/0029        &          ManagementFile*132,DripFile*132,                                       AT dd
+ 1/0030        &          WaterFile*132, WaterBoundaryFile*132,                                  AT dd
+ 1/0031        &          PlantGraphics*132,InitialsFile*132,  VarietyFile*132,                  AT dd
+ 1/0032        &          NodeGraphics*132,ElemGraphics*132,                                     AT dd
+ 1/0033        &          NodeGeomFile*132,                                                      AT dd
+ 1/0034        &          GeometryFile*132,SurfaceGraphics*132,                                  AT dd
+ 1/0035        &          FluxGraphics*132,MassBalanceFile*132,                                  AT dd
+ 1/0036        &          MassBalanceFileOut*132,LeafGraphics*132,                               AT dd
+ 1/0037        &          RunFile*132                                                            AT dd
+ 1/0038         Common /grid_public/  NumNP, NumEl, IJ, KAT, MBand,Nmat,                         AT dd
+ 1/0039        &        KX(NumElD,4),x(NumNPD), y(NumNPD), Area(NumElD),                         AT dd
+ 1/0040        &        nodeArea(NumNPD)                                                         AT dd
+ 1/0041         Common /nodal_public/ NumSol,NumG,ListN(NumNPD),ListNE(NumNPD),                  AT dd
+ 1/0042        &       MatNumN(NumNPD),hNew(NumNPD),ThNew(NumNPD), Vx(NumNPD),                   AT dd
+ 1/0043        &       Vz(NumNPD),Q(NumNPD), Conc(NumNPD,NumSD),                                 AT dd
+ 1/0044        &       g(NumNPD,NumGD), Tmpr(NumNPD), Con(NumNPD),TcsXX(NumNPD),                 AT dd
+ 1/0045        &       RO(NumNPD), hNew_org(NumNPD),QAct(NumNPD),ThetaAvail,                     AT dd
+ 1/0046        &       ThetaFull, ThAvail(NumNPD),ThFull(NMAtD),  lOrt                           AT dd
+ 1/0047         Common /elem_public/  MatNumE(NumElD),Sink(NumNPD),                              AT dd
+ 1/0048        &       cSink(NumNPD,NumSD),gSink(NumNPD,NumGD),tSink(NumNPD),                    AT dd
+ 1/0049        &       RTWT(NumNPD),RUTDEN(NumNPD),RMassM(NumNPD),RDenM(NumNPD),                 AT dd
+ 1/0050        &       RMassY(NumNPD), RDenY(NumNPD)                                             AT dd
+ 1/0051         Common /bound_public/ NumBP, NSurf, NVarBW,NVarBS,NVarBT,NVarBG,                 AT dd
+ 1/0052        &       NumSurfDat, NSeep, NSP(NSeepD), NP(NSeepD,NumSPD),                        AT dd
+ 1/0053        &       NDrain,NDR(NDrainD),ND(NDrainD,NumDR),                                    AT dd
+ 1/0054        &       KXB(NumBPD),                                                              AT dd
+ 1/0055        &       CodeW(NumNPD),CodeS(NumNPD),CodeT(NumNPD),CodeG(NumNPD),                  AT dd
+ 1/0056        &       PCodeW(NumNPD),Width(NumBPD),                                             AT dd
+ 1/0057        &       VarBW(NumBPD,3),VarBW_Old(NumBPD,3),                                      AT dd
+ 1/0058        &       VarBS(NumBPD,NumSD),VarBT(NumBPD,4),                                      AT dd
+ 1/0059        &       VarBG(NumBPD,NumGD,3),EO,Tpot                                             AT dd
+ 1/0060         Common /time_public/tNext(NumModD),dtMx(4),Time,Step,dtOpt,                      AT dd
+ 1/0061        &        dtMin, dMul1, dMul2,  tTDB(4), Tfin,tAtm, Tinit,                         AT dd
+ 1/0062        &        lInput,Iter,DailyOutput,HourlyOutput,RunFlag,                            AT dd
+ 1/0063        &          DailyWeather,HourlyWeather,                                            AT dd
+ 1/0064        &          beginDay, sowingDay, endDay,                                           AT dd
+ 1/0065        &          OutputSoilNo, OutPutSoilYes, Year,                                     AT dd
+ 1/0066        &           iTime, iDawn, iDusk, dumpad, TimeStep                                 AT dd
+ 1/0067         Common /module_public/  NumMod,Movers(4), NShoot                                 AT dd
+ 1/0068         Common /error_public/errPlant                                                    AT dd
+ 1/0069         Common /Solver_public/IAD(MBandD,NumNPD), IADN(NumNPD),                          AT dd
+ 1/0070        &        IADD(NumNPD),A1(MBandD,NumNPD),B1(NumNPD),                               AT dd
+ 1/0071        &        VRV(NumNPD),RES(NumNPD),RQI(NumNPD,MNorth),                              AT dd
+ 1/0072        &        QQ(NumNPD), RQ(NumNPD),QI(NumNPD,MNorth), RQIDOT(MNorth)                 AT dd
+ 1/0073                                                                                          AT dd
+ 1/0074         Common /Initvar/ ECNVRG, RCNVRG, ACNVRG, MaxItO,EPSI_Heat,                       AT dd
+ 1/0075        &                 EPSI_Solute, hCritS, hCritA                                     AT dd
+ 1/0076                                                                                          AT dd
+ 1/0077         Common /DataFilenames/ Starter, WeatherFile, TimeFile,                           AT dd
+ 1/0078        &          BiologyFile,ClimateFile, NitrogenFile, SoluteFile,                     AT dd
+ 1/0079        &          SoilFile,                                                              AT dd
+ 1/0080        &          ManagementFile,DripFile,                                               AT dd
+ 1/0081        &          WaterFile, WaterBoundaryFile,                                          AT dd
+ 1/0082        &          PlantGraphics,InitialsFile,VarietyFile,                                AT dd
+ 1/0083        &          NodeGraphics,ElemGraphics,NodeGeomFile,                                AT dd
+ 1/0084        &          GeometryFile,SurfaceGraphics,                                          AT dd
+ 1/0085        &          FluxGraphics, MassBalanceFile,MassBalanceFileOut,                      AT dd
+ 1/0086        &          LeafGraphics,RunFile                                                   AT dd
+ 1/0087                                                                                          AT dd
+ 1/0088   c the following blocks are not passed to the crop model                                AT dd
+ 1/0089         Common /Nodal_pub_Aux/ ROForInfil(NumBPD)                                        AT dd
+ 1/0090                                                                                          AT dd
+ 1/0091         Common /Materials/BlkDn(NMatD),FracSind(NMatD), FracClay(NMatD),                 AT dd
+ 1/0092        &           FracOM(NMatD),TUpperLimit(NMatD), TLowerLimit(NMatD)                  AT dd
+   0006         Include 'puplant.ins'                                                            AT dd
+ 1/0001                                                                                          AT dd
+ 1/0002         REAL*8 PCRL, PCRQ,PCRS,ET_demand,LCAI,COVER,CONVR                                AT dd
+ 1/0003         Real*8 HourlyCarboUsed                                                           AT dd
+ 1/0004         REAL*4 SHADE,HEIGHT,LAI,AWUPS,NitroDemand,NDemandError                           AT dd
+ 1/0005         REAL LAREAT, MaxRootDepth, InitialRootCarbo                                      AT dd
+ 1/0006         integer isGerminated, isEmerged                                                  AT dd
+ 1/0007                                                                                          AT dd
+ 1/0008   C includes variables shared with crop model                                            AT dd
+ 1/0009         Common /ShootR/   PCRL,PCRQ,PCRS,HourlyCarboUsed, ET_demand,                     AT dd
+ 1/0010        &                  LCAI,COVER,CONVR,                                              AT dd
+ 1/0011        &                  MaxRootDepth,SHADE,HEIGHT,LAI,AWUPS,                           AT dd
+ 1/0012        &                  NitroDemand,xBSTEM,yBSTEM,SGT,PSIM,                            AT dd
+ 1/0013        &                  LAREAT,POPROW,ROWSP,ROWANG,PopArea,                            AT dd
+ 1/0014        &                  CEC,EORSCS,AWUPSS,SOLRAD,                                      AT dd
+ 1/0015        &                  Total_Eor,Total_Pcrs,sincrsink,PSILD,                          AT dd
+ 1/0016        &                  OSMFAC,EOMULT,PSIL_,NDemandError,                              AT dd
+ 1/0017        &                  CumulativeNDemandError,TotalRootWeight,                        AT dd
+ 1/0018        &                  InitialRootCarbo,                                              AT dd
+ 1/0019        &                  ConstI(2),constK(2), Cmin0(2),                                 AT dd
+ 1/0020        &                  isGerminated, isEmerged                                        AT dd
+ 1/0021                                                                                          AT dd
+ 1/0022                                                                                          AT dd
+ 1/0023   C includes variables only used inside 2dsoil                                           AT dd
+ 1/0024         Common /shtR_public/ RVR(NumNPD), AWUP(NumELD),PSISM,PSILT,EOR,                  AT dd
+ 1/0025        &                     YRL(NumNPD), RGCF(NumNPD),iFavRoot(NumNPD),                 AT dd
+ 1/0026        &                     PSIS(NumNPD), TS(NumNPD),COND(NumNPD),                      AT dd
+ 1/0027        &                     PDWR(NumNPD),                                               AT dd
+ 1/0028        &                     DRL(NumNPD),WUPM(NumNPD),                                   AT dd
+ 1/0029        &                     WUPN(NumNPD),WUPT(NumNPD),TPL,PPDRL(NumNPD),                AT dd
+ 1/0030        &                     ADWR(NumNPD), AWR(NumNPD), ADRL(NumNPD),RTWL,               AT dd
+ 1/0031        &                     RtMinWtPerUnitArea,Wl,Wa,Wr,Wb,ALPY,                        AT dd
+ 1/0032        &                     WidthE(NumEld),HeightE(NumEld),                             AT dd
+ 1/0033        &                  PILD,VMAX,vegsrc, potential_T,                                 AT dd
+ 1/0034        &                   potential_T_EO,                                               AT dd
+ 1/0035        &                  AWUPS_old, WUPMS, EORSCF,WUPDS, WUP2S,                         AT dd
+ 1/0036        &                 WUP0S, DPSI02,SCF, PSIST,PROPAR,                                AT dd
+ 1/0037        &                 VUP(NumNPD,2),FUP(NumNPD,2)                                     AT dd
+ 1/0038   c      end                                                                             AT dd
+   0007         Dimension iLoc(4)                                                                AT dd
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(7) : warning 197 - Variable ILOC has been declared but not used 
+   0008         Character InString*132                                                           AT dd
+   0009         Integer e,e1,SW10,SW20,SW30,SW40                                                 AT dd
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(9) : warning 197 - Variable E1 has been declared but not used 
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(9) : warning 197 - Variable SW20 has been declared but not used 
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(9) : warning 197 - Variable SW30 has been declared but not used 
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(9) : warning 197 - Variable SW40 has been declared but not used 
+   0010         Real MECHR,RGCF1,RGCF2,RGCF3,RGCF4,RGCF5                                         AT dd
+   0011   c      Real PDWR_TOTAL   !for debugging                                                AT dd
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(10) : warning 197 - Variable RGCF4 has been declared but not used 
+   0012         Real xMean(NumNPD), yMean(NumNPD)  ! x and y coordinates of distance from seed   AT dd
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(12) : warning 197 - Variable XMEAN has been declared but not used 
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(12) : warning 197 - Variable YMEAN has been declared but not used 
+   0013         integer InitialRootCell   ! array that holds element numbers of cells that are assigned an initial root density AT dd
+   0014         integer RootsInitiated                                                           AT dd
+   0015         double precision InitialRootWt                                                   AT dd
+   0016         Real RRRM,RRRY ! root radial resistance for mature and young leaves (s-1 cm-1)     cccz bar day g-1 AT dd
+   0017         Real RVRL;    !root vascular resistance s-1 cm -1                                   cccz bar day g-1 AT dd
+   0018         Real RTWL    !Root weight per unit length (g cm-1)                                 cccz g cm-1 AT dd
+   0019         Real ALPM,ALPY !relative growth rates for mature and young roots                   cccz day-1 AT dd
+   0020         Real RtMinWtPerUnitArea !minimum root weight per length (g cm-1)                   cccz g cm-2 AT dd
+   0021         Real Wl,Wa,Wr,Wb !Weighting parameters for root growth in grid used in Root_grow_c  AT dd
+   0022         integer ISink        ! Determines mechanism of nitrogen uptake by root           AT dd
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(22) : warning 197 - Variable ISINK has been declared but not used 
+   0023         Real InitialRootCellArea                                                         AT dd
+   0024   c   0  'passive root mass uptake' no kinetics                                          AT dd
+   0025   c    1   Plant regulation diffusive and convective uptake                              AT dd
+   0026   c    2  'convective diffusive uptake no plant regulation (Constant IMax)               AT dd
+   0027   c    3  'diffusive uptake only, no effect of water movement                            AT dd
+   0028   c    4  Michaelis-Menton uptake only                                                   AT dd
+   0029   c                                                                                      AT dd
+   0030         Real RootRadius;  !radius of root - avg in cm                                       cccz cm AT dd
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(30) : warning 197 - Variable ROOTRADIUS has been declared but not used 
+   0031                                                                                          AT dd
+   0032         Common /CarbonPartition/                                                         AT dd
+   0033        &       VH2OC(NumNPD),                               ! cccz volumetric water content cm3 cm-3  AT dd
+   0034        &       CXT(NumNPD),                                 ! cccz oxygen concentration cm3 cm-3 AT dd
+   0035        &       PSIRD(NumNPD),                               ! cccz soil water potential @ dawn bar AT dd
+   0036        &       TPRD(NumNPD),                                ! cccz root turger p @ dawn - threshold root growth bar AT dd
+   0037        &       RRRM,RRRY,                                   ! cccz concentration, g cm-3 AT dd
+   0038        &       RVRL,                                        ! cccz root vascular resistance, bar day g-1 cm-1 AT dd
+   0039        &       ALPM,                                        ! cccz potentional relative old/young root grow rate, day-1 AT dd
+   0040        &       SC(NumNPD),                                  ! cccz axulliary for SR      AT dd
+   0041        &       SR(NumNPD),                                  ! cccz soil resistance water flow bar day g-1 AT dd
+   0042        &       OSMREG,                                      ! cccz osmoregulation        AT dd
+   0043        &       PILOSM,                                      ! cccz leave osmotic potential @ dawn adjusted bar AT dd
+   0044        &       PSILZ,                                       ! cccz zero turgor leaf water potential bar AT dd
+   0045        &       PPSILT,                                      ! cccz previous leaf water potential shoot no growth bar AT dd
+   0046        &       PPSIL,                                       ! cccz previous leaf water potential bar AT dd
+   0047        &       SGTLT,                                       ! cccz shoot growing time lost proportion AT dd
+   0048        &       TPLT,                                        ! cccz leave turgor shoot no growth bar AT dd
+   0049        &       TPLD,                                        ! cccz leave turgor @ dawn bar AT dd
+   0050        &       BTPL,                                        ! cccz lowest leave turgor bar AT dd
+   0051        &       ET,                                           ! cccz not evapotranspiration AT dd
+   0052        &       InitialRootCell(NumNPD),                                                  AT dd
+   0053        &       RootsInitiated,                                                           AT dd
+   0054        &       iCellCount,                                                               AT dd
+   0055        &       InitialRootCellArea                                                       AT dd
+   0056                                                                                          AT dd
+   0057         t=sngl(Time)                                                                     AT dd
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(57) : warning 242 - Variable T has been given a value but never used 
+   0058         If (lInput.eq.0) goto 11                                                         AT dd
+   0059   c      open(108,file='rgcf.txt')                                                       AT 189
+   0060   c      write(108,'(5A12)') 'Time','e','rgcf1','rgcf2','rgcf3'                          AT 189
+   0061   C                                                                                      AT 189
+   0062   C  Reading of the input files and initial calculations                                 AT 189
+   0063   C                                                                                      AT 189
+   0064   ! initialize variables to deefault values                                              AT 189
+   0065             RRRM=166.7D0;                                                                AT 189
+   0066           RRRY=31.3D0;                                                                   AT 189
+   0067           RVRL=0.73D0;                                                                   AT 189
+   0068           ALPM=0.350D0;                                                                  AT 189
+   0069           ALPY=0.04D0;                                                                   AT 189
+   0070           RTWL=1.059e-004;                                                               AT 189
+   0071             RtMinWtPerUnitArea=2.0e-004;                                                 AT 189
+   0072                                                                                          AT 189
+   0073         Do n=1,NumNP                                                                     AT 189
+   0074           YRL(n)=0.0D0                          ! length of young root in soil cell cm (old version) AT 1af
+   0075           RGCF(n)=0.0D0                         ! root growth reduction factor           AT 1d6
+   0076           RUTDEN(n)=0.0D0                       ! length density of old root in soil cell cm/cm^2 (old version) AT 204
+   0077           iFavRoot(n)=0.0D0                                                              AT 22b
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(77) : comment 368 - This assignment will result in a loss of precision, assigning from REAL(KIND=2) to INTEGER(KIND=3) 
+   0078           nodeArea(n)=0.0D0                                                              AT 251
+   0079           RMassM(n)=0.0D0                       ! density of old root in soil cell g/cm2 (new version) AT 278
+   0080           RMassY(n)=0.0D0                       ! density of young root in soil cell g/cm2 (new version) AT 29f
+   0081           RDenM(n)=0.0D0                        ! density of old root in soil cell cm/cm2 (new version) AT 2c6
+   0082           RDenY(n)=0.0D0                        ! density of young root in soil cell cm/cm2 (new version) AT 2ed
+   0083         Enddo                                                                            AT 30c
+   0084                                                                                          AT 31e
+   0085           Open(40,file = VarietyFile, status = 'old',ERR = 10)                           AT 31e
+   0086                                                                                          AT 3a0
+   0087         im=220                                                                           AT 3a0
+   0088         il=0                                                                             AT 3ab
+   0089   15       Read (40,'(A132)') InString                                                   AT 3b6
+   0090             if (InString(1:14).ne.'[SoilRoot]') goto 15                                  AT 414
+   0091         im=im+1                                                                          AT 43a
+   0092         il=il+1                                                                          AT 441
+   0093         Read(40,*,ERR=10)                                                                AT 448
+   0094         im=im+1                                                                          AT 47f
+   0095         il=il+1                                                                          AT 486
+   0096         Read(40,*,ERR=10)                                                                AT 48d
+   0097         im=im+1                                                                          AT 4c4
+   0098         il=il+1                                                                          AT 4cb
+   0099         Read(40,*,ERR=10) RRRM,RRRY,RVRL                                                 AT 4d2
+   0100         im=im+1                                                                          AT 55a
+   0101         il=il+1                                                                          AT 561
+   0102         Read(40,*,ERR=10)                                                                AT 568
+   0103         im=im+1                                                                          AT 59f
+   0104         il=il+1                                                                          AT 5a6
+   0105         Read(40,*,ERR=10) ALPM,ALPY,RTWL,RtMinWtPerUnitArea                              AT 5ad
+   0106         close(40)                                                                        AT 650
+   0107                                                                                          AT 66f
+   0108   c DT 12/7/2018 removed element file reading     Only need to initialize root weight now AT 66f
+   0109   c this is done in the crop model now                                                   AT 66f
+   0110   c      Do n=1,NumNP                                                                    AT 66f
+   0111   c        RTWT(n)=0                                                                     AT 66f
+   0112   c      Enddo                                                                           AT 66f
+   0113         Close(41)                                                                        AT 66f
+   0114                                                                                          AT 6a8
+   0115                                                                                          AT 6a8
+   0116   cccz zhuangji: calculate the nodearea based on AD design                               AT 6a8
+   0117         TotalRootWeight=0.0D0                                                            AT 6a8
+   0118         xMul=1.0D0                                                                       AT 6a8
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(118) : warning 242 - Variable XMUL has been given a value but never used 
+   0119         Do e=1,NumEl                                                                     AT 6d2
+   0120            If(KX(e,3).eq.KX(e,4)) then                                                   AT 6ff
+   0121               i=KX(e,1)                                                                  AT 752
+   0122               j=KX(e,2)                                                                  AT 778
+   0123               l=KX(e,3)                                                                  AT 79f
+   0124               CJ=x(i)-x(l)                                                               AT 7c4
+   0125               CK=x(j)-x(i)                                                               AT 806
+   0126               BJ=y(l)-y(i)                                                               AT 84d
+   0127               BK=y(i)-y(j)                                                               AT 899
+   0128               AE=abs((CK*BJ-CJ*BK)/2.0D0)                                                AT 8dd
+   0129               nodeArea(i)=nodeArea(i)+AE/3.0D0                                           AT 91a
+   0130               nodeArea(j)=nodeArea(j)+AE/3.0D0                                           AT 962
+   0131               nodeArea(l)=nodeArea(l)+AE/3.0D0                                           AT 9bb
+   0132            else                                                                          AT a0a
+   0133               i=KX(e,1)                                                                  AT a19
+   0134               j=KX(e,2)                                                                  AT a3f
+   0135               l=KX(e,3)                                                                  AT a66
+   0136               k=KX(e,4)                                                                  AT a8b
+   0137               CJ=x(i)-x(l)                                                               AT ab0
+   0138               CK=x(j)-x(i)                                                               AT af2
+   0139               BJ=y(l)-y(i)                                                               AT b39
+   0140               BK=y(i)-y(j)                                                               AT b85
+   0141               AE=(CK*BJ-CJ*BK)/2.0D0                                                     AT bc9
+   0142               CJ=x(i)-x(l)                                                               AT c04
+   0143               CK=x(k)-x(i)                                                               AT c5e
+   0144               BJ=y(l)-y(i)                                                               AT cc8
+   0145               BK=y(i)-y(k)                                                               AT d1b
+   0146               AE=AE+abs((CK*BJ-CJ*BK)/2.0D0)                                             AT d76
+   0147               nodeArea(i)=nodeArea(i)+AE/4.0D0                                           AT dc4
+   0148               nodeArea(j)=nodeArea(j)+AE/4.0D0                                           AT e13
+   0149               nodeArea(l)=nodeArea(l)+AE/4.0D0                                           AT e6c
+   0150               nodeArea(k)=nodeArea(k)+AE/4.0D0                                           AT ec5
+   0151            Endif                                                                         AT f0d
+   0152         Enddo                                                                            AT f0d
+   0153                                                                                          AT f28
+   0154   cccz Assume that RTWT is node based root mass (g)                                      AT f28
+   0155                                                                                          AT f28
+   0156         TotalArea=0.0D0                                                                  AT f28
+   0157         do n=1,NumNP                                                                     AT f52
+   0158             TotalRootWeight=TotalRootWeight+RTWT(n)*nodeArea(n)        ! RTWT root weigth in each cell g/cm^2 AT f7f
+   0159             TotalArea=TotalArea+nodeArea(n)                                              AT fe8
+   0160             RMassY(n)=RTWT(n)                        ! cccz initialized yong root density for each node g cm-2 AT 101a
+   0161             RDenY(n)=RMassY(n)/RTWL                  ! cccz initialized yong root density for each node cm cm-2 AT 1061
+   0162         enddo                                                                            AT 10b1
+   0163                                                                                          AT 111b
+   0164         EORSCS=0.0                                                                       AT 111b
+   0165         AWUPSS=0.0                                                                       AT 111b
+   0166         Total_Eor=0.0                                                                    AT 111b
+   0167         Total_Pcrs=0.0                              ! PCRS actual carbon rate  g day-1   AT 111b
+   0168         icount=0                                                                         AT 111b
+   0169         iCellCount=0                                                                     AT 1145
+   0170         RootsInitiated=0                                                                 AT 1145
+   0171         xMin=1.E+32                                                                      AT 1145
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(171) : warning 242 - Variable XMIN has been given a value but never used 
+   0172         xMax=-1.E+32                                                                     AT 1158
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(172) : warning 242 - Variable XMAX has been given a value but never used 
+   0173         InitialRootCellArea=0.0                                                          AT 11af
+   0174         PSISM=0.0D0                                 ! water potential for cells for water uptake bar AT 11af
+   0175                                                                                          AT 11af
+   0176   c      do n=1,NumNP                                                                    AT 11af
+   0177   cccz RMassY has the unit g cm-2                                                        AT 11af
+   0178   cccz So TotalRootWt is not a weight but a sum of "mass-density"                        AT 11af
+   0179   c          TotalRootWt=TotalRootWt+RMassY(n)                                           AT 11af
+   0180   c      enddo                                                                           AT 11af
+   0181                                                                                          AT 11af
+   0182         Do n = 1,NumNP                                                                   AT 11af
+   0183             PSIS(n)  = hNew(n)/1000.0D0  ! convert from cm to bars                       AT 11df
+   0184             xDist = (x(n)-xBSTEM)                                                        AT 1247
+   0185             yDist = (y(n)-yBSTEM)                                                        AT 1280
+   0186             RVR(n)=RVRL*SQRT(xDist*xDist+yDist*yDist)   ! all the radius distance is use to calculate the radius resistance. AT 12b2
+   0187                                                         ! root resistance RVR: bar day g-1 AT 12f7
+   0188           If ((abs(xDist).lt.2).and.(abs(yDist).lt.5)) then                              AT 12f7
+   0189              InitialRootCell(n)=1                                                        AT 1348
+   0190              iCellCount=iCellCount+1                                                     AT 1381
+   0191              InitialRootCellArea=InitialRootCellArea+nodeArea(n)                         AT 1381
+   0192           Endif                                                                          AT 13ab
+   0193           If(RMassY(n).gt.0.0D0) then                                                    AT 13ba
+   0194               PSISM=PSISM+PSIS(n)                                                        AT 13f3
+   0195               icount=icount+1                                                            AT 141d
+   0196           Endif                                                                          AT 1424
+   0197                                                                                          AT 1433
+   0198           MECHR = 80.03*abs(psis(n))**0.53                                               AT 1433
+   0199        &     *EXP(-8.08*(1.66 - BlkDn(MatNumN(n))))                                      AT 1433
+   0200           IF (MECHR.LE.0.0) MECHR = 0.0                                                  AT 14fe
+   0201           TPRD(n) = 2.0 + (0.1*PSIS(n) + (0.7*MECHR))                                    AT 152d
+   0202           PSIRD(n) = PSIS(n)                                                             AT 15a5
+   0203         Enddo                                                                            AT 15e4
+   0204                                                                                          AT 15f9
+   0205   c   EOMult is defined in Crop since it is a Plant variable                             AT 15f9
+   0206   c      EOMult=1.                                                                       AT 15f9
+   0207   c      If(xBSTEM.le.xMin.or.xBSTEM.ge.xMax) EOMult=0.5                                 AT 15f9
+   0208   cccz zhuangji EOMult is to mark if the plant is on the edge.                           AT 15f9
+   0209                                                                                          AT 15f9
+   0210         PSISM=PSISM/float(icount)                                                        AT 15f9
+   0211         PPSIL = -0.5                                                                     AT 17bb
+   0212         PPSILT = -0.5                                                                    AT 17bb
+   0213         TPLT = 2.0                                                                       AT 17bb
+   0214         PSILD = -0.5            ! leave water potential @ dawn bar                       AT 17bb
+   0215   c since in the MAIZESIM model, the reference leaf water potential in the CGas_exchange::setleafpEffect AT 17bb
+   0216   c function is set to be -1.9, so the initial value of leaf water potential should be assigned a higher AT 17bb
+   0217   c value Yang 8/22/06                                                                   AT 17bb
+   0218         IF (PSISM.LT.PSILD) PSILD = PSISM  ! leave pressure should be less than soil water potential AT 17bb
+   0219         PILOSM = -9.0D0                    ! PILOSM leave osmotic potential at dawn adjusted bar AT 17bb
+   0220         OSMREG = -0.25D0                                                                 AT 17bb
+   0221         OSMFAC = 0.5                                                                     AT 17bb
+   0222         PILD = ((PSILD + 2.0D0)*OSMFAC) + PILOSM  ! leaf osmotic pressure bar @ dawn     AT 17bb
+   0223         TPLD = PSILD - PILD                                                              AT 17bb
+   0224         TPL = PPSIL - PILD                                                               AT 17bb
+   0225         BTPL = TPLD                                                                      AT 17bb
+   0226         SGTLT = 0.0D0                                                                    AT 17bb
+   0227   11    continue                                                                         AT 17bb
+   0228   C                                                                                      AT 17ec
+   0229   c  Routine calculations                                                                AT 17ec
+   0230   C                                                                                      AT 17ec
+   0231   c                     Cell variables                                                   AT 17ec
+   0232   c     This piece of code averages nodal values over cells and                          AT 17ec
+   0233   c     calculates the cell hydraulic conductivity.                                      AT 17ec
+   0234   c     It has no shoot-associated parameters                                            AT 17ec
+   0235   C                                                                                      AT 17ec
+   0236   CYAP  No Plant = No Root Activity                                                      AT 17ec
+   0237         If((NShoot.eq.0).or.(isGerminated.eq.0)) Return                                  AT 17ec
+   0238   c       PDWR_TOTAL=0.0    ! for debugging purposes  AD and zhuangji  delete it         AT 185f
+   0239   CYAPEND                                                                                AT 185f
+   0240         If (isGerminated == 0 .and. RootsInitiated == 0) then                            AT 185f
+   0241            RootsInitiated=1                                                              AT 185f
+   0242            InitialRootWt=InitialRootCarbo/InitialRootCellArea   ! calculates average root wt density AT 185f
+   0243            ! Distribute this mass among cells with initial root distribution             AT 185f
+   0244            areaS=0                                                                       AT 185f
+   0245             Do n=1,NumNP                                                                 AT 1889
+   0246                if (InitialRootCell(n).gt.0) then                                         AT 18af
+   0247                  RMassY(n)=RMassY(n)+InitialRootWt                                       AT 18dc
+   0248                  RDenY(n)=RMassY(n)/RTWL                                                 AT 1918
+   0249                  TotalRootWeight=TotalRootWeight+RMassY(n)*nodeArea(n)                   AT 1970
+   0250                  areaS=areaS+nodeArea(n)                                                 AT 19d9
+   0251                 endif                                                                    AT 1a03
+   0252              enddo                                                                       AT 1a03
+   0253           Endif                                                                          AT 1a2f
+   0254   CYAPEND                                                                                AT 1a2f
+   0255         Do n=1,NumNP                                                                     AT 1a2f
+   0256           PSIS(n)=hNew(n)/1000.0D0                                                       AT 1a5f
+   0257           COND(n)=Con(n)                                                                 AT 1ac0
+   0258         Enddo                                                                            AT 1aff
+   0259                                                                                          AT 1ba5
+   0260                                                                                          AT 1ba5
+   0261   c     EO : potential transpiration rate                                                AT 1ba5
+   0262   c     EO is in g/plant. Multiply g/plant x plant/m2 x 1 m2/10000 cm2 x rowsp           AT 1ba5
+   0263   c     EOR : = EO*ROWSP if the plant is not at the border of the soil slab,             AT 1ba5
+   0264   c           = 0.5 * EO*ROWSP, if the plant is at the left or right border.             AT 1ba5
+   0265   c      EOR = EO*poprow/rowsp*100*rowsp*EOMult/10000                                    AT 1ba5
+   0266   c      poprow*100/rowsp gives plants m-2                                               AT 1ba5
+   0267   c      ET_demand is units of grams m-2 day-1                                           AT 1ba5
+   0268   c     EoMult*rowsp/10000/24 converts to g slab-1 (rowsp * 1cm strip for the finite element domain) AT 1ba5
+   0269                                                                                          AT 1ba5
+   0270          EOR = ET_demand*poprow*(100/rowsp)*(EOMult*rowsp/10000) ! potential transportation rate per slab AT 1ba5
+   0271   c       EOR = ET_demand                                                                AT 1ba5
+   0272   c      PCRL = PCRL*12*poprow/rowsp*100*rowsp*EOMult/10000                              AT 1ba5
+   0273   c      PCRQ = PCRQ*12*poprow/rowsp*100*rowsp*EOMult/10000                              AT 1ba5
+   0274                                                                                          AT 1ba5
+   0275   c   PCRL in MAIZESIM is in the unit g/plant/hour, so mulitply 24 first to convert it to g/plant/day AT 1ba5
+   0276   c   then multiply it by plant/(m^2) to convert it to g/(m^2)/day                       AT 1ba5
+   0277   c   finally multiply it by rowsp*1(cm) to convert it into the soil slab we are dealing with Yang 9/24/06 AT 1ba5
+   0278                                                                                          AT 1ba5
+   0279   c                                                                                      AT 1ba5
+   0280   C     ---------- Taken form R U T G R O   of  G L Y C I M                              AT 1ba5
+   0281   C                                                                                      AT 1ba5
+   0282   C  CALCULATE SOIL MECHANICAL RESISTANCE TO ROOT GROWTH IN EACH CELL                    AT 1ba5
+   0283   C                                                                                      AT 1ba5
+   0284         DO n=1,NumNP                                                                     AT 1ba5
+   0285           MECHR = 5.4*abs(psis(n))**0.25                                                 AT 1bcf
+   0286        &     *EXP(-10.58*(1.7 - BlkDn(MatNumN(n))))                                      AT 1bcf
+   0287           IF (MECHR.LE.0.0D0) MECHR = 0.0D0                                              AT 1c9a
+   0288   C                                                                                      AT 1ceb
+   0289   C  CALCULATE ROOT TURGOR PRESSURE IN EACH CELL AT DAWN MINUS THRESHOLD                 AT 1ceb
+   0290   C  TURGOR FOR GROWTH                                                                   AT 1ceb
+   0291   C                                                                                      AT 1ceb
+   0292           IF (ITIME.EQ.IDAWN) THEN                                                       AT 1ceb
+   0293             TPRD(n) = 2.0D0 + (0.1D0*PSIS(n) + (0.7D0*MECHR))                            AT 1ceb
+   0294             PSIRD(n) = PSIS(n)                                                           AT 1d72
+   0295           ENDIF                                                                          AT 1dc0
+   0296   C                                                                                      AT 1dc0
+   0297   C  CALCULATE PROPORTIONIAL REDUCTION OF ROOT GROWTH CAUSED BY                          AT 1dc0
+   0298   C  MECHANICAL RESISTANCE AND SOIL WATER POTENTIAL ASSUMING ROOT                        AT 1dc0
+   0299   C  IS AT SAME POTENTIAL AS SOIL                                                        AT 1dc0
+   0300                                                                                          AT 1dc0
+   0301            RGCF1 = ((TPRD(n)-MECHR)/2.0)-((PSIRD(n)-PSIS(n))/4.0)                        AT 1dc0
+   0302   C                                                                                      AT 1e52
+   0303   C     CALCULATE PROPORTIONAL REDUCTION OF ROOT GROWTH CAUSED BY                        AT 1e52
+   0304   C     SOIL TEMPERATURE                                                                 AT 1e52
+   0305   C                                                                                      AT 1e52
+   0306           RGCF2=1.0                                                                      AT 1e52
+   0307           IF (Tmpr(n).GE.33.0D0) THEN                                                    AT 1e74
+   0308             RGCF2 = (Tmpr(n)/33.0D0)**(-1.66D0)                                          AT 1ead
+   0309           ELSE IF (Tmpr(n).LE.0.0) THEN                                                  AT 1ef5
+   0310             RGCF2 = 0.0                                                                  AT 1f28
+   0311           ELSE If (Tmpr(n).lt.18.0D0) THEN                                               AT 1f40
+   0312             RGCF2 = (Tmpr(n)/18.0D0) **(1.66D0)                                          AT 1f88
+   0313           ENDIF                                                                          AT 1fcb
+   0314                                                                                          AT 1fda
+   0315   C                                                                                      AT 1fda
+   0316   C   CALCULATE PROPORTIONIAL REDUCTION OF ROOT GROWTH CAUSED BY                         AT 1fda
+   0317   C   PARTIAL PRESSURE OF SOIL OXYGEN                                                    AT 1fda
+   0318   C                                                                                      AT 1fda
+   0319           RGCF3 = (g(n,2) - 0.02)*7.14                                                   AT 1fda
+   0320   C                                                                                      AT 201b
+   0321   C   CALCULATE PROPORTIONAL REDUCTION OF ROOT GROWTH FROM THE                           AT 201b
+   0322   C   PHYSICAL CAUSE THAT IS MOST LIMITING                                               AT 201b
+   0323   C                                                                                      AT 201b
+   0324   cccz Zhuangji: AD                                                                      AT 201b
+   0325   c        RGCF5=(1.0-AMIN1(1.0,RMassY(n)/0.03))                                         AT 201b
+   0326            RGCF5=(1.0-AMIN1(1.0,(RMassY(n)+RMassM(n))/0.02))                             AT 201b
+   0327   C this one for nitrogen. Use the ratio between actual uptake of N and IMax             AT 208d
+   0328         write(*, *) 'Line 329'                                                           AT 208d
+   0329         write(*, *) 'amax1(0.3,dif/ConstK(1))', dif, ConstK(1)                           AT 20c7
+   0330                                                                                          AT 216a
+   0331            dif=amax1(0.0,Conc(n,1)-CMin0(1))                                             AT 216a
+   0332          RGCF6 =  amax1(0.3,dif/ConstK(1))                                               AT 21d6
+   0333          RGCF6 = AMIN1(1.0, RGCF6)                                                       AT 21d6
+   0334                                                                                          AT 21fd
+   0335   c ccz zhuangji:AD removed the RGCF3 why? DT - O2 was not simulated                     AT 21fd
+   0336   C dt need to do more testing for RGCF6, add later                                      AT 21fd
+   0337           RGCF(n) = AMIN1(RGCF1, RGCF2, RGCF3, RGCF5)                                    AT 21fd
+   0338                                                                                          AT 2252
+   0339           RGCF(n) = AMAX1(RGCF(n),0.0)                                                   AT 2252
+   0340           RGCF(n) = AMIN1(RGCF(n),1.0)                                                   AT 2288
+   0341                                                                                          AT 22ef
+   0342   C                                                                                      AT 22ef
+   0343   C   CALCULATE POTENTIAL RATE OF CHANGE IN ROOT DRY WEIGHT IN EACH                      AT 22ef
+   0344   C   SOIL CELL                                                                          AT 22ef
+   0345                                                                                          AT 22ef
+   0346   c                                                                                      AT 22ef
+   0347   c  rtwt is gr in the cell                                                              AT 22ef
+   0348   c  alpm a Percentage per day                                                           AT 22ef
+   0349   c  RGCF has no units                                                                   AT 22ef
+   0350   c  pdwr = gr d-1 per cell                                                              AT 22ef
+   0351   c  dt 03/18/11 testing the incorporation of area                                       AT 22ef
+   0352                                                                                          AT 22ef
+   0353          if ((isEmerged.lt.1).and.(isGerminated.gt.0)) RGCF(n)=1.0                       AT 22ef
+   0354                                                                                          AT 231d
+   0355   cccz only new root or the total root? Dt - use total root for now                      AT 231d
+   0356          PDWR(n)=(RMassY(n)+RMassM(n))*ALPM*RGCF(n)*nodeArea(n)                          AT 231d
+   0357                                                                                          AT 23de
+   0358          ENDDO                                                                           AT 23de
+   0359   C                                                                                      AT 243e
+   0360   C DT GLYCIM sorts on PDWR which is potential for root growth. RGCF is already          AT 243e
+   0361   C    taken into account.                                                               AT 243e
+   0362         Call SORT(NumNP,iFavRoot,RGCF,RVR)                                               AT 243e
+   0363   C                                                                                      AT 243e
+   0364   C                                                                                      AT 243e
+   0365   C   Taken from TRADE  of GLYCIM                                                        AT 243e
+   0366   C NOTE 10.09                                                                           AT 243e
+   0367   C   THIS ROUTINE MAINTAINS A FUNCTIONAL BALANCE BETWEEN ROOT AND                       AT 243e
+   0368   C   SHOOT BY ALLOCATING CARBON TO GROW ROOT AS NECESSARY TO MEET                       AT 243e
+   0369   C   TRANSPIRATION DEMAND. NEW ROOT HAS LESS RESISTANCE TO WATER UPTAKE                 AT 243e
+   0370   C   SINCE TRANSPIRATION RATE, PHOTOSYNTHESIS RATE AND HENCE POTENTIAL                  AT 243e
+   0371   C   ROOT GROWTH RATE ARE ROUGHLY PROPORTIONAL, LEAF WATER POTENTIAL IS                 AT 243e
+   0372   C   NOT AFFECTED MUCH BY TRANSPIRATION RATE. HOWEVER, LEAF WATER                       AT 243e
+   0373   C   POTENTIAL MUST FALL AS TRANSPIRATION INCREASES BECAUSE THE                         AT 243e
+   0374   C   THRESHOLD TURGOR PRESSURE FOR STOPPING SHOOT GROWTH AND DIVERTING                  AT 243e
+   0375   C   CARBOHYDRATES TO ROOTS DECREASES WITH TIME. HENCE THE ROUTINE ALSO                 AT 243e
+   0376   C   PREDICTS CHANGES IN TOTAL POTENTIAL, OSMOTIC POTENTIAL AND TURGOR                  AT 243e
+   0377   C   PRESSURE IN LEAVES DURING THE DAY.                                                 AT 243e
+   0378                                                                                          AT 243e
+   0379         DO n = 1,NumNP                                                                   AT 243e
+   0380           SR(n)   = 0.0                                                                  AT 246f
+   0381           WUPM(n) = 0.0                                                                  AT 249d
+   0382           WUPN(n) = 0.0                                                                  AT 24c4
+   0383           WUPT(n) = 0.0                                                                  AT 24eb
+   0384           DRL(n)  = 0.0                                                                  AT 2512
+   0385   cS 07/05/2007 DT These variables are needed for nitrogen sink code                     AT 2539
+   0386           FUP(n,1) = 0.0 !WATER FLUX TO THE OLD ROOTS or old roots density               AT 2539
+   0387         FUP(n,2) = 0.0 !WATER FLUX TO THE NEW ROOTS or new roots density                 AT 2560
+   0388           VUP(n,1) = 0.0 !WATER FLOW TO THE OLD ROOTS                                    AT 2587
+   0389         VUP(n,2) = 0.0 !WATER FLOW TO THE NEW ROOTS                                      AT 25ae
+   0390   cE 7/05/2007 DT                                                                        AT 25cd
+   0391         ENDDO                                                                            AT 25cd
+   0392         SGTLI = 0.0                                                                      AT 25e4
+   0393   C                                                                                      AT 25f7
+   0394   C    THE THRESHOLD LEAF WATER POTENTIAL AND TURGOR PRESSURE THAT                       AT 25f7
+   0395   C    WILL JUST PREVENT ALL SHOOT EXPANSION ARE CALCULATED                              AT 25f7
+   0396   C                                                                                      AT 25f7
+   0397   C    CALCULATE DAWN LEAF WATER POTENTIALS ***                                          AT 25f7
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(392) : warning 242 - Variable SGTLI has been given a value but never used 
+   0398         write(*,*) ' Line 396'                                                           AT 25f7
+   0399         IF (ITIME.EQ.IDAWN) THEN                                                         AT 283a
+   0400   c        PSILD = -2.0                                                                  AT 283a
+   0401   c since in the MAIZESIM model, the reference leaf water potential in the CGas_exchange::setleafpEffect AT 283a
+   0402   c function is set to be -1.9, so the initial value of leaf water potential should be assigned a higher AT 283a
+   0403   c value Yang 8/22/06                                                                   AT 283a
+   0404           PSILD = - 0.5                                                                  AT 283a
+   0405           IF (PSISM.LT.PSILD) PSILD = PSISM                                              AT 283a
+   0406           PILOSM = PILOSM - OSMREG                                                       AT 283a
+   0407           IF (PILOSM.LT.-12.0) PILOSM = -12.0                                            AT 283a
+   0408           IF (PILOSM.GT.-9.0) PILOSM = -9.0                                              AT 283a
+   0409           OSMREG = -0.25                                                                 AT 283a
+   0410           OSMFAC = 0.5                                                                   AT 283a
+   0411           PILD = ((PSILD + 2.0)*OSMFAC) + PILOSM                                         AT 283a
+   0412           TPLD = PSILD - PILD                                                            AT 283a
+   0413           TPL = PPSIL - PILD                                                             AT 283a
+   0414           BTPL = TPLD                                                                    AT 283a
+   0415           SGTLT = 0.0                                                                    AT 283a
+   0416          ENDIF                                                                           AT 283a
+   0417   C                                                                                      AT 283a
+   0418   C   CALCULATE THE THRESHOLD LEAF WATER POTENTIAL AND TURGOR                            AT 283a
+   0419   C   PRESSURE THAT WILL JUST PREVENT ALL SHOOT GROWTH                                   AT 283a
+   0420   C                                                                                      AT 283a
+   0421   c                                                                                      AT 283a
+   0422         D11 = MAX (TPL, TPLT)                                                            AT 283a
+   0423         D12 = (D11 - 2.0D0)*(1.0D0 - EXP(-0.7D0*Step))                                   AT 283a
+   0424         IF (D12.LE.0.0D0) D12 = 0.0D0                                                    AT 28ac
+   0425         D13 = MAX (PPSIL, PPSILT)                                                        AT 2917
+   0426         OSMFAC = 0.5D0                                                                   AT 2917
+   0427         PSILT = D13 - (D12/(1.0D0 - OSMFAC))                                             AT 2917
+   0428         PPSILT = PSILT                                                                   AT 2981
+   0429         TPLT = D11 - D12                                                                 AT 2981
+   0430         PSILZ = PSILT-(TPLT/(1.0D0 - OSMFAC))    ! leaf water potential @ zero turgor bar AT 2a0b
+   0431   C                                                                                      AT 2a0b
+   0432   C   WATER UPTAKE BY YOUNG AND OLD ROOTS UNDER VARIOUS                                  AT 2a0b
+   0433   C   CIRCUMSTANCES IS CALCULATED                                                        AT 2a0b
+   0434   C                                                                                      AT 2a0b
+   0435   C   CALCULATE RADIUS OF SOIL CYLINDER THROUGH WHICH WATER MUST                         AT 2a0b
+   0436   C   TRAVEL TO REACH ROOTS. THIS IS APPROXIMATED BY A SIMPLE                            AT 2a0b
+   0437   C   FUNCTION OF SOIL WATER POTENTIAL TO AVOID ITERATION                                AT 2a0b
+   0438   C   SC IS THE HALF THE MEAN DISTANCE BETWEEN NEIGHBORING ROOTS                         AT 2a0b
+   0439   C   WE NEED TO SEE IF THIS CAN BE CALCULATED FROM ROOT DENSITY                         AT 2a0b
+   0440   C                                                                                      AT 2a0b
+   0441         WUPMS = 0.                                                                       AT 2a0b
+   0442         WUPSI = 0.                                                                       AT 2a0b
+   0443         DO 50, n=1,NumNP                                                                 AT 2a35
+   0444                                                                                          AT 2a5f
+   0445           D14 = PSIS(n) - PSILT               ! leaf pressure should be less to ensure water uptake AT 2a5f
+   0446           IF (D14.GT.0.0D0) THEN                                                         AT 2a89
+   0447             SC(n) = 0.017D0 - (PSIS(n)*0.5D0)                                            AT 2aac
+   0448   C                                                                                      AT 2b20
+   0449   C   CALCULATE RESISTANCE TO WATER FLOW IN SOIL CELL                                    AT 2b20
+   0450   C                                                                                      AT 2b20
+   0451           IF (COND(n).GT.0.0D0) THEN                                                     AT 2b20
+   0452               SR(n) = ALOG(SC(n)*SC(n)/3.0E-4)/(4.0*3.1416*COND(n)*1019.7)               AT 2b59
+   0453   C  3e-4 is 0.017*0.017; Equation is from Gardener, 1960                                AT 2c28
+   0454   C                                                                                      AT 2c28
+   0455   C   CALCULATE RATE OF WATER UPTAKE BY EXISTING ROOTS IF LEAF WATER                     AT 2c28
+   0456   C   POTENTIAL IS AT THE THRESHOLD                                                      AT 2c28
+   0457   C                                                                                      AT 2c28
+   0458                                                                                          AT 2c28
+   0459   c If LAI=0, then all the resistance comes from soil;                                   AT 2c28
+   0460   c when LAI !=0, then the total resistance equals to resistance in the soil plus        AT 2c28
+   0461   c resistance of the xylum; here the xylum resistance is adopted as a constant: 6.67*1-E-3 molH2O m-2(leaf) s-1 MPa-1 AT 2c28
+   0462   c to convert this value into the resistance value for a slab, we have to divide it by LAI and the area of the slab and  AT 2c28
+   0463   c convert MPa into bar, this is how we have 19.26//(LAI*rowsp)                         AT 2c28
+   0464                                                                                          AT 2c28
+   0465                IF(LAI.EQ.0.0) Then                                                       AT 2c28
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(465) : warning 179 - Comparing floating point quantities for equality may give misleading results 
+   0466                 WUPM(n) = (((PSIS(n) - PSILT)*nodeArea(n)                                AT 2c28
+   0467        &         *RDenM(n))/(SR(n) + RRRM + RVR(n)))                                     AT 2c28
+   0468        &         *0.02275*(24.5 + Tmpr(n))                                               AT 2c28
+   0469                                                                                          AT 2d60
+   0470                 WUPN(n) = (((PSIS(n) - PSILT)*nodeArea(n)                                AT 2d60
+   0471        &          *RDenY(n))/(SR(n) + RRRY + RVR(n)))                                    AT 2d60
+   0472        &         *0.02275*(24.5 + Tmpr(n))                                               AT 2d60
+   0473                ELSE                                                                      AT 2eab
+   0474                                                                                          AT 2eab
+   0475                WUPM(n)=(PSIS(n)-PSILT)/((SR(n)+RRRM+RVR(n))                              AT 2eab
+   0476        &        /(nodeArea(n)*RDenM(n)*0.02275*(24.5+Tmpr(n)))                           AT 2eab
+   0477        &        +19.26/(LAI*ROWSP))                                                      AT 2eab
+   0478                                                                                          AT 3011
+   0479                WUPN(n)=(PSIS(n)-PSILT)/((SR(n)+RRRY+RVR(n))                              AT 3011
+   0480        &        /(nodeArea(n)*RDenY(n)*0.02275*(24.5+Tmpr(n)))                           AT 3011
+   0481        &         +19.26/(LAI*ROWSP))                                                     AT 3011
+   0482                                                                                          AT 319c
+   0483                END IF                                                                    AT 319c
+   0484                                                                                          AT 319c
+   0485   C  NOTE 10.17                                                                          AT 319c
+   0486                WUPMS = WUPMS +(WUPM(n) + WUPN(n))                                        AT 319c
+   0487                WUPSI = WUPSI +(PSIS(n)*(WUPM(n) + WUPN(n)))                              AT 31f7
+   0488                                                                                          AT 326b
+   0489             ENDIF                                                                        AT 326b
+   0490           ENDIF                                                                          AT 326b
+   0491    50   CONTINUE                                                                         AT 326b
+   0492   C                                                                                      AT 3280
+   0493   C  CALCULATE GROWTH BY NEW ROOTS IF ROOTS GREW AT POTENTIAL                            AT 3280
+   0494   C  RATE DURING PAST PERIOD. START WITH SOIL CELL WHERE CONDITIONS                      AT 3280
+   0495   C  ARE MOST FAVORABLE FOR GROWTH                                                       AT 3280
+   0496   C                                                                                      AT 3280
+   0497         PCRTS = 0.       ! potential root carbon use  g day-1                            AT 3280
+   0498         WUPTS = 0.       ! new root water uptake carbon all to root   g day-1            AT 3293
+   0499         SW10 = 0                                                                         AT 32a6
+   0500         DO 90, n=1,NumNP                                                                 AT 32c8
+   0501           n1=iFavRoot(n)                                                                 AT 32ef
+   0502           PDRL = PDWR(n1)/RTWL            ! cccz potential rate root length cm/day       AT 3312
+   0503           DRL(n1) = (PDRL + PPDRL(n1))*Step/2.0D0  ! unit cm                             AT 3342
+   0504           PPDRL(n1) = PDRL                                                               AT 33b5
+   0505   C                                                                                      AT 33fc
+   0506   C   DETERMINE TOTAL WATER UPTAKE BY ALL NEW ROOTS AND WEIGHTED                         AT 33fc
+   0507   C   AVERAGE SOIL WATER POTENTIAL WHEN:                                                 AT 33fc
+   0508   C   I. ROOTS GET ALL THE CARBON TRANSLOCATED                                           AT 33fc
+   0509   C      write(*,*) 'Line 507'                                                           AT 33fc
+   0510           IF(LAI.EQ.0.0) Then                                                            AT 33fc
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(510) : warning 179 - Comparing floating point quantities for equality may give misleading results 
+   0511           WUPT(n1) = (((PSIS(n1) - PSILT)*DRL(n1))                                       AT 33fc
+   0512        &   /(SR(n1) + RRRY + RVR(n1)))                                                   AT 33fc
+   0513        &   *0.02275*(24.5 + Tmpr(n1))                                                    AT 33fc
+   0514           Else                                                                           AT 3514
+   0515           WUPT(n1)=(PSIS(n1)-PSILT)/((SR(n1)+RRRY+RVR(n1))                               AT 3514
+   0516        &     /(DRL(n1)*0.02275*(24.5+Tmpr(n1)))                                          AT 3514
+   0517        &     +(19.26/(LAI*ROWSP)))                                                       AT 3514
+   0518           EndIF                                                                          AT 364e
+   0519                                                                                          AT 364e
+   0520           IF (WUPT(n1).LE.0.0) WUPT(n1) = 0.0                                            AT 364e
+   0521                                                                                          AT 36b5
+   0522           WUPTS = WUPTS + WUPT(n1)                                                       AT 36b5
+   0523           WUPSI = WUPSI + (PSIS(n1)*WUPT(n1))                                            AT 36ea
+   0524                                                                                          AT 3740
+   0525           PCRTS = PCRTS + (PDWR(n1)*CONVR)    ! g day-1                                  AT 3740
+   0526   C                                                                                      AT 379a
+   0527   C   II. ROOTS GET ONLY THE CARBON LEFT OVER FROM SHOOT GROWTH                          AT 379a
+   0528   C                                                                                      AT 379a
+   0529   c if carbon allocation changes, have to do it here too                                 AT 379a
+   0530           IF (PCRL.LE.PCRTS.AND.SW10.NE.1) THEN                                          AT 379a
+   0531             SW10 = 1                                                                     AT 37c0
+   0532             D16 = 0.0D0                                                                  AT 37cb
+   0533             IF (PDWR(n1).GT.0.0D0) D16 = WUPT(n1)*(1.0D0                                 AT 37ed
+   0534        &     - ((PDWR(n1)*CONVR) - PCRTS + PCRL)/(PDWR(n1)*CONVR))                       AT 37ed
+   0535             WUPRS = WUPTS - D16                                                          AT 38df
+   0536   C NOTE 10.23                                                                           AT 3931
+   0537             IF ((WUPMS + WUPRS).GT.0.0D0) PSISM = (WUPSI - (PSIS(n1)*D16))               AT 3931
+   0538        &     /(WUPMS + WUPRS)                                               ! this is the average psi AT 3931
+   0539           ENDIF                                                                          AT 398a
+   0540           IF (PCRQ.LE.PCRTS) GOTO 1111                                                   AT 398a
+   0541    90   CONTINUE                                                                         AT 39b5
+   0542   C                                                                                      AT 3a2f
+   0543         IF ((WUPMS + WUPTS).GT.0.0D0) PSIST = WUPSI/(WUPMS + WUPTS)         ! this is the average psi AT 3a2f
+   0544         IF (SW10.EQ.0) THEN                                                              AT 3a2f
+   0545           WUPRS = WUPTS                                                                  AT 3a40
+   0546           PSISM = PSIST                                                                  AT 3a6f
+   0547         ENDIF                                                                            AT 3a6f
+   0548         GOTO 1112                                                                        AT 3a6f
+   0549   C                                                                                      AT 3a74
+   0550    1111 D17 = 0.0                                                                        AT 3a74
+   0551         IF (PDWR(n1).GT.0.0) D17 = WUPT(n1)*(1.0 -                                       AT 3a96
+   0552        &   ((PDWR(n1)*CONVR)- PCRTS + PCRQ)/(PDWR(n1)*CONVR))                            AT 3a96
+   0553         WUPTS = WUPTS - D17                                                              AT 3b82
+   0554   C NOTE 10.24                                                                           AT 3bce
+   0555         IF ((WUPMS + WUPTS).GT.0.) PSIST = (WUPSI - (PSIS(n1)*D17))                      AT 3bce
+   0556        & /(WUPMS + WUPTS)                                               ! this is the average psi AT 3bce
+   0557   C                                                                                      AT 3c27
+   0558   C   CALCULATE WATER UPTAKE RATE IF LEAF WATER POTENTIAL HAS NOT                        AT 3c27
+   0559   C   RISEN ABOVE THE THRESHOLD WHICH JUST PREVENTED ALL SHOOT                           AT 3c27
+   0560   C   EXPANSION IN THE LAST PERIOD                                                       AT 3c27
+   0561   C                                                                                      AT 3c27
+   0562   1112  WUPDS = (WUPMS + WUPRS)*(PSISM - PPSILT)/(PSISM - PSILT)                         AT 3c27
+   0563   C                                                                                      AT 3e99
+   0564   C   CALCULATE WATER UPTAKE RATE IF LEAF TURGOR PRESSURE = 2 BARS                       AT 3e99
+   0565   C   OR = 0 BARS                                                                        AT 3e99
+   0566   C                                                                                      AT 3e99
+   0567         DPSI02 = 2.0/(1.0 - OSMFAC)                                                      AT 3e99
+   0568         WUP2S = (WUPMS + WUPTS)*(PSIST - PSILZ - DPSI02)/(PSIST - PSILT)                 AT 3e99
+   0569         WUP0S = (WUPMS + WUPTS)*(PSIST - PSILZ)/(PSIST - PSILT)                          AT 3e99
+   0570                                                                                          AT 3e99
+   0571                                                                                          AT 3e99
+   0572   C                                                                                      AT 3e99
+   0573   C   CALCULATE POTENTIAL TRANSPIRATION RATE ALLOWING FOR NIGHT-TIME                     AT 3e99
+   0574   C   STOMATAL CLOSURE.  THE STOMATA ARE ASSUMED TO CLOSE TIGHTER                        AT 3e99
+   0575   C   WHEN THE PLANT IS EXPERIENCING WATER STRESS                                        AT 3e99
+   0576   C                                                                                      AT 3e99
+   0577                                                                                          AT 3e99
+   0578   c**************************************************************                        AT 3e99
+   0579   c Stomatal openning and closing is determined in MAIZESIM,                             AT 3e99
+   0580   c so no need to for 2dsoil to determine closure/openning of                            AT 3e99
+   0581   c stomatal Yang 8/24/06                                                                AT 3e99
+   0582                                                                                          AT 3e99
+   0583   c      IF (ITIME.LT.IDAWN.OR.ITIME.GT.IDUSK) THEN                                      AT 3e99
+   0584   c        SCF = 0.1                                                                     AT 3e99
+   0585   c        IF (PILOSM.LT.-9.0) SCF = 0.01                                                AT 3e99
+   0586   c        EOR = EOR*SCF                                                                 AT 3e99
+   0587   c      ENDIF                                                                           AT 3e99
+   0588   c*****************************************************************                     AT 3e99
+   0589   C                                                                                      AT 3e99
+   0590   C   DETERMINE HOW POTENTIAL TRANSPIRATION RATE IS RELATED TO THE                       AT 3e99
+   0591   C   VARIOUS POTENTIAL WATER UPTAKE RATES AND GO TO THE APPROPRIATE                     AT 3e99
+   0592   C   SECTION OF THE CODE. CALCULATE LEAF WATER POTENTIAL,STOMATAL                       AT 3e99
+   0593   C   CONDUCTANCE,THE PROPORTION OF TIME FOR WHICH THE SHOOT GROWS,                      AT 3e99
+   0594   C   THE AMOUNT OF CARBON ACTUALLY NEEDED FOR ROOT GROWTH AND THE                       AT 3e99
+   0595   C   AMOUNT OF OSMOREGULATION THAT WILL OCCUR                                           AT 3e99
+   0596         D18 = WUPMS + WUPTS                                       ! all water uptake from mature roots and new roots AT 3e99
+   0597   C                                                                                      AT 3e99
+   0598   C   POTENTIAL TRANSPIRATION RATE IS SUCH THAT THE DEMAND FOR WATER                     AT 3e99
+   0599   C   UPTAKE CAN BE MET WITHOUT SHOOT WATER POTENTIAL FALLING TO THE                     AT 3e99
+   0600   C   POINT WHERE THE SHOOT LOSES TURGOR AND STOPS GROWING                               AT 3e99
+   0601   C                                                                                      AT 3e99
+   0602         IF (EOR.LT.WUPDS) THEN                                      ! relatively small EOR AT 3e99
+   0603           PSIL_ = PSISM - ((PSISM - PSILT)*EOR/(WUPMS + WUPRS))                          AT 3e99
+   0604   c        SCF = 1.0                                                                     AT 3e99
+   0605            SGT = 1.0                                                                     AT 3e99
+   0606   C                                                                                      AT 3e99
+   0607   C   POTENTIAL TRANSPIRATION RATE IS SUCH THAT THE DEMAND FOR WATER                     AT 3e99
+   0608   C   UPTAKE CANNOT BE MET WITHOUT SHOOT WATER POTENTIAL FALLING TO                      AT 3e99
+   0609   C   THE POINT WHERE THE SHOOT LOSES TURGOR AND STOPS GROWING FOR                       AT 3e99
+   0610   C   PART OF THE PERIOD.  WHEN THIS HAPPENS THE ROOTS GROW                              AT 3e99
+   0611   C                                                                                      AT 3e99
+   0612         ELSE IF (EOR.LT.D18) THEN                                   ! relatively medium EOR AT 3e99
+   0613           D19 = (PPSIL - PSILT)/2.0                                                      AT 3e99
+   0614           PSIL_ = (PPSIL + PSILT)/2.0                                                    AT 3e99
+   0615   c        SCF = 1.0                                                                     AT 3e99
+   0616           IF (D19.LE.0.0) THEN                                                           AT 3e99
+   0617             SGT = 1.0                                                                    AT 3ec1
+   0618             GOTO 1113                                                                    AT 3ec1
+   0619           END IF                                                                         AT 3ec6
+   0620   C                                                                                      AT 3ec6
+   0621   C   CALCULATE LEAF WATER POTENTIAL ITERATIVELY                                         AT 3ec6
+   0622   C                                                                                      AT 3ec6
+   0623                                                                                          AT 3ec6
+   0624         DO 100, J = 1,3                                                                  AT 3ec6
+   0625           WUPGS = (PSISM - PSIL_)/(PSISM - PSILT)                                        AT 3f1b
+   0626        &     *(WUPMS + WUPRS + ((WUPTS - WUPRS)                                          AT 3f1b
+   0627        &     *(PPSIL - PSIL_)/(D19*2)))                                                  AT 3f1b
+   0628           IF (EOR.GT.WUPGS) PSIL_ = PSIL_ - (D19/2**J)                                   AT 3f99
+   0629           IF (EOR.LT.WUPGS) PSIL_ = PSIL_ + (D19/2**J)                                   AT 4006
+   0630    100  CONTINUE                                                                         AT 404a
+   0631   C                                                                                      AT 4084
+   0632         SGT = (PSIL_ - PSILT)/(D19*2.0)                                                  AT 4084
+   0633   C                                                                                      AT 40ab
+   0634   C   POTENTIAL TRANSPIRATION RATE IS BETWEEN THE POSSIBLE WATER                         AT 40ab
+   0635   C   UPTAKE RATES WHEN LEAF TURGOR PRESSURE IS (1) SO LOW THAT ALL                      AT 40ab
+   0636   C   SHOOT GROWTH IS PREVENTED, THE ROOTS GROW CONTINUOUSLY, AND                        AT 40ab
+   0637   C   AND THE LEAVES OSMOREGULATE, AND (2) AT 2 BARS, WHERE STOMATAL                     AT 40ab
+   0638   C   CLOSURE IS ASSUMED TO START                                                        AT 40ab
+   0639   C                                                                                      AT 40ab
+   0640         ELSE IF (EOR.LT.WUP2S) THEN                                                      AT 40ab
+   0641           PSIL_ = PSIST - ((PSIST - PSILT)*EOR/(WUPMS + WUPTS))                          AT 4301
+   0642           SCF = 1.0                                                                      AT 4301
+   0643           SGT = 0.0                                                                      AT 4301
+   0644           OSMREG = 0.25                                                                  AT 4301
+   0645   C                                                                                      AT 4301
+   0646   C   SINCE POTENTIAL TRANSPIRATION RATE IS GREATER THAN THE                             AT 4301
+   0647   C   POSSIBLE WATER UPTAKE RATE WHEN LEAF TURGOR PRESSURE IS 2 BARS                     AT 4301
+   0648   C   STOMATAL CLOSURE WILL DECREASE TRANSPIRATION RATE.                                 AT 4301
+   0649   C   CALCULATE LEAF WATER POTENTIAL AND STOMATAL CLOSURE FACTOR                         AT 4301
+   0650   C                                                                                      AT 4301
+   0651   CDT  04-25-2011 under severe stress, EOR, WUP2S, and WUP0S were all zero resulting     AT 4301
+   0652   CDT  10-07-2011 under severe stress, EOR, WUP2S, and WUP0S were all zero resulting     AT 4301
+   0653   C    in an undefined value for PSIL_. I added a case for this and set PSIL_ to -15.    AT 4301
+   0654         ELSE IF ((EOR+WUP2S+WUP0S).gt.0) THEN                                            AT 4301
+   0655           PSIL_ = PSILZ + DPSI02 - ((EOR - WUP2S)/((EOR/DPSI02)                          AT 4301
+   0656        &   + ((WUP0S - WUP2S)/DPSI02)))                                                  AT 4301
+   0657           SCF = 1.0 - ((PSILZ + DPSI02) - PSIL_)/DPSI02                                  AT 4301
+   0658           SGT = 0.0                                                                      AT 4301
+   0659           OSMREG = 0.25                                                                  AT 4301
+   0660         ELSE    ! case when all else fails                                               AT 4301
+   0661           PSIL_=-15                                                                      AT 4301
+   0662           SCF=0                                                                          AT 4301
+   0663           SGT=0                                                                          AT 4301
+   0664           OSMREG=0.1                                                                     AT 4301
+   0665         END IF                                                                           AT 4301
+   0666   C                                                                                      AT 4301
+   0667   C   LEAF WATER POTENTIAL CANNOT RISE ABOVE ITS DAWN VALUE                              AT 4301
+   0668   C                                                                                      AT 4301
+   0669    1113 IF (PSIL_.GT.PSILD) PSIL_ = PSILD                                                AT 4301
+   0670                                                                                          AT 4425
+   0671   c      IF (ITIME.LT.IDAWN.OR.ITIME.GT.IDUSK) THEN                                      AT 4425
+   0672   c        SCF = 0.1                                                                     AT 4425
+   0673   c        IF (PILOSM.LT.-9.0) SCF = 0.01                                                AT 4425
+   0674   c        EOR = EOR/SCF                                                                 AT 4425
+   0675   c      ENDIF                                                                           AT 4425
+   0676   C                                                                                      AT 4425
+   0677   C  CALCULATE LEAF TURGOR PRESSURE                                                      AT 4425
+   0678   C                                                                                      AT 4425
+   0679         PTPL = TPL                                                                       AT 4425
+   0680         TPL = ((PSIL_ - PPSIL)*(1.0 - OSMFAC)) + TPL                                     AT 4425
+   0681         IF (BTPL.GT.TPL) BTPL = TPL                                                      AT 4425
+   0682         PPSIL = PSIL_                                                                    AT 4425
+   0683   C                                                                                      AT 4425
+   0684   C  IF TURGOR PRESSURE IS LESS THAN 2 BARS THE SHOOT DOES NOT GROW                      AT 4425
+   0685   C                                                                                      AT 4425
+   0686         IF (TPL.LT.2.0) THEN                                                             AT 4425
+   0687           SGTLI = 1.0                                                                    AT 4425
+   0688           SGT = 0.0                                                                      AT 45f2
+   0689           PCRS = PCRQ                                                                    AT 45f2
+   0690   C                                                                                      AT 45f2
+   0691   C   IF TURGOR PRESSURE IS DECREASING AND IS LESS THAN 5 BARS                           AT 45f2
+   0692   C   SHOOT GROWTH POTENTIAL IS FURTHER REDUCED                                          AT 45f2
+   0693   C                                                                                      AT 45f2
+   0694         ELSE IF (TPL.LT.PTPL) THEN                                                       AT 45f2
+   0695           IF (TPL.LE.5.0) SGT = SGT*(TPL - 2.0)/3.0                                      AT 45f2
+   0696           SGTLT = SGTLT + 1.0 - SGT                                                      AT 45f2
+   0697           PCRS = PCRL                                                                    AT 45f2
+   0698           IF (SGT.LT.1.0) PCRS = PCRL + ((PCRQ - PCRL)*(1.0 - SGT))                      AT 45f2
+   0699   C                                                                                      AT 45f2
+   0700   C     *** IF TURGOR PRESSURE IS INCREASING AND IS ABOVE 2.0 BARS,                      AT 45f2
+   0701   C         SHOOT GROWTH POTENTIAL IS INCREASED. ***                                     AT 45f2
+   0702   C                                                                                      AT 45f2
+   0703         ELSE                                                                             AT 45f2
+   0704           IF (BTPL.LT.2.0) BTPL = 2.0                                                    AT 45f2
+   0705           PCRS = PCRL                                                                    AT 45f2
+   0706         END IF                                                                           AT 45f2
+   0707                                                                                          AT 45f2
+   0708                                                                                          AT 45f2
+   0709         Return                                                                           AT 45f2
+   0710   10    Call errmes(im,il)                                                               AT 45f7
+   0711   25    format(f9.2,1x,i6,1x,3F9.4)                                                      AT 460c
+D:\2DSOIL_Grape\Soil Source\carbon_partitioning.FOR(711) : warning 21 - Label 25 is declared, but not used 
+   0712         Return                                                                           AT 460c
+   0713         End                                                                              AT 50
+   0714   *********************************************************************                  AT 0
+   0715         SUBROUTINE SORT(NCR,LOCATE,VALUE,RVR)                                            AT 50
+   0716   C     --------------------------( SORT )--------------------------------               AT 50
+   0717   C     THIS SUBROUTINE SORTS THE CORRESPONDING ARRAYS "LOCATE" AND "VALUE"              AT 50
+   0718   C     SO THAT THE ELEMENTS OF "LOCATE" GIVE NUMBERS OF ELEMENTS OF "VALUE"             AT 50
+   0719   C     IN ORDER FROM HIGHEST TO LOWEST VALUE. If neighbor values do not                 AT 50
+   0720   C     differ, preference is given to value with lower RVR.                             AT 50
+   0721   C     IT USES THE QUICKSORT PROCEDURE PROPOSED BY C.A.R. HOARE AND                     AT 50
+   0722   C     DESCRIBED IN MANY PROGRAMMING TEXTBOOKS.  Variables used only inside             AT 50
+   0723   C     this subroutine are not listed in the dictionary for GLYCIM.                     AT 50
+   0724   C     ------------------------------------------------------------------               AT 50
+   0725         DIMENSION LOCATE(NCR),VALUE(NCR),MARRAY(3500),NARRAY(3500),                      AT 50
+   0726        &          VALAux(3500),RVR(NCR)                                                  AT 50
+   0727   C                                                                                      AT c8
+   0728         M = 1                                                                            AT c8
+   0729         N = NCR                                                                          AT d0
+   0730         KOUNT = 0                                                                        AT e4
+   0731            DO I=1,NCR                                                                    AT ec
+   0732            LOCATE(I)=I                                                                   AT 10e
+   0733            VALAUX(I)=VALUE(I)                                                            AT 11f
+   0734            ENDDO                                                                         AT 137
+   0735   C                                                                                      AT 14b
+   0736    1111 IF (M.LT.NCR) THEN                                                               AT 14b
+   0737           IF (M.LT.N) THEN                                                               AT 164
+   0738   C                                                                                      AT 172
+   0739   C     *** SORT PART OF ARRAY BOUNDED BY M AND N ***                                    AT 172
+   0740   C                                                                                      AT 172
+   0741             I = M - 1                                                                    AT 172
+   0742             J = N                                                                        AT 17c
+   0743             REF = VALAux (N)                                                             AT 187
+   0744    1112   CONTINUE                                                                       AT 19c
+   0745           I = I + 1                                                                      AT 19c
+   0746           IF (VALAux(I).GT.REF) GO TO 1112                                               AT 1a0
+   0747    1113 CONTINUE                                                                         AT 1c1
+   0748         J = J - 1                                                                        AT 1c1
+   0749         IF (J.GT.1.AND.VALAux(J).LT.REF) GO TO 1113                                      AT 1c8
+   0750         IF (I.LT.J) THEN                                                                 AT 1fd
+   0751           D11 = VALAux(I)                                                                AT 20e
+   0752           VALAux(I) = VALAux(J)                                                          AT 225
+   0753           VALAux(J) = D11                                                                AT 23f
+   0754           M11 = LOCATE(I)                                                                AT 248
+   0755           LOCATE(I) = LOCATE(J)                                                          AT 25d
+   0756           LOCATE(J) = M11                                                                AT 267
+   0757         ELSE                                                                             AT 271
+   0758           GO TO 1114                                                                     AT 271
+   0759         END IF                                                                           AT 276
+   0760         GO TO 1112                                                                       AT 276
+   0761    1114 D12 = VALAux(N)                                                                  AT 27b
+   0762         VALAux(N) = VALAux(I)                                                            AT 292
+   0763         VALAux(I) = D12                                                                  AT 2a9
+   0764         M11 = LOCATE(N)                                                                  AT 2b2
+   0765         LOCATE(N) = LOCATE(I)                                                            AT 2c7
+   0766         LOCATE(I) = M11                                                                  AT 2d1
+   0767   C                                                                                      AT 2d6
+   0768   C     *** MANIPULATE STACK OF VALUES OF M AND N ***                                    AT 2d6
+   0769   C                                                                                      AT 2d6
+   0770         KOUNT = KOUNT + 1                                                                AT 2d6
+   0771         MARRAY(KOUNT) = I + 1                                                            AT 2da
+   0772         NARRAY(KOUNT) = N                                                                AT 2e9
+   0773         N = I - 1                                                                        AT 2f1
+   0774         ELSE                                                                             AT 303
+   0775         M = MARRAY(KOUNT)                                                                AT 303
+   0776         N = NARRAY(KOUNT)                                                                AT 313
+   0777         KOUNT = KOUNT - 1                                                                AT 320
+   0778         END IF                                                                           AT 324
+   0779         GO TO 1111                                                                       AT 324
+   0780         END IF                                                                           AT 329
+   0781   C                                                                                      AT 329
+   0782   C     *** FURTHER SORT THE CELLS SO THAT WITHIN GROUPS HAVING THE SAME                 AT 329
+   0783   C       VALUE, THOSE NEARER THE PLANT STEM HAVE PRIORITY IN THE LIST ***               AT 329
+   0784   C                                                                                      AT 329
+   0785         I = 1                                                                            AT 329
+   0786    1115 IF (I.LT.NCR) THEN                                                               AT 331
+   0787           IF (VALAux(I).GT.VALAux(I + 1)) THEN                                           AT 34a
+   0788             I = I + 1                                                                    AT 366
+   0789           ELSE                                                                           AT 36f
+   0790   c          IF (LOCATE(I).GT.LOCATE(I + 1)) THEN                                        AT 36f
+   0791             IF (RVR(LOCATE(I)).GT.RVR(LOCATE(I + 1))) THEN                               AT 36f
+   0792               M12 = LOCATE(I)                                                            AT 3a1
+   0793               LOCATE(I) = LOCATE(I + 1)                                                  AT 3ba
+   0794               LOCATE(I + 1) = M12                                                        AT 3c4
+   0795               I = I - 1                                                                  AT 3c9
+   0796               IF (I.LT.1) I = 1                                                          AT 3cd
+   0797             ELSE                                                                         AT 3e8
+   0798               I = I + 1                                                                  AT 3e8
+   0799             END IF                                                                       AT 3ec
+   0800           END IF                                                                         AT 3ec
+   0801           GO TO 1115                                                                     AT 3ec
+   0802         END IF                                                                           AT 3f1
+   0803   C                                                                                      AT 3f1
+   0804         M=1                                                                              AT 3f1
+   0805         RETURN                                                                           AT 3f9
+   0806         END                                                                              AT 420
+   0807   C                                                                                      AT 0
+
+
+
+
+End of Compilation - Clocked 0.03 seconds

@@ -1,0 +1,349 @@
+Silverfrost FTN95/x64 Ver 8.50.0  GRID_BND.FOR  Sun Oct 27 15:06:02 2019
+
+Compiler used    [C:\Program Files (x86)\Silverfrost\FTN95\FTN95.EXE]
+Salflibc path    [C:\Program Files (x86)\Silverfrost\FTN95\salflibc.dll]
+Salflibc version [21.4.29.16]
+Compiler options in effect:
+    64;BINARY;CFPP;ERROR_NUMBERS;FIXED_FORMAT;FPP;IGNORE;LIST;
+    LIST_INSERT_FILES;NO_BANNER;TABS;UNLIMITED_ERRORS;VS7;XREF;
+
+   0001   C||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*                 AT 0
+   0002   CDT Nov, 2007 added a drainage boundary. It is input similar to seepage. The difference is AT 7e
+   0003   C*     that drainage always takes place from a drainage boundary - it is usually horizontal AT 7e
+   0004   C      seepage faces are usually used in ditches.                                      AT 7e
+   0005         Subroutine Get_Grid_and_Boundary()                                               AT 7e
+   0006         Include 'public.ins'                                                             AT 7e
+ 1/0001   c  dt ToDo - simplyfy common blocks so only variables needed in plant model            AT 7e
+ 1/0002   c dt ToDo May 2016 added VarBW_old for debugging purposes can be removed later         AT 7e
+ 1/0003   c   will be transferred.                                                               AT 7e
+ 1/0004         Parameter (NumNPD=4000, NumElD=3500, NumBPD=600, NSeepD = 2,                     AT 7e
+ 1/0005        &           NumSPD= 30, NumSD =10, NDrainD=2,NumDR=30,                            AT 7e
+ 1/0006        &           NumGD = 3, NumPlD=100,                                                AT 7e
+ 1/0007        &           NMatD=15,MNorth=4,                                                    AT 7e
+ 1/0008        &           NumModD=20, MBandD=15,  NumSurfDatD=3+NumGD+NumSD)                    AT 7e
+ 1/0009                                                                                          AT 7e
+ 1/0010                                                                                          AT 7e
+ 1/0011         Double precision Time,Step,tNext,                                                AT 7e
+ 1/0012        &             dtOpt,dtMin,dMul1,dMul2,dtMx,tTDB,tFin,tatm                         AT 7e
+ 1/0013         Double precision  A1,B1,VRV,RES,RQI,RQ,QI,QQ,RQIDOT                              AT 7e
+ 1/0014         Double precision  ECNVRG, RCNVRG,ACNVRG                                          AT 7e
+ 1/0015         Double precision Starter, TimeStep                                               AT 7e
+ 1/0016                                                                                          AT 7e
+ 1/0017         Real BlkDn, FracSind, FracClay, FracOM, hCritS,hCritA                            AT 7e
+ 1/0018         Real nodeArea                                                                    AT 7e
+ 1/0019         Integer CodeW,CodeS,CodeT,CodeG,errPlant                                         AT 7e
+ 1/0020         Integer MaxItO, OutPutSoilNo, OutPutSoilYes                                      AT 7e
+ 1/0021         Logical*1 lOrt                                                                   AT 7e
+ 1/0022         Integer DailyOutput, HourlyOutput,RunFlag,                                       AT 7e
+ 1/0023        &  DailyWeather,HourlyWeather,ITIME, IDAWN, IDUSK,                                AT 7e
+ 1/0024        &  beginDay, sowingDay, endDay,year                                               AT 7e
+ 1/0025                                                                                          AT 7e
+ 1/0026         character WeatherFile*132, TimeFile*132, BiologyFile*132,                        AT 7e
+ 1/0027        &          ClimateFile*132, NitrogenFile*132, SoluteFile*132,                     AT 7e
+ 1/0028        &          SoilFile*132,                                                          AT 7e
+ 1/0029        &          ManagementFile*132,DripFile*132,                                       AT 7e
+ 1/0030        &          WaterFile*132, WaterBoundaryFile*132,                                  AT 7e
+ 1/0031        &          PlantGraphics*132,InitialsFile*132,  VarietyFile*132,                  AT 7e
+ 1/0032        &          NodeGraphics*132,ElemGraphics*132,                                     AT 7e
+ 1/0033        &          NodeGeomFile*132,                                                      AT 7e
+ 1/0034        &          GeometryFile*132,SurfaceGraphics*132,                                  AT 7e
+ 1/0035        &          FluxGraphics*132,MassBalanceFile*132,                                  AT 7e
+ 1/0036        &          MassBalanceFileOut*132,LeafGraphics*132,                               AT 7e
+ 1/0037        &          RunFile*132                                                            AT 7e
+ 1/0038         Common /grid_public/  NumNP, NumEl, IJ, KAT, MBand,Nmat,                         AT 7e
+ 1/0039        &        KX(NumElD,4),x(NumNPD), y(NumNPD), Area(NumElD),                         AT 7e
+ 1/0040        &        nodeArea(NumNPD)                                                         AT 7e
+ 1/0041         Common /nodal_public/ NumSol,NumG,ListN(NumNPD),ListNE(NumNPD),                  AT 7e
+ 1/0042        &       MatNumN(NumNPD),hNew(NumNPD),ThNew(NumNPD), Vx(NumNPD),                   AT 7e
+ 1/0043        &       Vz(NumNPD),Q(NumNPD), Conc(NumNPD,NumSD),                                 AT 7e
+ 1/0044        &       g(NumNPD,NumGD), Tmpr(NumNPD), Con(NumNPD),TcsXX(NumNPD),                 AT 7e
+ 1/0045        &       RO(NumNPD), hNew_org(NumNPD),QAct(NumNPD),ThetaAvail,                     AT 7e
+ 1/0046        &       ThetaFull, ThAvail(NumNPD),ThFull(NMAtD),  lOrt                           AT 7e
+ 1/0047         Common /elem_public/  MatNumE(NumElD),Sink(NumNPD),                              AT 7e
+ 1/0048        &       cSink(NumNPD,NumSD),gSink(NumNPD,NumGD),tSink(NumNPD),                    AT 7e
+ 1/0049        &       RTWT(NumNPD),RUTDEN(NumNPD),RMassM(NumNPD),RDenM(NumNPD),                 AT 7e
+ 1/0050        &       RMassY(NumNPD), RDenY(NumNPD)                                             AT 7e
+ 1/0051         Common /bound_public/ NumBP, NSurf, NVarBW,NVarBS,NVarBT,NVarBG,                 AT 7e
+ 1/0052        &       NumSurfDat, NSeep, NSP(NSeepD), NP(NSeepD,NumSPD),                        AT 7e
+ 1/0053        &       NDrain,NDR(NDrainD),ND(NDrainD,NumDR),                                    AT 7e
+ 1/0054        &       KXB(NumBPD),                                                              AT 7e
+ 1/0055        &       CodeW(NumNPD),CodeS(NumNPD),CodeT(NumNPD),CodeG(NumNPD),                  AT 7e
+ 1/0056        &       PCodeW(NumNPD),Width(NumBPD),                                             AT 7e
+ 1/0057        &       VarBW(NumBPD,3),VarBW_Old(NumBPD,3),                                      AT 7e
+ 1/0058        &       VarBS(NumBPD,NumSD),VarBT(NumBPD,4),                                      AT 7e
+ 1/0059        &       VarBG(NumBPD,NumGD,3),EO,Tpot                                             AT 7e
+ 1/0060         Common /time_public/tNext(NumModD),dtMx(4),Time,Step,dtOpt,                      AT 7e
+ 1/0061        &        dtMin, dMul1, dMul2,  tTDB(4), Tfin,tAtm, Tinit,                         AT 7e
+ 1/0062        &        lInput,Iter,DailyOutput,HourlyOutput,RunFlag,                            AT 7e
+ 1/0063        &          DailyWeather,HourlyWeather,                                            AT 7e
+ 1/0064        &          beginDay, sowingDay, endDay,                                           AT 7e
+ 1/0065        &          OutputSoilNo, OutPutSoilYes, Year,                                     AT 7e
+ 1/0066        &           iTime, iDawn, iDusk, dumpad, TimeStep                                 AT 7e
+ 1/0067         Common /module_public/  NumMod,Movers(4), NShoot                                 AT 7e
+ 1/0068         Common /error_public/errPlant                                                    AT 7e
+ 1/0069         Common /Solver_public/IAD(MBandD,NumNPD), IADN(NumNPD),                          AT 7e
+ 1/0070        &        IADD(NumNPD),A1(MBandD,NumNPD),B1(NumNPD),                               AT 7e
+ 1/0071        &        VRV(NumNPD),RES(NumNPD),RQI(NumNPD,MNorth),                              AT 7e
+ 1/0072        &        QQ(NumNPD), RQ(NumNPD),QI(NumNPD,MNorth), RQIDOT(MNorth)                 AT 7e
+ 1/0073                                                                                          AT 7e
+ 1/0074         Common /Initvar/ ECNVRG, RCNVRG, ACNVRG, MaxItO,EPSI_Heat,                       AT 7e
+ 1/0075        &                 EPSI_Solute, hCritS, hCritA                                     AT 7e
+ 1/0076                                                                                          AT 7e
+ 1/0077         Common /DataFilenames/ Starter, WeatherFile, TimeFile,                           AT 7e
+ 1/0078        &          BiologyFile,ClimateFile, NitrogenFile, SoluteFile,                     AT 7e
+ 1/0079        &          SoilFile,                                                              AT 7e
+ 1/0080        &          ManagementFile,DripFile,                                               AT 7e
+ 1/0081        &          WaterFile, WaterBoundaryFile,                                          AT 7e
+ 1/0082        &          PlantGraphics,InitialsFile,VarietyFile,                                AT 7e
+ 1/0083        &          NodeGraphics,ElemGraphics,NodeGeomFile,                                AT 7e
+ 1/0084        &          GeometryFile,SurfaceGraphics,                                          AT 7e
+ 1/0085        &          FluxGraphics, MassBalanceFile,MassBalanceFileOut,                      AT 7e
+ 1/0086        &          LeafGraphics,RunFile                                                   AT 7e
+ 1/0087                                                                                          AT 7e
+ 1/0088   c the following blocks are not passed to the crop model                                AT 7e
+ 1/0089         Common /Nodal_pub_Aux/ ROForInfil(NumBPD)                                        AT 7e
+ 1/0090                                                                                          AT 7e
+ 1/0091         Common /Materials/BlkDn(NMatD),FracSind(NMatD), FracClay(NMatD),                 AT 7e
+ 1/0092        &           FracOM(NMatD),TUpperLimit(NMatD), TLowerLimit(NMatD)                  AT 7e
+   0007         Include 'nitvar.ins'                                                             AT 7e
+   0008                                                                                          AT 7e
+ 1/0001         Real kh0,kl0,km0,kd0,kn0,kh,kl,kd,kn,km,nq,                                      AT 7e
+ 1/0002        &    Nl,Nh,Nm,NNH4,NNO3_sol,                                                      AT 7e
+ 1/0003        &    NNO3_old,NNH4_old,NL_old,Nm_old,Nh_old                                       AT 7e
+ 1/0004                                                                                          AT 7e
+ 1/0005         Common /NITVAR/                                                                  AT 7e
+ 1/0006        &    kh0(NMatD),kl0(NMatD),kd0(NMatD),kn0(NMatD),km0(NMatD),                      AT 7e
+ 1/0007        &    fe(NMatD),fh(NMatD),r0(NMatD),rL(NMatD),rm(NMatD),                           AT 7e
+ 1/0008        &    fa(NMatD),nq(NMatD),cs(NMatD),                                               AT 7e
+ 1/0009        &    NL(NumNPD),Nh(NumNPD),Nm(NumNPD),NNH4(NumNPD),                               AT 7e
+ 1/0010        &    Ch(NumNPD),CL(NumNPD),Cm(NumNPD),                                            AT 7e
+ 1/0011        &    Ch_Old(NumNPD),CL_old(NumNPD), Cm_Old(NumNPD),                               AT 7e
+ 1/0012        &    NNO3_old(NumNPD),NNH4_old(NumNPD),NL_old(NumNPD),                            AT 7e
+ 1/0013        &    Nh_old(NumNPD),Nm_Old(NumNPD),                                               AT 7e
+ 1/0014        &    ThOld(NumNPD),TmprOld(NumNPD),Denit(NumNPD),                                 AT 7e
+ 1/0015        &    Denit_old(NumNPD)                                                            AT 7e
+   0009         Integer e                                                                        AT 7e
+   0010         Logical lConst                                                                   AT 7e
+   0011         Dimension idummy(4)                                                              AT 7e
+   0012                                                                                          AT 7e
+   0013         im=20                                                                            AT 7e
+   0014         il=0                                                                             AT 86
+   0015                                                                                          AT 8e
+   0016         Open(40,file=GeometryFile,status='old',ERR=10)                                   AT 8e
+   0017         im=im+1                                                                          AT 110
+   0018         il=il+1                                                                          AT 114
+   0019         Read(40,*,ERR=10)                                                                AT 118
+   0020         im=im+1                                                                          AT 14f
+   0021         il=il+1                                                                          AT 153
+   0022         Read(40,*,ERR=10)                                                                AT 157
+   0023         im=im+1                                                                          AT 18e
+   0024         il=il+1                                                                          AT 192
+   0025         Read(40,*,ERR=10) KAT,NumNP,NumEl,NumBP,IJ, NMat                                 AT 196
+   0026         im=im+1                                                                          AT 26f
+   0027         il=il+1                                                                          AT 273
+   0028         Read(40,*,ERR=10)                                                                AT 277
+   0029         im=im+1                                                                          AT 2ae
+   0030   C                                                                                      AT 2c8
+   0031   C Reading nodal information                                                            AT 2c8
+   0032   C                                                                                      AT 2c8
+   0033         Do i=1,NumNP                                                                     AT 2c8
+   0034           il=il+1                                                                        AT 2e0
+   0035           Read(40,*,ERR=10) n,x(n),y(n),MatNumN(n)                                       AT 2e4
+   0036         Enddo                                                                            AT 3c5
+   0037   C  Reading element information                                                         AT 3e0
+   0038                                                                                          AT 3e0
+   0039         Num=0                                                                            AT 3e0
+   0040         im=im+1                                                                          AT 3eb
+   0041         il=il+1                                                                          AT 3ef
+   0042         Read(40,*,ERR=10)                                                                AT 3f3
+   0043         im=im+1                                                                          AT 42a
+   0044         il=il+1                                                                          AT 42e
+   0045         Read(40,*,ERR=10)                                                                AT 432
+   0046         im=im+1                                                                          AT 469
+   0047         Do e=1,NumEL                                                                     AT 483
+   0048           il=il+1                                                                        AT 4a0
+   0049           Read(40,*,ERR=10) Num,(KX(Num,i),i=1,4),MatNuME(Num)                           AT 4a4
+   0050   cdt 10/21/2002 added this line to allow input of 3 node elements                       AT 5a6
+   0051           if(KX(Num,4).eq.0) KX(Num,4)=KX(Num,3)                                         AT 5a6
+   0052         Enddo                                                                            AT 614
+   0053   C                                                                                      AT 62f
+   0054   c     write(*, *) 'Reading boundary information'                                       AT 62f
+   0055   C                                                                                      AT 62f
+   0056         im=im+1                                                                          AT 62f
+   0057         il=il+1                                                                          AT 633
+   0058         Read(40,*,ERR=10)                                                                AT 637
+   0059         im=im+1                                                                          AT 66e
+   0060         il=il+1                                                                          AT 672
+   0061         Read(40,*,ERR=10)                                                                AT 676
+   0062         im=im+1                                                                          AT 6ad
+   0063         Do i=1,NumBP                                                                     AT 6c7
+   0064           il=il+1                                                                        AT 6e0
+   0065           Read(40,*,ERR=10) n,(idummy(j),j=1,4),Width(i)                                 AT 6e4
+   0066           KXB(i)=n                                                                       AT 7ba
+   0067           CodeW(n)=idummy(1)                                                             AT 7e0
+   0068           CodeS(n)=idummy(2)                                                             AT 802
+   0069           CodeT(n)=idummy(3)                                                             AT 829
+   0070           CodeG(n)=idummy(4)                                                             AT 850
+   0071           Do j=1,4                                                                       AT 86f
+   0072             If(idummy(j).ne.0) Movers(j)=1                                               AT 880
+   0073           Enddo                                                                          AT 8c2
+   0074         Enddo                                                                            AT 8da
+   0075   C                                                                                      AT 8f7
+   0076   C      write(*,*) "Reading seepage face information"                                   AT 8f7
+   0077   C                                                                                      AT 8f7
+   0078         im=im+1                                                                          AT 8f7
+   0079         il=il+1                                                                          AT 8fb
+   0080         Read(40,*,ERR=10)                                                                AT 8ff
+   0081         im=im+1                                                                          AT 936
+   0082         il=il+1                                                                          AT 93a
+   0083         Read(40,*,ERR=10)                                                                AT 93e
+   0084         im=im+1                                                                          AT 975
+   0085         il=il+1                                                                          AT 979
+   0086         Read(40,*,ERR=10) NSeep                                                          AT 97d
+   0087         If (NSeep.ne.0) then                                                             AT 9e7
+   0088           im=im+1                                                                        AT 9e7
+   0089           il=il+1                                                                        AT 9eb
+   0090           Read(40,*,ERR=10)                                                              AT 9ef
+   0091           im=im+1                                                                        AT a26
+   0092           il=il+1                                                                        AT a2a
+   0093           Read(40,*,ERR=10) (NSP(i),i=1,NSeep)                                           AT a2e
+   0094           im=im+1                                                                        AT ae2
+   0095           il=il+1                                                                        AT ae6
+   0096           Read(40,*,ERR=10)                                                              AT aea
+   0097           im=im+1                                                                        AT b21
+   0098           Do i=1,NSeep                                                                   AT b3b
+   0099             il=il+1                                                                      AT b60
+   0100             Read(40,*,ERR=10) (NP(i,j),j=1,NSP(i))                                       AT b64
+   0101           Enddo                                                                          AT c48
+   0102         EndIf                                                                            AT c65
+   0103         Read(40,*,ERR=10)                                                                AT c65
+   0104         im=im+1                                                                          AT c9c
+   0105         il=il+1                                                                          AT ca0
+   0106         Read(40,*,ERR=10)                                                                AT ca4
+   0107         im=im+1                                                                          AT cdb
+   0108         il=il+1                                                                          AT cdf
+   0109         Read(40,*,ERR=10) NDrain                                                         AT ce3
+   0110         If (NDrain.ne.0) then                                                            AT d4d
+   0111           im=im+1                                                                        AT d4d
+   0112           il=il+1                                                                        AT d51
+   0113           Read(40,*,ERR=10)                                                              AT d55
+   0114           im=im+1                                                                        AT d8c
+   0115           il=il+1                                                                        AT d90
+   0116           Read(40,*,ERR=10) (NDR(i),i=1,NDrain)                                          AT d94
+   0117           im=im+1                                                                        AT e52
+   0118           il=il+1                                                                        AT e56
+   0119           Read(40,*,ERR=10)                                                              AT e5a
+   0120           im=im+1                                                                        AT e91
+   0121           Do i=1,NDrain                                                                  AT eab
+   0122             il=il+1                                                                      AT ed0
+   0123             Read(40,*,ERR=10) (ND(i,j),j=1,NDR(i))                                       AT ed4
+   0124           Enddo                                                                          AT fb8
+   0125         EndIf                                                                            AT fd5
+   0126         Close(40)                                                                        AT fd5
+   0127   C                                                                                      AT 100a
+   0128   C                                                                                      AT 100a
+   0129   C                                                                                      AT 100a
+   0130         Do n=1,NumNP                                                                     AT 100a
+   0131           ListN(n)=1                                                                     AT 103f
+   0132           ListNE(n)=0                                                                    AT 1061
+   0133         Enddo                                                                            AT 107c
+   0134   C                                                                                      AT 10a9
+   0135   C  Area of elements and bandwidth MBand                                                AT 10a9
+   0136   C                                                                                      AT 10a9
+   0137         lOrt=.false.                                                                     AT 10a9
+   0138         lConst=.true.                                                                    AT 10a9
+   0139         MBand=1                                                                          AT 10c7
+   0140         xMul=1.                                                                          AT 10c7
+   0141         Do e=1,NumEl                                                                     AT 10ea
+   0142           Area(e)=0.                                                                     AT 111f
+   0143           NUS=4                                                                          AT 1141
+   0144           If(KX(e,3).eq.KX(e,4)) NUS=3                                                   AT 1154
+   0145           Do k=1,NUS-2                                                                   AT 11a3
+   0146             MB=1                                                                         AT 11d0
+   0147             i=KX(e,1)                                                                    AT 11ea
+   0148             j=KX(e,k+1)                                                                  AT 1211
+   0149             l=KX(e,k+2)                                                                  AT 1252
+   0150             CJ=x(i)-x(l)                                                                 AT 128a
+   0151             CK=x(j)-x(i)                                                                 AT 12cc
+   0152             BJ=y(l)-y(i)                                                                 AT 1313
+   0153             BK=y(i)-y(j)                                                                 AT 135f
+   0154             AE=(CK*BJ-CJ*BK)/2.                                                          AT 13a3
+   0155             If(KAT.eq.1) xMul=2.*3.1416*(x(i)+x(j)+x(l))/3.                              AT 13e6
+   0156             Area(e)=Area(e)+xMul*AE                                                      AT 146c
+   0157             ListNE(i)=ListNE(i)+1                                                        AT 14b2
+   0158             ListNE(j)=ListNE(j)+1                                                        AT 14d1
+   0159             ListNE(l)=ListNE(l)+1                                                        AT 14ef
+   0160             If(abs(i-j).gt.MB) MB=abs(i-j)                                               AT 1505
+   0161             If(abs(i-l).gt.MB) MB=abs(i-l)                                               AT 1556
+   0162             If(abs(j-l).gt.MB) MB=abs(j-l)                                               AT 15a7
+   0163             If(MB.gt.MBand) MBand=MB                                                     AT 162a
+   0164             If(e.eq.1.and.k.eq.1) then                                                   AT 162a
+   0165               MB1=MB                                                                     AT 164c
+   0166             Else                                                                         AT 165f
+   0167               If(MB1.ne.MB) lConst=.false.                                               AT 165f
+   0168             Endif                                                                        AT 167e
+   0169           Enddo                                                                          AT 167e
+   0170         Enddo                                                                            AT 169b
+   0171         MBand=MBand+1                                                                    AT 1716
+   0172         if(MBand.gt.MBandD.or.(2*MBand-1.gt.MBandD)) lOrt=.true.                         AT 1716
+   0173                                                                                          AT 1716
+   0174         If(.not.lConst) IJ=NumNP                                                         AT 1716
+   0175   CDT note SWMS_2D used 200   (lChem.and. -> this went before 2 and after .or)           AT 1798
+   0176         if(MBand.gt.10.or.NumNP.gt.200) lOrt=.true.                                      AT 1798
+   0177   C                                                                                      AT 1798
+   0178   C  Numbers of boundary nodes where boundary conditions are not constant                AT 1798
+   0179   C                                                                                      AT 1798
+   0180         Do j=1,NumBP                                                                     AT 1798
+   0181           i=KXB(j)                                                                       AT 17bf
+   0182           k=abs(CodeW(i))                                                                AT 17e5
+   0183           If(k.eq.3.or.k.eq.6) NVarBW=NVarBW+1                                           AT 180f
+   0184           If(k.eq.4) NSurf = NSurf +1                                                    AT 1846
+   0185           k=abs(CodeS(i))                                                                AT 187f
+   0186           If(k.eq.3.or.k.eq.6) NVarBS=NVarBS+1                                           AT 18ab
+   0187           If(abs(CodeT(i)).eq.3) NVarBT=NvarBT+1                                         AT 18f1
+   0188           If(abs(CodeG(i)).eq.3) NVarBG=NvarBG+1                                         AT 194b
+   0189         Enddo                                                                            AT 1996
+   0190                                                                                          AT 19c4
+   0191           NumSol=1                                                                       AT 19c4
+   0192           im=450                                                                         AT 19c4
+   0193           il=0                                                                           AT 19cc
+   0194           Open(41,File=NodeGeomFile,ERR=10)                                              AT 19d4
+   0195           im=im+1                                                                        AT 1a32
+   0196           il=il+1                                                                        AT 1a36
+   0197           Read(41,*)                                                                     AT 1a3a
+   0198           im=im+1                                                                        AT 1a5e
+   0199           Read(41,*)                                                                     AT 1a62
+   0200           im=im+1                                                                        AT 1a86
+   0201                                                                                          AT 1aa0
+   0202           Do j=1,NumNP                                                                   AT 1aa0
+   0203             il=il+1                                                                      AT 1ac0
+   0204             Read(41,*, ERR=10) i, Nh(i),Ch(i),NL(i),CL(i),Nm(i),Cm(i),                   AT 1ac4
+   0205        &    NNH4(i),(Conc(i,jjj),jjj=1,NumSol),Tmpr(i),hNew(i)                           AT 1ac4
+   0206                                                                                          AT 1d7b
+   0207             Ch_old(i)=Ch(i)                                                              AT 1d7b
+   0208             Nh_old(i)=Nh(i)                                                              AT 1dc5
+   0209             CL_old(i)=CL(i)                                                              AT 1e0f
+   0210             NL_old(i)=NL(i)                                                              AT 1e59
+   0211             Cm_old(i)=Cm(i)                                                              AT 1ea3
+   0212             Nm_old(i)=Nm(i)                                                              AT 1eed
+   0213   C     right now conc is ug NO3 per g soil. further conversions will be done in the solute mover initialization routine when we have water contents. AT 1f37
+   0214             NNO3_old(i)=Conc(i,1)                                                        AT 1f37
+   0215   C   ammonia is input as ppm or ug /g soil here we convert it to ug/cm3 or mg per liter of soil volume AT 1f9f
+   0216             NNH4_old(i) =  NNH4(i)*blkdn(MatNumN(i))                                     AT 1f9f
+   0217             ThOld(i)=ThNew(i)                                                            AT 206a
+   0218             TmprOld(i)=Tmpr(i)                                                           AT 20d2
+   0219             Denit(i)=0.                                                                  AT 213a
+   0220             Denit_old(i)=0.                                                              AT 216b
+   0221           Enddo                                                                          AT 218d
+   0222         close(41)                                                                        AT 21a8
+   0223   ! READING FROM Nodal_N.dat alternative file.  BY GR EDN                                AT 21c7
+   0224         Write(*,*) 'Reading Grid Done'                                                   AT 21c7
+   0225         Return                                                                           AT 2201
+   0226   10    Call errmes(im,il)                                                               AT 2206
+   0227         End                                                                              AT 2285
+   0228                                                                                          AT 0
+
+
+
+
+End of Compilation - Clocked 0.03 seconds

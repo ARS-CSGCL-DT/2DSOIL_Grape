@@ -1007,7 +1007,7 @@ c           If (VarBW(i,2).ge.0.0.and.RNS.gt.0.0) then
               endif
 C See if sensible heat transport works here in canopy              
               TFac=((0.058+1.7e-4*TAirN)+
-     !            (0.052*EXP(.058*TAirN)))*0.004184*3600.0*24.0
+     &            (0.052*EXP(.058*TAirN)))*0.004184*3600.0*24.0
                VarBT(kS(i),2)=VarBT(kS(i),2)+TFac
                VarBT(kS(i),3)=VarBT(kS(i),3)+TFac*TairN
 
@@ -1017,7 +1017,7 @@ C See if sensible heat transport works here in canopy
 *     is determined by air temperature.
 *  units are millcal cm-2 sec-1 C-1
                VarBT(kS(i),2)=((0.058+1.7e-4*TAirN)+
-     !                  (0.052*EXP(.058*TAirN)))
+     &                  (0.052*EXP(.058*TAirN)))
 * the first term is thermal conductivity of the air. 
 * the second term is the conductivity of water vapor
 * Change units to Joules cm-2 d-1
