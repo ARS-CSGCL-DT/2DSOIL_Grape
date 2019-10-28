@@ -327,7 +327,12 @@ c        RGCF5=(1.0-AMIN1(1.0,RMassY(n)/0.03))
 C this one for nitrogen. Use the ratio between actual uptake of N and IMax
     
          dif=amax1(0.0,Conc(n,1)-CMin0(1))
-	   RGCF6 =  amax1(0.3,dif/ConstK(1))
+         if (ConstK(1).GT.0) then 
+            RGCF6 =  amax1(0.3,dif/ConstK(1))
+          else
+            RGCF6=0
+          endif
+          
 	   RGCF6 = AMIN1(1.0, RGCF6)
 
 c ccz zhuangji:AD removed the RGCF3 why? DT - O2 was not simulated 
