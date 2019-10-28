@@ -330,7 +330,7 @@ C this one for nitrogen. Use the ratio between actual uptake of N and IMax
          if (ConstK(1).GT.0) then 
             RGCF6 =  amax1(0.3,dif/ConstK(1))
           else
-            RGCF6=0
+            RGCF6=1
           endif
           
 	   RGCF6 = AMIN1(1.0, RGCF6)
