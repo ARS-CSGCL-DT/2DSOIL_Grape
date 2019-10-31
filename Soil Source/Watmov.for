@@ -15,14 +15,14 @@
       Logical Explic,ItCrit,FreeD
       Real  hOld_1(NumNPD)
       Dimension A(MBandD,NumNPD),B(NumNPD),F(NumNPD),DS(NumNPD),
-     !    Cap(NumNPD),ListE(NumElD),E(3,3),iLoc(3),Fc(NumNPD),
-     !    Sc(NumNPD),B_1(NumNPD),ThOld_1(NumNPD),A_1(MBandD,NumNPD)
+     &    Cap(NumNPD),ListE(NumElD),E(3,3),iLoc(3),Fc(NumNPD),
+     &    Sc(NumNPD),B_1(NumNPD),ThOld_1(NumNPD),A_1(MBandD,NumNPD)
       Dimension Bii(3),Cii(3)
       Common /WaterM/ ThOld(NumNPD),hOld(NumNPD),hTemp(NumNPD),
-     !                ConAxx(NumElD),ConAzz(NumElD),ConAxz(NumElD),
-     !                MaxIt,TolTh,TolH,dumdt,dt,dtOld,tOld,
-     !                thR(NMatD),hSat(NMatD),thSat(NMatD),
-     !                 isat(NumBPD),FreeD, CriticalH
+     &                ConAxx(NumElD),ConAzz(NumElD),ConAxz(NumElD),
+     &                MaxIt,TolTh,TolH,dumdt,dt,dtOld,tOld,
+     &                thR(NMatD),hSat(NMatD),thSat(NMatD),
+     &                 isat(NumBPD),FreeD, CriticalH
       If (lInput.eq.0) goto 11  
        FreeD=.true.
        CriticalH=-0.01D0
@@ -50,8 +50,8 @@
       im=im+1
       il=il+1
       Read(40,*,ERR=10) MaxIt,TolTh,TolH,
-     !                  hCritA,hCritS,dtMx(1),hTab1,hTabN,EPSI_Heat,
-     !                   EPSI_Solute
+     &                  hCritA,hCritS,dtMx(1),hTab1,hTabN,EPSI_Heat,
+     &                   EPSI_Solute
         close(40) 
 c      hCritS=1.0e9        !needs to be high for ponded infiltration to work
                         ! need to remove it from the parameter file
@@ -60,15 +60,15 @@ c      hCritS=1.0e9        !needs to be high for ponded infiltration to work
       call IADMake(KX,NumNP,NumEl,NumElD,MBandD,IAD,IADN,IADD)
       
       call SetMat(lInput,NumNP,hNew,hOld,NMat,MatNumN,Con,Cap,
-     !                  BlkDn,hTemp,Explic,ThNew,hTab1,hTabN,
-     !                  hSat,ThSat,ThR, ThAvail,ThFull,
-     !                  FracOM, FracSind, FracClay,
-     !                  TupperLimit, TLowerLimit, SoilFile)
+     &                  BlkDn,hTemp,Explic,ThNew,hTab1,hTabN,
+     &                  hSat,ThSat,ThR, ThAvail,ThFull,
+     &                  FracOM, FracSind, FracClay,
+     &                  TupperLimit, TLowerLimit, SoilFile)
 c  assign bulk density
        
              
       call Veloc(NumNP,NumEl,NumElD,hNew,x,y,KX,ListNE,Con,
-     !                   ConAxx,ConAzz,ConAxz,Vx,Vz)
+     &                   ConAxx,ConAzz,ConAxz,Vx,Vz)
 c   Calculate Total Available Water in Profile
      
       
@@ -189,10 +189,10 @@ C  SetMat: hydraulic properties for every node based on
 C  new values of pressure head
 C
       call SetMat(lInput,NumNP,hNew,hOld,NMat,MatNumN,Con,Cap,
-     !                  BlkDn, hTemp,Explic,ThNew,hTab1,hTabN,
-     !                  hSat,ThSat,ThR, ThAvail,ThFull,
-     !                  FracOM, FracSind, FracClay,
-     !                  TupperLimit, TLowerLimit, SoilFile)
+     &                  BlkDn, hTemp,Explic,ThNew,hTab1,hTabN,
+     &                  hSat,ThSat,ThR, ThAvail,ThFull,
+     &                  FracOM, FracSind, FracClay,
+     &                  TupperLimit, TLowerLimit, SoilFile)
 
 c
 c  RESET: assembling of the matrixes
@@ -315,7 +315,7 @@ c
         if(lOrt) j=IADD(i)  
         A(j,i)=A(j,i)+F(i)*Cap(i)/dt
         B(i)=F(i)*Cap(i)*hNew(i)/dt-F(i)*(ThNew(i)-ThOld(i))/dt+
-     !     Q(i)-B(i)-DS(i)
+     &     Q(i)-B(i)-DS(i)
 221   Continue
 c
 c     Modify conditions on seepage faces
@@ -459,7 +459,7 @@ cMisha 18/9 2006
 cMK-----------------     
 CMK  	          
 313       Continue
-	Endif  !NSurf <> 0
+      Endif  !NSurf <> 0
 
 
 c
@@ -501,9 +501,9 @@ cccz
 c         print*,time,',','Water Diff'
          call ILU (A,NumNP,MBandD,IAD,IADN,IADD,A1)
          call OrthoMin(A,B1,B,NumNP,MBandD,NumNPD,IAD,IADN,IADD,A1,VRV,
-     !                RES,RQI,RQ,QQ,QI,RQIDOT,ECNVRG,RCNVRG,ACNVRG,0,
-     !                MNorth,MaxItO)
-	endif
+     &                RES,RQI,RQ,QQ,QI,RQIDOT,ECNVRG,RCNVRG,ACNVRG,0,
+     &                MNorth,MaxItO)
+      endif
       if (.not.lOrt) then 
 c*   Reduction
       Do 513 n=1,NumNP
@@ -565,7 +565,7 @@ c         endif
             hlev=hSat(m)-20.0
             if (hTemp(i).lt.hLev.and.hNew(i).lt.hLev) then
                Th=ThNew(i)+cap(i)*(hNew(i)-hTemp(i))
-     !            /(ThSat(m)-ThR(m))
+     &            /(ThSat(m)-ThR(m))
                EpsTh=abs(ThNew(i)-Th)
              else
                EpsH=abs(hNew(i)-hTemp(i))
@@ -640,12 +640,12 @@ c   Calculation of velocities
 c
 cdt - moved this here              
       call Veloc(NumNP,NumEl,NumElD,hNew,x,y,KX,ListNE,Con,
-     !                  ConAxx,ConAzz,ConAxz,Vx,Vz)
+     &                  ConAxx,ConAzz,ConAxz,Vx,Vz)
       call SetMat(lInput,NumNP,hNew,hOld,NMat,MatNumN,Con,Cap,
-     !               BlkDn, hTemp,Explic,ThNew,hTab1,hTabN,
-     !               hSat,ThSat,ThR, ThAvail,ThFull,
-     !               FracOM, FracSind, FracClay,
-     !               TupperLimit, TLowerLimit, SoilFile)
+     &               BlkDn, hTemp,Explic,ThNew,hTab1,hTabN,
+     &               hSat,ThSat,ThR, ThAvail,ThFull,
+     &               FracOM, FracSind, FracClay,
+     &               TupperLimit, TLowerLimit, SoilFile)
 
 
 
@@ -739,18 +739,19 @@ c        endif
 c          endif
 c       Enddo
        
+10    Call errmes(im,il)
 
 
       Return
-10    Call errmes(im,il)
+!10    Call errmes(im,il)
       Return
       End
 c*
       subroutine Veloc(NumNP,NumEl,NumElD,hNew,x,y,KX,ListNE,Con,ConAxx,
-     !                 ConAzz,ConAxz,Vx,Vz)
+     &                 ConAzz,ConAxz,Vx,Vz)
       Dimension hNew(NumNP),x(NumNP),y(NumNP),ListNE(NumNP),Con(NumNP),
-     !          KX(NumElD,4),Vx(NumNP),Vz(NumNP),ConAxx(NumEl),
-     !          ConAzz(NumEl),ConAxz(NumEl),List(3)
+     &          KX(NumElD,4),Vx(NumNP),Vz(NumNP),ConAxx(NumEl),
+     &          ConAzz(NumEl),ConAxz(NumEl),List(3)
       Integer e
       Do 11 i=1,NumNP
         Vx(i)=0.

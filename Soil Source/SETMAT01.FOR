@@ -22,16 +22,16 @@ C
       Real BldDn
       Parameter (NTabD=100,NPar=13,NMatD=15)
       Common /HydPar/ Par(NPar,NMatD),
-     !                hTab(NTabD),ConTab(NTabD,NMatD),
-     !                CapTab(NTabD,NMatD),ConSat(NMatD),
-     !                TheTab(NTabD,NMatD),alh1,dlh
+     &                hTab(NTabD),ConTab(NTabD,NMatD),
+     &                CapTab(NTabD,NMatD),ConSat(NMatD),
+     &                TheTab(NTabD,NMatD),alh1,dlh
    
       Dimension hNew(NumNP),hOld(NumNP),MatNum(NumNP),
-     !          Con(NumNP),Cap(NumNP),hTemp(NumNP),Theta(NumNP),
-     !          thR(NMatD),hSat(NMatD),thSat(NMatD),ThAvail(NumNP),
-     !           ThFull(NMatD),BlkDn(NMatD),
-     !          FracOM(NMatD), FracSind(NMatD), FracClay(NMatD),
-     !          TUpperLimit(NMatD),TLowerLimit(NMatD)
+     &          Con(NumNP),Cap(NumNP),hTemp(NumNP),Theta(NumNP),
+     &          thR(NMatD),hSat(NMatD),thSat(NMatD),ThAvail(NumNP),
+     &           ThFull(NMatD),BlkDn(NMatD),
+     &          FracOM(NMatD), FracSind(NMatD), FracClay(NMatD),
+     &          TUpperLimit(NMatD),TLowerLimit(NMatD)
       If(lInput.eq.1) then
         im=60
         il=0

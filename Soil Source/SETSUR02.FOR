@@ -771,7 +771,7 @@ C
 C  FOR DAYLIGHT PERIODS:
 C  CALCULATE NET UPWARD LONG-WAVE RADIATION ***
 C
-1000    Continue
+!1000    Continue
         If (WATTSM(ITIME).GT.0.0) then
           RNLU = (1.6E-3*WATRAT*(100.0 - TAIR(ITIME)))*697.6
         Else
@@ -1063,7 +1063,7 @@ c................... End gas movement
 c................... This is the end of hourly calculations
       tNext(ModNum)=tNext(ModNum)+PERIOD
       EndIf                   ! hourly calcs defined by tnext
- 1001  Continue
+! 1001  Continue
 c................... Furrow irrigation
 c dt 4-22-2011 this needs to be put into its own block since we changed the tAtm variable
 c  this won't work as written
@@ -1080,7 +1080,7 @@ c  this won't work as written
            CodeW(k)=-4
           Enddo
           tAtm=tAtm-PERIOD
-          goto 1000  !hourly code would have been skipped over initially, so have to go back and do the hourly et calcs
+!          goto 1000  !hourly code would have been skipped over initially, so have to go back and do the hourly et calcs
         Endif
       Endif
 c................... End of the furrow irrigation

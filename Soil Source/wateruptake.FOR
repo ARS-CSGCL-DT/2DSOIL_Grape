@@ -112,8 +112,6 @@ cE 07/05/2007 DT
         END IF
  110  CONTINUE
 
-      write(*, *) 'Awup(10=', AWUP(1), 'nodeArea(1)=', nodeArea(1)
-
       Do n=1,NumNP
         Sink(n)=AWUP(n)/nodeArea(n)
       Enddo
@@ -142,7 +140,7 @@ c		write(100,81) time, e, sink(e),
 c     !	FUP(e,1),FUP(e,2),VUP(e,1),VUP(e,2),balance     	
 	    CONTINUE
 	  ENDIF
-      write(*, *) "Line 146" 	
+ 	
 cE MK 7/05/2007	
 191	  Continue
 81    FORMAT(F14.5,2X,I6,10(2X,E10.3))

@@ -126,7 +126,7 @@ c case for evaporation
             endif
 c case for rainfall
            if (abs(CodeW(n)).eq.4)
-     !            then
+     &            then
               ActualInfil=ActualInfil+max(0.0,Q(n))*step
               Runoff=Runoff+RO(n)*step
               RO(n)=0.0   ! we will use this to store ponded water for next time period
@@ -143,12 +143,12 @@ C*** FROM HourlyOut.for END
         call caldat(iday,mm,id,iyyy) 
         write (date,'(i2.2,A1,i2.2,A1,i4.4)') mm,'/',id,'/',iyyy  
           Call ArrNodOut (Date,x,y,NumNP,NumEl,t,NumElD,hNew,
-     !                   ThNew,vz,vx,Q,Conc(1,1),Tmpr,g(1,1))
+     &                   ThNew,vz,vx,Q,Conc(1,1),Tmpr,g(1,1))
 
         If(NShoot.ne.0) then
              Call ArrRootOut (Date,x,y,t, NumNP,RMassM,RMassY,
-     !            RDenM, RDenY, Sink,
-     !            cSink(1,1),gSink(1,1),NodeArea)
+     &            RDenM, RDenY, Sink,
+     &            cSink(1,1),gSink(1,1),NodeArea)
             !Call OutToDB(Sink(1))
         Endif
         tNext(ModNum) = time + Period
@@ -265,38 +265,38 @@ C format 5 is water, 6 is roots
 C/***************************************************/
 CDT !0/24/2018 modified to output nodal values for roots
       Subroutine ArrRootOut(Date,x,y,t,NumNP,RMassM,RMassY,
-     !            RDenM, RDenY,
-     !           SinkArr,cSinkArr,gSinkArr,Area)
+     &            RDenM, RDenY,
+     &           SinkArr,cSinkArr,gSinkArr,Area)
       Character *10 Date
       Dimension RMassM(NumNP), RMassY(NumNP), RDenM(NumNP), 
-     !           RDenY(NumNP),Area(NumNP),x(NumNP),y(NumNP),
-     !         SinkArr(NumNP),cSinkArr(NumNP),gSinkArr(NumNP)
+     &           RDenY(NumNP),Area(NumNP),x(NumNP),y(NumNP),
+     &         SinkArr(NumNP),cSinkArr(NumNP),gSinkArr(NumNP)
 
       do n=1,NumNP
         Write(82,140)t, Date, x(n),y(n), n,RMassM(n), RMassY(n),
-     !      RDenM(n), RDenY(n),
-     !      SinkArr(n),cSinkArr(n),gSinkArr(n),Area(n)
+     &      RDenM(n), RDenY(n),
+     &      SinkArr(n),cSinkArr(n),gSinkArr(n),Area(n)
         Enddo
 C      Endif     
 130   format('     Time           x             y     Temp   RTWT_',
-     !        '          Sink_       cSink       gSink'/)
+     &        '          Sink_       cSink       gSink'/)
  140   format(1x,f14.6,',', A12,',', 2(f11.2,','),i8,',',
-     !   7(G11.3,','),G11.3)
+     &   7(G11.3,','),G11.3)
       Return
       End      
 C/***************************************************/
       subroutine ArrNodOut(Date,x,y,NumNP,NumEl,t,NumElD,Head,      
-     !          ThetaArr, vzArr,vxArr,QArr,ConcArr,TemprArr,gArr)
+     &          ThetaArr, vzArr,vxArr,QArr,ConcArr,TemprArr,gArr)
       Character*10 Date
       Dimension Head(NumNP),x(NumNP),y(NumNP),
-     !         ThetaArr(NumNP), vzArr(NumNP),vxArr(NumNP),QArr(NumNP),
-     !         ConcArr(NumNP),TemprArr(NumNP),gArr(NumNP)
+     &         ThetaArr(NumNP), vzArr(NumNP),vxArr(NumNP),QArr(NumNP),
+     &         ConcArr(NumNP),TemprArr(NumNP),gArr(NumNP)
 
         !MyDate=ToCalendarDate(mm,id,iyyy)
         Do n=1,NumNP
           Write(81,140)t, date, x(n),y(n),Head(n),ThetaArr(n),
-     !     vzArr(n),vxArr(n),QArr(n),ConcArr(n),TemprArr(n),
-     !      gArr(n)
+     &     vzArr(n),vxArr(n),QArr(n),ConcArr(n),TemprArr(n),
+     &      gArr(n)
         Enddo
  140   format(1x, f14.6,',', a12,',', 2(f11.2,','),7(G11.3,','),G11.3)
       Return

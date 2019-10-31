@@ -3,8 +3,9 @@
 *     2DSOIL  - Numerical model of two-dimensional soil environment    *
 *                           for field crops                            *
 *                                                                      *
-*                              Release 1.1.4                              *
+*                              Release 1.1.4                           *
 c||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*
+      program soil2d_grape
       Include 'public.ins'
       include 'puplant.ins'
       Include 'Puweath.ins'
@@ -40,14 +41,13 @@ C SetSurfaceH --  reading hourly weather
       Call Carbon_Partitioning_New()
       Call Root_diff_New()
       call Root_Mover_New()
-      write(*, *) "Calling WaterUptake_New"
       Call WaterUptake_New()
-      write(*,*) 'Return from WaterUptake_New'
-C$$$$$$       Call WaterMover_New()
-C$$$$$$       if (outputSoilYes.gt.0) then
-C$$$$$$          Call Output()
-C$$$$$$       endif
-C$$$$$$
-C$$$$$$
-C$$$$$$         Goto 1
-      End
+      Call WaterMover_New()
+      write(*,*) 'Calling Output?', 'outputSoilYes=', outputSoilYes
+      if (outputSoilYes.gt.0) then
+         Call Output()
+      write(*, *) "Return from Output"
+      endif
+
+        Goto 1
+      End program soil2d_grape

@@ -13,13 +13,13 @@ c      Real PDWR_TOTAL   !for debugging
       integer InitialRootCell   ! array that holds element numbers of cells that are assigned an initial root density
       integer RootsInitiated
       double precision InitialRootWt
-      Real RRRM,RRRY ! root radial resistance for mature and young leaves (s-1 cm-1)     cccz bar day g-1
+      Real RRRM,RRRY; ! root radial resistance for mature and young leaves (s-1 cm-1)     cccz bar day g-1
       Real RVRL;    !root vascular resistance s-1 cm -1                                   cccz bar day g-1
-      Real RTWL    !Root weight per unit length (g cm-1)                                 cccz g cm-1
-      Real ALPM,ALPY !relative growth rates for mature and young roots                   cccz day-1
-      Real RtMinWtPerUnitArea !minimum root weight per length (g cm-1)                   cccz g cm-2
-      Real Wl,Wa,Wr,Wb !Weighting parameters for root growth in grid used in Root_grow_c 
-      integer ISink        ! Determines mechanism of nitrogen uptake by root
+      Real RTWL;    !Root weight per unit length (g cm-1)                                 cccz g cm-1
+      Real ALPM,ALPY; !relative growth rates for mature and young roots                   cccz day-1
+      Real RtMinWtPerUnitArea; !minimum root weight per length (g cm-1)                   cccz g cm-2
+      Real Wl,Wa,Wr,Wb; !Weighting parameters for root growth in grid used in Root_grow_c 
+      integer ISink;        ! Determines mechanism of nitrogen uptake by root
       Real InitialRootCellArea
 c	0  'passive root mass uptake' no kinetics
 c    1   Plant regulation diffusive and convective uptake
@@ -78,7 +78,7 @@ C
         nodeArea(n)=0.0D0
         RMassM(n)=0.0D0                       ! density of old root in soil cell g/cm2 (new version)
         RMassY(n)=0.0D0                       ! density of young root in soil cell g/cm2 (new version)
-        RDenM(n)=0.0D0                        ! density of old root in soil cell cm/cm2 (new version)
+        RDenM(n)=0.0D0                        ! density of old root in soil cell cm/cm2 (new version) APM change
         RDenY(n)=0.0D0                        ! density of young root in soil cell cm/cm2 (new version)
       Enddo
       
@@ -195,6 +195,7 @@ c      enddo
             icount=icount+1
         Endif
 
+
         MECHR = 80.03*abs(psis(n))**0.53
      &     *EXP(-8.08*(1.66 - BlkDn(MatNumN(n))))
         IF (MECHR.LE.0.0) MECHR = 0.0
@@ -237,7 +238,7 @@ CYAP  No Plant = No Root Activity
       If((NShoot.eq.0).or.(isGerminated.eq.0)) Return
 c       PDWR_TOTAL=0.0    ! for debugging purposes  AD and zhuangji  delete it
 CYAPEND
-      If (isGerminated == 0 .and. RootsInitiated == 0) then
+      If (isGerminated .eq. 0 .and. RootsInitiated.eq.0) then
          RootsInitiated=1
          InitialRootWt=InitialRootCarbo/InitialRootCellArea   ! calculates average root wt density
          ! Distribute this mass among cells with initial root distribution
@@ -298,6 +299,7 @@ C  CALCULATE PROPORTIONIAL REDUCTION OF ROOT GROWTH CAUSED BY
 C  MECHANICAL RESISTANCE AND SOIL WATER POTENTIAL ASSUMING ROOT
 C  IS AT SAME POTENTIAL AS SOIL
 
+
          RGCF1 = ((TPRD(n)-MECHR)/2.0)-((PSIRD(n)-PSIS(n))/4.0)
 C
 C     CALCULATE PROPORTIONAL REDUCTION OF ROOT GROWTH CAUSED BY
@@ -325,11 +327,14 @@ cccz Zhuangji: AD
 c        RGCF5=(1.0-AMIN1(1.0,RMassY(n)/0.03))
          RGCF5=(1.0-AMIN1(1.0,(RMassY(n)+RMassM(n))/0.02))
 C this one for nitrogen. Use the ratio between actual uptake of N and IMax
-      write(*, *) 'Line 329'
-      write(*, *) 'amax1(0.3,dif/ConstK(1))', dif, ConstK(1)
     
          dif=amax1(0.0,Conc(n,1)-CMin0(1))
-	   RGCF6 =  amax1(0.3,dif/ConstK(1))
+         if (ConstK(1).GT.0) then 
+            RGCF6 =  amax1(0.3,dif/ConstK(1))
+          else
+            RGCF6=0
+          endif
+          
 	   RGCF6 = AMIN1(1.0, RGCF6)
 
 c ccz zhuangji:AD removed the RGCF3 why? DT - O2 was not simulated 
@@ -375,7 +380,7 @@ C   THRESHOLD TURGOR PRESSURE FOR STOPPING SHOOT GROWTH AND DIVERTING
 C   CARBOHYDRATES TO ROOTS DECREASES WITH TIME. HENCE THE ROUTINE ALSO
 C   PREDICTS CHANGES IN TOTAL POTENTIAL, OSMOTIC POTENTIAL AND TURGOR
 C   PRESSURE IN LEAVES DURING THE DAY.
-
+C    
       DO n = 1,NumNP
         SR(n)   = 0.0
         WUPM(n) = 0.0
@@ -390,12 +395,13 @@ cS 07/05/2007 DT These variables are needed for nitrogen sink code
 cE 7/05/2007 DT 
       ENDDO
       SGTLI = 0.0
-C
+
+
 C    THE THRESHOLD LEAF WATER POTENTIAL AND TURGOR PRESSURE THAT
 C    WILL JUST PREVENT ALL SHOOT EXPANSION ARE CALCULATED
 C
 C    CALCULATE DAWN LEAF WATER POTENTIALS ***
-      write(*,*) ' Line 396'
+C
       IF (ITIME.EQ.IDAWN) THEN
 c        PSILD = -2.0
 c since in the MAIZESIM model, the reference leaf water potential in the CGas_exchange::setleafpEffect
@@ -414,11 +420,11 @@ c value Yang 8/22/06
         BTPL = TPLD
         SGTLT = 0.0
        ENDIF
-C
+c
 C   CALCULATE THE THRESHOLD LEAF WATER POTENTIAL AND TURGOR
 C   PRESSURE THAT WILL JUST PREVENT ALL SHOOT GROWTH
 C 
-c      
+
       D11 = MAX (TPL, TPLT)
       D12 = (D11 - 2.0D0)*(1.0D0 - EXP(-0.7D0*Step))
       IF (D12.LE.0.0D0) D12 = 0.0D0
@@ -437,7 +443,7 @@ C   TRAVEL TO REACH ROOTS. THIS IS APPROXIMATED BY A SIMPLE
 C   FUNCTION OF SOIL WATER POTENTIAL TO AVOID ITERATION
 C   SC IS THE HALF THE MEAN DISTANCE BETWEEN NEIGHBORING ROOTS
 C   WE NEED TO SEE IF THIS CAN BE CALCULATED FROM ROOT DENSITY
-C
+c
       WUPMS = 0.
       WUPSI = 0.
       DO 50, n=1,NumNP
@@ -461,17 +467,18 @@ c when LAI !=0, then the total resistance equals to resistance in the soil plus
 c resistance of the xylum; here the xylum resistance is adopted as a constant: 6.67*1-E-3 molH2O m-2(leaf) s-1 MPa-1
 c to convert this value into the resistance value for a slab, we have to divide it by LAI and the area of the slab and 
 c convert MPa into bar, this is how we have 19.26//(LAI*rowsp)
-             
-             IF(LAI.EQ.0.0) Then
-              WUPM(n) = (((PSIS(n) - PSILT)*nodeArea(n)
+ 
+             IF(LAI.EQ.0.0) then
+                WUPM(n) = (((PSIS(n) - PSILT)*nodeArea(n)
      &         *RDenM(n))/(SR(n) + RRRM + RVR(n)))
      &         *0.02275*(24.5 + Tmpr(n))
-     
+      
               WUPN(n) = (((PSIS(n) - PSILT)*nodeArea(n)
      &          *RDenY(n))/(SR(n) + RRRY + RVR(n)))
      &         *0.02275*(24.5 + Tmpr(n))
+              
              ELSE
-             
+ 
              WUPM(n)=(PSIS(n)-PSILT)/((SR(n)+RRRM+RVR(n))
      &        /(nodeArea(n)*RDenM(n)*0.02275*(24.5+Tmpr(n)))
      &        +19.26/(LAI*ROWSP))
@@ -481,7 +488,7 @@ c convert MPa into bar, this is how we have 19.26//(LAI*rowsp)
      &         +19.26/(LAI*ROWSP))
      
              END IF       
-
+c             
 C  NOTE 10.17
              WUPMS = WUPMS +(WUPM(n) + WUPN(n))
              WUPSI = WUPSI +(PSIS(n)*(WUPM(n) + WUPN(n)))
@@ -489,7 +496,7 @@ C  NOTE 10.17
           ENDIF
         ENDIF
  50   CONTINUE
-C
+c
 C  CALCULATE GROWTH BY NEW ROOTS IF ROOTS GREW AT POTENTIAL
 C  RATE DURING PAST PERIOD. START WITH SOIL CELL WHERE CONDITIONS
 C  ARE MOST FAVORABLE FOR GROWTH
@@ -506,7 +513,7 @@ C
 C   DETERMINE TOTAL WATER UPTAKE BY ALL NEW ROOTS AND WEIGHTED
 C   AVERAGE SOIL WATER POTENTIAL WHEN:
 C   I. ROOTS GET ALL THE CARBON TRANSLOCATED
-C      write(*,*) 'Line 507'      
+C      
         IF(LAI.EQ.0.0) Then
         WUPT(n1) = (((PSIS(n1) - PSILT)*DRL(n1))
      &   /(SR(n1) + RRRY + RVR(n1)))
@@ -594,7 +601,8 @@ C   CONDUCTANCE,THE PROPORTION OF TIME FOR WHICH THE SHOOT GROWS,
 C   THE AMOUNT OF CARBON ACTUALLY NEEDED FOR ROOT GROWTH AND THE
 C   AMOUNT OF OSMOREGULATION THAT WILL OCCUR
       D18 = WUPMS + WUPTS                                       ! all water uptake from mature roots and new roots
-C
+
+
 C   POTENTIAL TRANSPIRATION RATE IS SUCH THAT THE DEMAND FOR WATER
 C   UPTAKE CAN BE MET WITHOUT SHOOT WATER POTENTIAL FALLING TO THE
 C   POINT WHERE THE SHOOT LOSES TURGOR AND STOPS GROWING
@@ -682,7 +690,8 @@ C
       PPSIL = PSIL_
 C
 C  IF TURGOR PRESSURE IS LESS THAN 2 BARS THE SHOOT DOES NOT GROW
-C
+
+
       IF (TPL.LT.2.0) THEN
         SGTLI = 1.0
         SGT = 0.0
