@@ -264,6 +264,9 @@ __pycache__/
 # 2DSOIL output files
 *.G0*
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Updated .gitignore for 2DSoil-Grape
 Soil Source/obj/
 Soil Source/[Cc]heckmate/
 Soil Source/*.1
@@ -272,6 +275,7 @@ Soil Source/*.lis
 Soil Source/*.o
 Soil Source/*.obj
 Soil Source/*.XRF
+<<<<<<< HEAD
 Soil Source/BuildLog
 Soil Source/ErrorLog
 Soil Source/*.htm
@@ -280,3 +284,6 @@ Soil Source/*.lst
 
 /Iowa06/Iowa06.zip
 >>>>>>> 43c031ac22c30af71348b4ea56d8482f39518c71
+=======
+
+>>>>>>> Updated .gitignore for 2DSoil-Grape
