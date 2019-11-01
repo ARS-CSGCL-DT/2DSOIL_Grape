@@ -263,4 +263,12 @@ __pycache__/
 
 # 2DSOIL output files
 *.G0*
+Soil Source/obj/
+Soil Source/[Cc]heckmate/
+Soil Source/*.1
+Soil Source/*.ini
+Soil Source/*.lis
+Soil Source/*.o
+Soil Source/*.obj
+Soil Source/*.XRF
 
