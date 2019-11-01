@@ -271,4 +271,7 @@ Soil Source/*.lis
 Soil Source/*.o
 Soil Source/*.obj
 Soil Source/*.XRF
-
+Soil Source/BuildLog
+Soil Source/ErrorLog
+Soil Source/*.htm
+Soil Source/*.lst
