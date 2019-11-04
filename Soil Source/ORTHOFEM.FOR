@@ -152,7 +152,8 @@
 *       ((6 + 2*MAXNB + 2*MNORTH)*MAXNN)*(8 BYTES)
 *
 ************************************************************************
-
+! TM 21-25 October 2019
+! compile check
       subroutine IADMake(KX,NumNP,NumEl,NumElD,MaxNB,IAD,IADN,IADD)
 
 *     Generate the adjacency matrix for nodes from the element 
@@ -254,7 +255,7 @@
       ENDIF
 
       RETURN
-      END
+      END SUBROUTINE INSERT
 
 ************************************************************************
 
@@ -286,7 +287,7 @@ C GR
    20 CONTINUE
 
       RETURN
-      END
+      END SUBROUTINE FIND
 
 ************************************************************************
 
@@ -354,7 +355,7 @@ C GR
    20 CONTINUE
 
       RETURN
-      END
+      END SUBROUTINE ILU
 
 ************************************************************************
 
@@ -388,7 +389,7 @@ C GR
       DU = TEMP
 
       RETURN
-      END
+      END FUNCTION DU
 
 ************************************************************************
 
@@ -558,7 +559,7 @@ C GR
       ITERP = ITER
 
       RETURN
-      END
+      END SUBROUTINE ORTHOMIN
 
 ************************************************************************
 
@@ -603,7 +604,7 @@ C GR
    40 CONTINUE
 
       RETURN
-      END
+      END SUBROUTINE LUSOLV
 
 ************************************************************************
 
@@ -626,7 +627,7 @@ C GR
    30 CONTINUE
 
       RETURN
-      END
+      END SUBROUTINE MATM2
 
 ************************************************************************
 
@@ -643,7 +644,7 @@ C GR
 100   CONTINUE
 
       RETURN
-      END
+      END FUNCTION SDOT
 
 ************************************************************************
 
@@ -696,7 +697,7 @@ C GR
       ENDIF
 
       RETURN
-      END
+      END SUBROUTINE SAXPYK
 
 ************************************************************************
 
@@ -714,7 +715,7 @@ C GR
       ENDIF
 
       RETURN
-      END
+      END SUBROUTINE SCOPY
 
 ************************************************************************
 
@@ -732,6 +733,6 @@ C GR
       ENDIF
 
       RETURN
-      END
+      END SUBROUTINE SCOPYK
 
 * ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||

@@ -70,7 +70,9 @@ C**  CO2  - CO2 concentration of the atmosphere ppm                   **
 C**                                                                   **
 C**  Daily values for radiation will be converted to watts m-2 as 
 C**   soon as they are read in. 
-C**                                                                   **
+C** 
+! TM 21-25 October 2019
+! compile check                                                                  **
       Subroutine SetSurfaceD()
       Include 'Public.ins'
       Include 'Puplant.ins'
@@ -1086,7 +1088,7 @@ c  this won't work as written
 c................... End of the furrow irrigation
       RETURN
 10    call errmes(im,il)
-      END
+      END Subroutine SetSurfaceD
 C
       Subroutine SORT03(N,ARR1,iARR2,iARR3)
       Dimension ARR1(N),iARR2(N),iARR3(N)
@@ -1106,7 +1108,7 @@ C
          iARR3(i+1)=iA3
       Enddo
       Return
-      End
+      End Subroutine SORT03
 C   Shaded-unshaded
       Function FSh(i, xStem, Shade, u, N)
       Dimension u(N)
@@ -1142,4 +1144,4 @@ C   Shaded-unshaded
         Endif
       Endif
       Return
-      End
+      End Function FSh

@@ -1082,6 +1082,6 @@ c
 
       RETURN
 10    call errmes(im,il)
-      END
+      END Subroutine SetSurfaceH
 C
      

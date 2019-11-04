@@ -1,6 +1,8 @@
 c pot_ET is used to save the accumulated potential transpiration in the previous N steps
 c p_ET is used to save the difference between the accumulated transpiration in the 
 c previous N step and N+1 step; thus in fact it is the potential transpiration rate per time step
+! TM 28 October - 1 November 2019
+! compile check
       subroutine Output ()
       Include 'public.ins'
       Include 'PuWeath.ins'
@@ -261,7 +263,8 @@ C format 5 is water, 6 is roots
  10   Format (1x,F17.6,',', A15,',',16(F16.3, ','), F16.3)  !format for flux data
  13   Format (1x,F17.6,',',A15,',',15(F16.3, ','), F16.3)  ! format for second flux data
  20   Format (1x,19A16)              !format for flux header
-      End        
+      End subroutine Output
+              
 C/***************************************************/
 CDT !0/24/2018 modified to output nodal values for roots
       Subroutine ArrRootOut(Date,x,y,t,NumNP,RMassM,RMassY,
@@ -283,7 +286,8 @@ C      Endif
  140   format(1x,f14.6,',', A12,',', 2(f11.2,','),i8,',',
      &   7(G11.3,','),G11.3)
       Return
-      End      
+      End Subroutine ArrRootOut
+      
 C/***************************************************/
       subroutine ArrNodOut(Date,x,y,NumNP,NumEl,t,NumElD,Head,      
      &          ThetaArr, vzArr,vxArr,QArr,ConcArr,TemprArr,gArr)
@@ -300,6 +304,4 @@ C/***************************************************/
         Enddo
  140   format(1x, f14.6,',', a12,',', 2(f11.2,','),7(G11.3,','),G11.3)
       Return
-      End
-  
-  
+      End subroutine ArrNodOut

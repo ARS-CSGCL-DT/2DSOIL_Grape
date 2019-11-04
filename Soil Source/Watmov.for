@@ -6,6 +6,8 @@
 *       Neumann boundary condition is prescribed or constant flux
 * CDT added a drainage boundary Nov 2007. This is like a seepage face but the nodes always have
 * drainage and it is usually horizontal.
+! TM 28 October - 1 November 2019
+! compile check
       subroutine WaterMover_New ()
       Include 'public.ins'
       Include 'puplant.ins'
@@ -745,7 +747,7 @@ c       Enddo
       Return
 !10    Call errmes(im,il)
       Return
-      End
+      End subroutine WaterMover_New
 c*
       subroutine Veloc(NumNP,NumEl,NumElD,hNew,x,y,KX,ListNE,Con,ConAxx,
      &                 ConAzz,ConAxz,Vx,Vz)
@@ -798,5 +800,4 @@ c*
         Vz(i)=Vz(i)/ListNE(i)
 15    Continue
       Return
-      End
-
+      End subroutine Veloc

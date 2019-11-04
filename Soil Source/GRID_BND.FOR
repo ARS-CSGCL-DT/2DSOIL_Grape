@@ -2,6 +2,8 @@ C||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*
 CDT Nov, 2007 added a drainage boundary. It is input similar to seepage. The difference is
 C*     that drainage always takes place from a drainage boundary - it is usually horizontal
 C      seepage faces are usually used in ditches.
+! TM 14-19 October 2019
+! compile check
       Subroutine Get_Grid_and_Boundary()
       Include 'public.ins'
       Include 'nitvar.ins'
@@ -224,5 +226,4 @@ C   ammonia is input as ppm or ug /g soil here we convert it to ug/cm3 or mg per
       Write(*,*) 'Reading Grid Done'
       Return
 10    Call errmes(im,il)
-      End
-
+      End Subroutine Get_Grid_and_Boundary

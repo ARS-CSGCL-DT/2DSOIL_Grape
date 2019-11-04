@@ -1,3 +1,5 @@
+! TM 21-25 October 2019
+! compile check
       Subroutine SetTDB()
       Include 'public.ins'
       Dimension Dummy(NumSurfDatD,3)
@@ -149,5 +151,4 @@
 300   Call errmes(im3,il3)
 400   Call errmes(im4,il4)
       Return
-      End
-
+      End Subroutine SetTDB

@@ -1,3 +1,5 @@
+! TM 14-19 October 2019
+! compile check
       Subroutine Initialize()
       Include 'public.ins'
       Include 'puweath.ins'
@@ -138,4 +140,4 @@ C AD NimG is not used in the entire solution
        goto 11     
  10    Write(*,*)'Run.dat file not found'
  11    continue
-       End
+       End Subroutine Initialize

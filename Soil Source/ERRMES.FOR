@@ -1,4 +1,6 @@
 c==== Error messages
+! TM 21-25 October 2019
+! compile check
       Subroutine ErrMes(N,M)
       Include 'Public.ins'
       If(N.ne.0) then
@@ -7,5 +9,5 @@ c==== Error messages
       Endif
 20    format('Error # ',i4,',   Line # ',i4)
       Return
-      End
+      End Subroutine ErrMes
        

@@ -3,7 +3,8 @@ c 0 for 3/1/1900 to be compatible with Microsoft Excel's method of calculating J
 C for astronomy (not the julian calendar)
 C Caldat returns a calendar date given a julian day
 C Julian is a function that returns a julian day given a calendar day
-
+! TM 21-25 October 2019
+! compile check
 
       SUBROUTINE caldat(julian,mm,id,iyyy)
 c passes julian and returns mm, dd, yyyy

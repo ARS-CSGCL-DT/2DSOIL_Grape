@@ -1,3 +1,5 @@
+! TM 28 October - 1 November 2019
+! compile check
       subroutine Root_Diff_New()
       Include 'Public.ins'
       Include 'puplant.ins'
@@ -323,7 +325,7 @@ c set up for next step
       Return
 10    Call errmes(im,il)
       Return
-      End
+      End subroutine Root_Diff_New
 * 
 
       Subroutine RDisper(NumNP,Dispxx,Dispzz,Dispxz,DMolx,DMolz)
@@ -343,7 +345,7 @@ C I have cleaned it up though.
           Dispxz(i)=0.
 11    continue
       Return
-      End
+      End Subroutine RDisper
 *
       subroutine RWeFact(NumNP,NumEl,NumElD,x,y,KX,WeTab,VxH,VzH,Dispxx,
      &                  Dispzz,Dispxz)
@@ -414,5 +416,4 @@ C      TanH(z)=(exp(z)-exp(-z))/(exp(z)+exp(-z))
 12      Continue
 13    Continue
       Return
-      End
-
+      End subroutine RWeFact

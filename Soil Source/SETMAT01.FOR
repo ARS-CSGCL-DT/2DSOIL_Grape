@@ -11,7 +11,9 @@ C   and ThFUll = which is total available water
 C dt 7/2014 added Bulk Density and soil texture to soil file. They are 
 C  read here
 C 12/ 2015 made TUpperLimit and TLowerLimit arguments so they could be used in the main program
-C 
+C
+! TM 21-25 October 2019
+! compile check 
       subroutine SetMat(lInput,NumNP,hNew,hOld,NMat,MatNum,Con,Cap,
      &                  BlkDn,hTemp,Explic,Theta,hTab1,hTabN,
      &                  hSat,ThSat,ThR, ThAvail,ThFull,
@@ -135,7 +137,7 @@ C calculate available water content
 16    Write(*,*) 'Soil file not found'      
 10    Call errmes(im,il)
       Return
-      End
+      End subroutine SetMat
 
 ************************************************************************
       real function FK(h,Par)
@@ -146,7 +148,7 @@ C calculate available water content
       integer PPar
 
       BPar=.5
-      PPar=2.
+      PPar=2
       Qr=Par(1)
       Qs=Par(2)
       Qa=Par(3)
@@ -180,7 +182,7 @@ C calculate available water content
       endif
       if(h.ge.Hs) FK=Ks
       return
-      end
+      end function FK
 
 ************************************************************************
 
@@ -210,7 +212,7 @@ C calculate available water content
         FC=0.0
       endif
       return
-      end
+      end function FC
 
 ************************************************************************
 
@@ -239,7 +241,7 @@ C calculate available water content
         FQ=Qs
       endif
       return
-      end
+      end function FQ
 
 ************************************************************************
 
@@ -261,4 +263,4 @@ C calculate available water content
       Qee=dmin1(dmax1(Qe*(Qs-Qa)/(Qm-Qa),QeeM),.999999999999999d0)
       FH=max(-1./Alfa*(Qee**(-1./m)-1.)**(1./n),-1.d37)
       return
-      end
+      end function FH

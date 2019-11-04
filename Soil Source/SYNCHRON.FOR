@@ -1,5 +1,6 @@
 c|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*
-       
+! TM 14-18 October 2019
+! compile check       
       Subroutine Synchronizer()
       Include 'public.ins'
 
@@ -62,4 +63,4 @@ c       WRITE(LINE,       CALL COUP@(LINE,5,1,24)
 
 100    FORMAT(1x,G12.5)
       Return
-      End
+      End Subroutine Synchronizer

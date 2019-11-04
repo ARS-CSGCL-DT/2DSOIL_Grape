@@ -5,6 +5,10 @@
 *                                                                      *
 *                              Release 1.1.4                           *
 c||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*
+! TM October 2019                                                      *
+! Test of each subroutine                                              *
+! Compile, link and run                                                *
+!||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*
       program soil2d_grape
       Include 'public.ins'
       include 'puplant.ins'
@@ -12,17 +16,17 @@ c||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*
 C      Include 'Nitvar.ins'
 
       character*132 RunDat
-      integer len, status
+      integer len, status, cycleno
       RunFile="Run.Dat"
       Call get_command_argument(1, RunDat, len, status)
       if (len.gt.0) then
         RunFile=RunDat
       endif
 
-       Call Initialize()
-       Call Get_Grid_and_Boundary()
-
- 1     Call Synchronizer()
+      Call Initialize()
+      Call Get_Grid_and_Boundary()
+      cycleno = 0       
+ 1    Call Synchronizer()
 
 C
 C SetSurfaceD --  reading daily weather
@@ -43,11 +47,13 @@ C SetSurfaceH --  reading hourly weather
       call Root_Mover_New()
       Call WaterUptake_New()
       Call WaterMover_New()
-      write(*,*) 'Calling Output?', 'outputSoilYes=', outputSoilYes
       if (outputSoilYes.gt.0) then
-         Call Output()
-      write(*, *) "Return from Output"
+        write(*,*) 'Calling Output?'
+        Call Output()
+        write(*, *) "Return from Output"
       endif
-
+      
+      cycleno = cycleno + 1
+      write(*,*) 'Cycle No = ', cycleno
         Goto 1
       End program soil2d_grape
