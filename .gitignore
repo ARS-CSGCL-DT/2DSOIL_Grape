@@ -264,17 +264,21 @@ __pycache__/
 # 2DSOIL output files
 *.G0*
 
+#PFE backup files
+*.$$$
+
 /Iowa06/Iowa06.zip
 
 # 2DSoil_Grape
-/Soil Source/*.obj
-/Soil Source/*.o
-/Soil Source/*.ini
-/Soil Source/obj/
-/Soil Source/Checkmate/
-/Soil Source/*.htm
-/Soil Source/*.lis
-/Soil Source/*.lst
-/Soil Source/*.XRF
-/Soil Source/BuildLog
-/Soil Source/ErrorLog
+Soil Source/*.obj
+Soil Source/*.o
+Soil Source/*.ini
+Soil Source/obj/
+Soil Source/Checkmate/
+Soil Source/*.htm
+Soil Source/*.lis
+Soil Source/*.lst
+Soil Source/*.XRF
+Soil Source/BuildLog
+Soil Source/ErrorLog
+2dsoil.exe
