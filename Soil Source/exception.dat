@@ -1,0 +1,16 @@
+Silverfrost 64-bit exception report on D:\2DSOIL_Grape\Soil Source\2DSoil_Grape.exe  Sat Oct 26 17:02:10 2019
+
+
+Floating point divide by zero (c000008e) at address 416bf8
+
+Within file 2DSoil_Grape.exe
+in CARBON_PARTITIONING_NEW at address 20f8
+in MAIN@ at address 1d3
+
+
+RAX = 0000000000000003   RBX = 000000000027cc40   RCX = 000000000027cc48   RDX = 0000000008cf4bcc
+RBP = 0000000000400000   RSI = 0000000008cc5db4   RDI = 000000000027cb80   RSP = 000000000241d910
+R8  = 000000000027cc40   R9  = 0000000000000000   R10 = 000007fed538d360   R11 = 000007fed538d560
+R12 = 0000000008ccdab4   R13 = 0000000008c80080   R14 = 0000000008d1bccc   R15 = 0000000008cd57c0
+
+416bf8) divss       XMM9,[+R8]
