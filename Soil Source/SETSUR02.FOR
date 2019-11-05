@@ -70,7 +70,9 @@ C**  CO2  - CO2 concentration of the atmosphere ppm                   **
 C**                                                                   **
 C**  Daily values for radiation will be converted to watts m-2 as 
 C**   soon as they are read in. 
-C**                                                                   **
+C** 
+! TM 21-25 October 2019
+! compile check                                                                  **
       Subroutine SetSurfaceD()
       Include 'Public.ins'
       Include 'Puplant.ins'
@@ -771,7 +773,7 @@ C
 C  FOR DAYLIGHT PERIODS:
 C  CALCULATE NET UPWARD LONG-WAVE RADIATION ***
 C
-1000    Continue
+!1000    Continue
         If (WATTSM(ITIME).GT.0.0) then
           RNLU = (1.6E-3*WATRAT*(100.0 - TAIR(ITIME)))*697.6
         Else
@@ -1021,7 +1023,7 @@ cdt 11/2/2016 removed summation for varbt Now is consistent with hourly
 *  units are millcal m d-1 C-1
               
                VarBT(i,2)=((0.058+1.7e-4*TAirN)+
-     !                  (0.052*EXP(.058*TAirN)))
+     &                  (0.052*EXP(.058*TAirN)))
 
 * Change units to Joules cm-2 d-1
 cdt changed 3600 to 60 based on temperature paper
@@ -1063,7 +1065,7 @@ c................... End gas movement
 c................... This is the end of hourly calculations
       tNext(ModNum)=tNext(ModNum)+PERIOD
       EndIf                   ! hourly calcs defined by tnext
- 1001  Continue
+! 1001  Continue
 c................... Furrow irrigation
 c dt 4-22-2011 this needs to be put into its own block since we changed the tAtm variable
 c  this won't work as written
@@ -1080,13 +1082,13 @@ c  this won't work as written
            CodeW(k)=-4
           Enddo
           tAtm=tAtm-PERIOD
-          goto 1000  !hourly code would have been skipped over initially, so have to go back and do the hourly et calcs
+!          goto 1000  !hourly code would have been skipped over initially, so have to go back and do the hourly et calcs
         Endif
       Endif
 c................... End of the furrow irrigation
       RETURN
 10    call errmes(im,il)
-      END
+      END Subroutine SetSurfaceD
 C
       Subroutine SORT03(N,ARR1,iARR2,iARR3)
       Dimension ARR1(N),iARR2(N),iARR3(N)
@@ -1106,7 +1108,7 @@ C
          iARR3(i+1)=iA3
       Enddo
       Return
-      End
+      End Subroutine SORT03
 C   Shaded-unshaded
       Function FSh(i, xStem, Shade, u, N)
       Dimension u(N)
@@ -1142,4 +1144,4 @@ C   Shaded-unshaded
         Endif
       Endif
       Return
-      End
+      End Function FSh

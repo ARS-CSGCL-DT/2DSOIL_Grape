@@ -3,15 +3,16 @@ c 0 for 3/1/1900 to be compatible with Microsoft Excel's method of calculating J
 C for astronomy (not the julian calendar)
 C Caldat returns a calendar date given a julian day
 C Julian is a function that returns a julian day given a calendar day
-
+! TM 21-25 October 2019
+! compile check
 
       SUBROUTINE caldat(julian,mm,id,iyyy)
-! passes julian and returns mm, dd, yyyy
+c passes julian and returns mm, dd, yyyy
       INTEGER id,iyyy,julian,mm,IGREG
       PARAMETER (IGREG=2299161)
-!(IGREG=2299161)
+c(IGREG=2299161)
       INTEGER ja,jalpha,jb,jc,jd,je
-      !Julian=julian+2415079   !provide a reference of 3/1/1900
+c      Julian=julian+2415079   cprovide a reference of 3/1/1900
       Julian=julian+2415019   ! now 12/30/1899
       if(julian.ge.IGREG)then
         jalpha=int(((julian-1867216)-0.25d0)/36524.25d0)
@@ -57,9 +58,9 @@ C Julian is a function that returns a julian day given a calendar day
       if (id+31*(mm+12*iyyy).ge.IGREG) then
         ja=int(0.01d0*jy)
         julday=julday+2-ja+int(0.25d0*ja)
-        !julday=julday-2415019   ! 1/1/1900 JD zero
+c        julday=julday-2415019   ! 1/1/1900 JD zero
         Julday=Julday-2415019 ! 12/30/1899 JD is 0
-        !julday=julday-2415079;      ! on 3/1/1900 jday = 1
+c        julday=julday-2415079;      ! on 3/1/1900 jday = 1
       endif
       return
       END

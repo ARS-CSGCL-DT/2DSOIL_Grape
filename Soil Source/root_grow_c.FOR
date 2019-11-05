@@ -1,5 +1,7 @@
 *|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*
-      Subroutine Rootgrow_New ()
+! TM 28 October - 1 NOvemebr 2019
+! compile check
+      Subroutine Root_Mover_New ()
       Include 'public.ins'
       Include 'puplant.ins'
       Dimension iLoc(4)
@@ -119,7 +121,7 @@ c   Actual growth
 
 25    format (F12.6,1x,i6,2x,6G12.3,1x,2i5)
       Return
-      End
+      End Subroutine Root_Mover_New
 *
       Function f1(PSI)
 c
@@ -134,7 +136,7 @@ c
       EndIf
       f1=aux
       Return
-      End
+      End Function f1
 *
 CDT took out functions for f1 and f2 that adjusted  root diffusion coefficients based
 C  on soil properties. This is all done here via carbon allocation

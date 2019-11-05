@@ -1,0 +1,8 @@
+ 
+D:\2DSOIL_Grape\Soil Source>2dsoil_grape ..\iowa06\runiowa06.dat
+ Reading Grid Done
+ Calling Carbon_Partitioning_New
+ Line 329
+ amax1(0.3,dif/ConstK(1))     0.00000         0.00000
+
+D:\2DSOIL_Grape\Soil Source>

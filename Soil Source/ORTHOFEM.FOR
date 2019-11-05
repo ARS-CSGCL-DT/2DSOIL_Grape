@@ -152,7 +152,8 @@
 *       ((6 + 2*MAXNB + 2*MNORTH)*MAXNN)*(8 BYTES)
 *
 ************************************************************************
-
+! TM 21-25 October 2019
+! compile check
       subroutine IADMake(KX,NumNP,NumEl,NumElD,MaxNB,IAD,IADN,IADD)
 
 *     Generate the adjacency matrix for nodes from the element 
@@ -242,7 +243,7 @@
           WRITE (* ,601) I,MAXNB
           WRITE (50,601) I,MAXNB
   601     FORMAT (//5X,'ERROR IN IADMAKE: NODE ',I5,' HAS > '
-     *            ,I5,' ADJACENCIES')
+     &            ,I5,' ADJACENCIES')
           STOP
         ENDIF
 
@@ -254,7 +255,7 @@
       ENDIF
 
       RETURN
-      END
+      END SUBROUTINE INSERT
 
 ************************************************************************
 
@@ -286,7 +287,7 @@ C GR
    20 CONTINUE
 
       RETURN
-      END
+      END SUBROUTINE FIND
 
 ************************************************************************
 
@@ -354,7 +355,7 @@ C GR
    20 CONTINUE
 
       RETURN
-      END
+      END SUBROUTINE ILU
 
 ************************************************************************
 
@@ -388,13 +389,13 @@ C GR
       DU = TEMP
 
       RETURN
-      END
+      END FUNCTION DU
 
 ************************************************************************
 
       SUBROUTINE ORTHOMIN (R,C,GT,NN,MAXNB,MAXNN,IAD,IADN,IADD,B,VRV,
-     !                     RES,RQI,RQ,Q,QI,RQIDOT,ECNVRG,RCNVRG,ACNVRG,
-     !                     NORTH,MNORTH,MAXIT)
+     &                     RES,RQI,RQ,Q,QI,RQIDOT,ECNVRG,RCNVRG,ACNVRG,
+     &                     NORTH,MNORTH,MAXIT)
 
 *     ORTHOMIN OR CONJUGATE GRADIENT ACCELERATION/SOLUTION
 
@@ -406,8 +407,8 @@ C GR
 
       IMPLICIT REAL*8 (A-H,O-Z)
       DIMENSION R(MAXNB,NN),C(NN),GT(NN),IAD(MAXNB,NN),IADN(NN),
-     !          IADD(NN),B(MAXNB,NN),VRV(NN),RES(NN),RQI(MAXNN,MNORTH),
-     !          RQ(NN),Q(NN),RQIDOT(MNORTH),QI(MAXNN,MNORTH)
+     &          IADD(NN),B(MAXNB,NN),VRV(NN),RES(NN),RQI(MAXNN,MNORTH),
+     &          RQ(NN),Q(NN),RQIDOT(MNORTH),QI(MAXNN,MNORTH)
 
 *     INITIALIZE RESIDUAL VECTOR
 
@@ -558,7 +559,7 @@ C GR
       ITERP = ITER
 
       RETURN
-      END
+      END SUBROUTINE ORTHOMIN
 
 ************************************************************************
 
@@ -603,7 +604,7 @@ C GR
    40 CONTINUE
 
       RETURN
-      END
+      END SUBROUTINE LUSOLV
 
 ************************************************************************
 
@@ -626,7 +627,7 @@ C GR
    30 CONTINUE
 
       RETURN
-      END
+      END SUBROUTINE MATM2
 
 ************************************************************************
 
@@ -643,7 +644,7 @@ C GR
 100   CONTINUE
 
       RETURN
-      END
+      END FUNCTION SDOT
 
 ************************************************************************
 
@@ -696,7 +697,7 @@ C GR
       ENDIF
 
       RETURN
-      END
+      END SUBROUTINE SAXPYK
 
 ************************************************************************
 
@@ -714,7 +715,7 @@ C GR
       ENDIF
 
       RETURN
-      END
+      END SUBROUTINE SCOPY
 
 ************************************************************************
 
@@ -732,6 +733,6 @@ C GR
       ENDIF
 
       RETURN
-      END
+      END SUBROUTINE SCOPYK
 
 * ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||

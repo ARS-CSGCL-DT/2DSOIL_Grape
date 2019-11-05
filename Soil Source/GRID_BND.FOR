@@ -1,18 +1,20 @@
-*||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*
+C||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*
 CDT Nov, 2007 added a drainage boundary. It is input similar to seepage. The difference is
 C*     that drainage always takes place from a drainage boundary - it is usually horizontal
 C      seepage faces are usually used in ditches.
+! TM 14-19 October 2019
+! compile check
       Subroutine Get_Grid_and_Boundary()
       Include 'public.ins'
       Include 'nitvar.ins'
-*
+
       Integer e
       Logical lConst
       Dimension idummy(4)
-*
+
       im=20
       il=0
-*
+
       Open(40,file=GeometryFile,status='old',ERR=10)
       im=im+1
       il=il+1
@@ -34,8 +36,8 @@ C
         il=il+1
         Read(40,*,ERR=10) n,x(n),y(n),MatNumN(n)
       Enddo
-*  Reading element information
-*
+C  Reading element information
+
       Num=0
       im=im+1
       il=il+1
@@ -51,7 +53,7 @@ cdt 10/21/2002 added this line to allow input of 3 node elements
         if(KX(Num,4).eq.0) KX(Num,4)=KX(Num,3)
       Enddo
 C
-C  Reading boundary information
+c     write(*, *) 'Reading boundary information'
 C
       im=im+1
       il=il+1
@@ -63,7 +65,7 @@ C
       Do i=1,NumBP
         il=il+1
         Read(40,*,ERR=10) n,(idummy(j),j=1,4),Width(i)
-	KXB(i)=n
+        KXB(i)=n
         CodeW(n)=idummy(1)
         CodeS(n)=idummy(2)
         CodeT(n)=idummy(3)
@@ -73,7 +75,7 @@ C
         Enddo
       Enddo
 C
-C  Reading seepage face information
+C      write(*,*) "Reading seepage face information"
 C
       im=im+1
       il=il+1
@@ -191,7 +193,7 @@ C
         NumSol=1
         im=450
         il=0
-      Open(41,File=NodeGeomFile,ERR=10)
+        Open(41,File=NodeGeomFile,ERR=10)
         im=im+1
         il=il+1
         Read(41,*)
@@ -201,8 +203,8 @@ C
 
         Do j=1,NumNP
           il=il+1
-          Read(41,*,ERR=10)i,Nh(i),Ch(i),NL(i),CL(i),Nm(i),Cm(i),NNH4(i)
-     &      ,(Conc(i,jjj),jjj=1,NumSol),Tmpr(i),hNew(i)
+          Read(41,*, ERR=10) i, Nh(i),Ch(i),NL(i),CL(i),Nm(i),Cm(i),
+     &    NNH4(i),(Conc(i,jjj),jjj=1,NumSol),Tmpr(i),hNew(i)
      
           Ch_old(i)=Ch(i)
           Nh_old(i)=Nh(i)
@@ -224,5 +226,4 @@ C   ammonia is input as ppm or ug /g soil here we convert it to ug/cm3 or mg per
       Write(*,*) 'Reading Grid Done'
       Return
 10    Call errmes(im,il)
-      End
-
+      End Subroutine Get_Grid_and_Boundary

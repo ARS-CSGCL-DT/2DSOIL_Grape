@@ -1,4 +1,6 @@
-      subroutine Root_Mover_New()
+! TM 28 October - 1 November 2019
+! compile check
+      subroutine Root_Diff_New()
       Include 'Public.ins'
       Include 'puplant.ins'
       Double precision A,B,C,P,Sum
@@ -11,13 +13,13 @@ C AD 12-2-2011 this code from MaizSim10.11 is based on Yakov Pachepsky's diffusi
      &            Gc(NumNPD),Sc(NumNPD),Fc(NumNPD),
      &            MRL(NumNPD),RUTDEN_Y(NumNPD)
       Common /RootM/  DMolx,DMolz,Vel,Ac(NumNPD),
-     !                NLevel,dt,epsi,CourMax,lUpW,
-     !                S(3,3),Wz(3),Wx(3),Ri(3),Ci(3),Bi(3),List(3),
-     !         VxROld(NumNPD),VzROld(NumNPD),
-     !         VxR(NumNPD), VzR(NumNPD), hOld(NumNPD),tOld(NumNPD),
-     !         VxRH(NumNPD),VzRH(NumNPD),RMassOld(NumNPD),
-     !                Dispzz(NumNPD),Dispxx(NumNPD),Dispxz(NumNPD),
-     !                WeTab(3,2*NumElD)
+     &                NLevel,dt,epsi,CourMax,lUpW,
+     &                S(3,3),Wz(3),Wx(3),Ri(3),Ci(3),Bi(3),List(3),
+     &         VxROld(NumNPD),VzROld(NumNPD),
+     &         VxR(NumNPD), VzR(NumNPD), hOld(NumNPD),tOld(NumNPD),
+     &         VxRH(NumNPD),VzRH(NumNPD),RMassOld(NumNPD),
+     &                Dispzz(NumNPD),Dispxx(NumNPD),Dispxz(NumNPD),
+     &                WeTab(3,2*NumElD)
       If (lInput.eq.0) goto 11
       
       Open(40,file = VarietyFile, status = 'old',ERR = 10)
@@ -187,11 +189,11 @@ C
               do 16 j2=1,3
                 i2=List(j2) 
                 S(j1,j2)=SMul1*(Ec1*Bi(j1)*Bi(j2)+Ec3*Ci(j1)*Ci(j2)+
-     !                         Ec2*(Bi(j1)*Ci(j2)+Ci(j1)*Bi(j2)))
+     &                         Ec2*(Bi(j1)*Ci(j2)+Ci(j1)*Bi(j2)))
                 S(j1,j2)=S(j1,j2)-(Bi(j2)/8.*(VxE+VxR(i1)/3.)+
-     !                            Ci(j2)/8.*(VzE+VzR(i1)/3.))*xMul
+     &                            Ci(j2)/8.*(VzE+VzR(i1)/3.))*xMul
                 if(lUpW.eq.1) S(j1,j2)=S(j1,j2)-xMul*
-     !                            (Bi(j2)/40.*Wx(j1)+Ci(j2)/40.*Wz(j1))
+     &                            (Bi(j2)/40.*Wx(j1)+Ci(j2)/40.*Wz(j1))
                 ic=1
                 if(i1.eq.i2) ic=2
                 S(j1,j2)=S(j1,j2)+SMul2*ic*(FcE+(Fc(i1)+Fc(i2))/3.)
@@ -235,9 +237,9 @@ cccz
 c             print*,time,',','Root Diff'
 	       call ILU(A,NumNP,MBandD,IAD,IADN,IADD,A1)
              call OrthoMin(A,B1,B,NumNP,MBandD,NumNPD,IAD,
-     !	            IADN,IADD,A1,VRV,
-     !                RES,RQI,RQ,QQ,QI,RQIDOT,ECNVRG,RCNVRG,ACNVRG,4,
-     !                MNorth,MaxItO)
+     &	            IADN,IADD,A1,VRV,
+     &                RES,RQI,RQ,QQ,QI,RQIDOT,ECNVRG,RCNVRG,ACNVRG,4,
+     &                MNorth,MaxItO)
         Else
 C
 C  Solve the system of linear equations
@@ -323,7 +325,7 @@ c set up for next step
       Return
 10    Call errmes(im,il)
       Return
-      End
+      End subroutine Root_Diff_New
 * 
 
       Subroutine RDisper(NumNP,Dispxx,Dispzz,Dispxz,DMolx,DMolz)
@@ -334,7 +336,7 @@ C basically, all this does now is assign values Dispxx and Dispyy
 C we can keep it for now if we do want to adjust the values later in the future.
 C I have cleaned it up though.
       Dimension 
-     !  Dispxx(NumNP),Dispzz(NumNP),Dispxz(NumNP)
+     &  Dispxx(NumNP),Dispzz(NumNP),Dispxz(NumNP)
 
       Do 11 i=1,NumNP
           Adjust=1.0
@@ -343,13 +345,13 @@ C I have cleaned it up though.
           Dispxz(i)=0.
 11    continue
       Return
-      End
+      End Subroutine RDisper
 *
       subroutine RWeFact(NumNP,NumEl,NumElD,x,y,KX,WeTab,VxH,VzH,Dispxx,
-     !                  Dispzz,Dispxz)
+     &                  Dispzz,Dispxz)
       Dimension x(NumNP),y(NumNP),KX(NumElD,4),VxH(NumNP),VzH(NumNP),
-     !          Dispxx(NumNP),Dispzz(NumNP),Dispxz(NumNP),
-     !          WeTab(3,2*NumElD),Beta(3),List(3)
+     &          Dispxx(NumNP),Dispzz(NumNP),Dispxz(NumNP),
+     &          WeTab(3,2*NumElD),Beta(3),List(3)
       Integer e
 
 C AD 10/12/11 commented out the following line, because it causes Vel (geotrophic velocity) to make the denominator very small
@@ -403,7 +405,7 @@ C      TanH(z)=(exp(z)-exp(-z))/(exp(z)+exp(-z))
             aa=11.
             If(Disp.gt.0.) aa=abs(Vel/Disp)
             If(Disp.lt.1.e-30.or.abs(Vel).lt.0.001*VV.or.abs(aa).gt.10.)
-     !            then
+     &            then
               If(abs(Vel).lt.0.001*VV) WeTab(k,NumSEl)=0.0
               If(Vel.gt.0.001*VV) WeTab(k,NumSEl)=1.0
               If(Vel.lt.-0.001*VV) WeTab(k,NumSEl)=-1.0
@@ -414,5 +416,4 @@ C      TanH(z)=(exp(z)-exp(-z))/(exp(z)+exp(-z))
 12      Continue
 13    Continue
       Return
-      End
-
+      End subroutine RWeFact
