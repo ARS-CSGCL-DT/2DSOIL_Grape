@@ -619,9 +619,10 @@ C
 C     *** CALCULATE PHOTOSYNTHETICALLY ACTIVE RADIATION (PAR)
 C         INCIDENT ON THE CROP ASSUMING THAT
 C         PAR = 0.43 DIRECT + 0.57 DIFFUSE RADIATION. ***
+C     use Min to avoid divide by zero later
 C
-           PAR(I) = WATTSM(I)
-     &          *((DIFWAT(I)*0.57) + ((1.0 - DIFWAT(I))*0.43))
+           PAR(I) = max(0.001,WATTSM(I)
+     &          *((DIFWAT(I)*0.57) + ((1.0 - DIFWAT(I))*0.43)))
 40         CONTINUE
 C
 C

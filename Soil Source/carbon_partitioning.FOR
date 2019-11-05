@@ -476,9 +476,11 @@ c convert MPa into bar, this is how we have 19.26//(LAI*rowsp)
      &         *0.02275*(24.5 + Tmpr(n))
              ELSE
              
-             WUPM(n)=(PSIS(n)-PSILT)/((SR(n)+RRRM+RVR(n))
-     &        /(nodeArea(n)*RDenM(n)*0.02275*(24.5+Tmpr(n)))
-     &        +19.26/(LAI*ROWSP))
+             if (RDenM(n).GT.0) Then
+                WUPM(n)=(PSIS(n)-PSILT)/((SR(n)+RRRM+RVR(n))
+     &           /(nodeArea(n)*RDenM(n)*0.02275*(24.5+Tmpr(n)))
+     &           +19.26/(LAI*ROWSP))
+             End If
     
              WUPN(n)=(PSIS(n)-PSILT)/((SR(n)+RRRY+RVR(n))
      &        /(nodeArea(n)*RDenY(n)*0.02275*(24.5+Tmpr(n)))
