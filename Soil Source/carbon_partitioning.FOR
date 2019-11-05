@@ -481,8 +481,8 @@ c convert MPa into bar, this is how we have 19.26//(LAI*rowsp)
      &         *0.02275*(24.5 + Tmpr(n))
                     
              ELSE
-              write(*,*) "line no = 483", n, nodeArea(n), RDenM(n),
-     &        Tmpr(n)
+c              write(*,*) "line no = 483", n, nodeArea(n), RDenM(n),
+c     &        Tmpr(n)
              if (RDenM(n).GT.0) Then
                 WUPM(n)=(PSIS(n)-PSILT)/((SR(n)+RRRM+RVR(n))
      &           /(nodeArea(n)*RDenM(n)*0.02275*(24.5+Tmpr(n)))
@@ -599,7 +599,7 @@ c        IF (PILOSM.LT.-9.0) SCF = 0.01
 c        EOR = EOR*SCF
 c      ENDIF
 c*****************************************************************
-      write(*,*) "line no = 597"
+c      write(*,*) "line no = 597"
 C   DETERMINE HOW POTENTIAL TRANSPIRATION RATE IS RELATED TO THE
 C   VARIOUS POTENTIAL WATER UPTAKE RATES AND GO TO THE APPROPRIATE
 C   SECTION OF THE CODE. CALCULATE LEAF WATER POTENTIAL,STOMATAL
@@ -702,7 +702,7 @@ C  IF TURGOR PRESSURE IS LESS THAN 2 BARS THE SHOOT DOES NOT GROW
         SGTLI = 1.0
         SGT = 0.0
         PCRS = PCRQ
-      write(*,*) "line no = 700"
+c      write(*,*) "line no = 700"
 C   IF TURGOR PRESSURE IS DECREASING AND IS LESS THAN 5 BARS
 C   SHOOT GROWTH POTENTIAL IS FURTHER REDUCED
 C
