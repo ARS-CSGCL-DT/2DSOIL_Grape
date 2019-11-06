@@ -58,7 +58,10 @@ c|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*
         Step = dt
       Endif
 c       WRITE(LINE,       CALL COUP@(LINE,5,1,24)
-      write(*,*) Time
+      if (modulo(int(time),4).eq.0) then
+         write(*,*) Time
+       endif
+       
       Time = Time + Step
 
 100    FORMAT(1x,G12.5)

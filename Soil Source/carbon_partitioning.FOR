@@ -265,10 +265,11 @@ c     EO is in g/plant. Multiply g/plant x plant/m2 x 1 m2/10000 cm2 x rowsp
 c     EOR : = EO*ROWSP if the plant is not at the border of the soil slab,
 c           = 0.5 * EO*ROWSP, if the plant is at the left or right border.
 c      EOR = EO*poprow/rowsp*100*rowsp*EOMult/10000
+c       1 over area per plant is poprow*100/rowsp
 c      poprow*100/rowsp gives plants m-2
 c      ET_demand is units of grams m-2 day-1
 c     EoMult*rowsp/10000/24 converts to g slab-1 (rowsp * 1cm strip for the finite element domain)
- 
+c     TPot is g plant-1 hr- poprow*100/Rowsp converts to g cm hr
        EOR = ET_demand*poprow*(100/rowsp)*(EOMult*rowsp/10000) ! potential transportation rate per slab
 c       EOR = ET_demand
 c      PCRL = PCRL*12*poprow/rowsp*100*rowsp*EOMult/10000
@@ -333,7 +334,7 @@ C this one for nitrogen. Use the ratio between actual uptake of N and IMax
          if (ConstK(1).GT.0) then 
             RGCF6 =  amax1(0.3,dif/ConstK(1))
           else
-            RGCF6=0
+            RGCF6=1
           endif
           
 	   RGCF6 = AMIN1(1.0, RGCF6)
@@ -480,10 +481,20 @@ c convert MPa into bar, this is how we have 19.26//(LAI*rowsp)
      &         *0.02275*(24.5 + Tmpr(n))
                     
              ELSE
+<<<<<<< HEAD
              write(*,*) "line no = 483", RDenM(n)
              WUPM(n)=(PSIS(n)-PSILT)/((SR(n)+RRRM+RVR(n))
      &        /(nodeArea(n)*RDenM(n)*0.02275*(24.5+Tmpr(n)))
      &        +19.26/(LAI*ROWSP))
+=======
+c              write(*,*) "line no = 483", n, nodeArea(n), RDenM(n),
+c     &        Tmpr(n)
+             if (RDenM(n).GT.0) Then
+                WUPM(n)=(PSIS(n)-PSILT)/((SR(n)+RRRM+RVR(n))
+     &           /(nodeArea(n)*RDenM(n)*0.02275*(24.5+Tmpr(n)))
+     &           +19.26/(LAI*ROWSP))
+             End If
+>>>>>>> 6ebca3d857927c8ed5b09122b3585baf8f79e606
     
              WUPN(n)=(PSIS(n)-PSILT)/((SR(n)+RRRY+RVR(n))
      &        /(nodeArea(n)*RDenY(n)*0.02275*(24.5+Tmpr(n)))
@@ -595,7 +606,7 @@ c        IF (PILOSM.LT.-9.0) SCF = 0.01
 c        EOR = EOR*SCF
 c      ENDIF
 c*****************************************************************
-      write(*,*) "line no = 597"
+c      write(*,*) "line no = 597"
 C   DETERMINE HOW POTENTIAL TRANSPIRATION RATE IS RELATED TO THE
 C   VARIOUS POTENTIAL WATER UPTAKE RATES AND GO TO THE APPROPRIATE
 C   SECTION OF THE CODE. CALCULATE LEAF WATER POTENTIAL,STOMATAL
@@ -698,7 +709,7 @@ C  IF TURGOR PRESSURE IS LESS THAN 2 BARS THE SHOOT DOES NOT GROW
         SGTLI = 1.0
         SGT = 0.0
         PCRS = PCRQ
-      write(*,*) "line no = 700"
+c      write(*,*) "line no = 700"
 C   IF TURGOR PRESSURE IS DECREASING AND IS LESS THAN 5 BARS
 C   SHOOT GROWTH POTENTIAL IS FURTHER REDUCED
 C

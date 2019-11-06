@@ -47,13 +47,13 @@ C SetSurfaceH --  reading hourly weather
       call Root_Mover_New()
       Call WaterUptake_New()
       Call WaterMover_New()
-      if (outputSoilYes.gt.0) then
-        write(*,*) 'Calling Output?'
+c      if (outputSoilYes.gt.0) then
+c        write(*,*) 'Calling Output?'
         Call Output()
-        write(*, *) "Return from Output"
-      endif
+c        write(*, *) "Return from Output"
+c      endif
       
       cycleno = cycleno + 1
-      write(*,*) 'Cycle No = ', cycleno
+c      write(*,*) 'Cycle No = ', cycleno
         Goto 1
       End program soil2d_grape

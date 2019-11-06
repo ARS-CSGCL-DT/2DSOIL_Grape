@@ -740,12 +740,10 @@ c              hOld(n)=hNew(n)
 c        endif
 c          endif
 c       Enddo
-       
-10    Call errmes(im,il)
-
+      
 
       Return
-!10    Call errmes(im,il)
+10    Call errmes(im,il)
       Return
       End subroutine WaterMover_New
 c*
