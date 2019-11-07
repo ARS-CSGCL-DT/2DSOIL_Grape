@@ -100,7 +100,6 @@ c
 C
 C  Recasting sinks 
 C
-
 cccz zhuangji, delete this part, for the sink is already casted
 cccz based on node
 c         Do n=1,NumEl
@@ -198,7 +197,7 @@ C
 
 c
 c  RESET: assembling of the matrixes
-c
+
       xMul=1.
       Do 212 i=1,NumNP
  
@@ -211,7 +210,7 @@ C added 1 line
            A(j,i)=0.
 211     Continue
 212   Continue
-C
+
 C     Loop on elements
 C
       Do 216 n=1,NumEL
@@ -254,6 +253,7 @@ C
             B(j)=B(j)+BMul*(CondK*Bj+CondJ*Cj)
             B(l)=B(l)+BMul*(CondK*Bk+CondJ*Ck)
           Endif
+
           E(1,1)=CondI*Bi*Bi+2.*CondK*Bi*Ci+CondJ*Ci*Ci
           E(1,2)=CondI*Bi*Bj+CondK*(Bi*Cj+Ci*Bj)+CondJ*Ci*Cj
           E(1,3)=CondI*Bi*Bk+CondK*(Bi*Ck+Ci*Bk)+CondJ*Ci*Ck
@@ -263,17 +263,18 @@ C
           E(3,1)=E(1,3)
           E(3,2)=E(2,3)
           E(3,3)=CondI*Bk*Bk+2.*CondK*Bk*Ck+CondJ*Ck*Ck
+          
           Do 214 i=1,3
             iG=KX(n,iLoc(i))
             Do 213 j=1,3
               jG=KX(n,iLoc(j))
               if(lOrt) then
                 call Find(iG,jG,kk,NumNP,MBandD,IAD,IADN)
-                A(kk,iG)=A(kk,iG)+AMul*E(i,j)
+                A(kk,iG)=A(kk,iG)+AMul*E(i,j)  
               else
                 iB=iG-jG+1
                 if(iB.ge.1) A(iB,jG)=A(iB,jG)+AMul*E(i,j)
-                end if
+              end if
 213         Continue
 214       Continue
 215     Continue
@@ -282,15 +283,17 @@ c
 c     Determine boundary fluxes
 c
         B_1=B       !dt save B matrix for flux calcs later
-        A_1=A 
+        A_1=A
       Do 220 n=1,NumNP
                    
         If (CodeW(n).lt.1) goto 220
+
         QN=B(n)+DS(n)+F(n)*(ThNew(n)-ThOld(n))/dt
         if(lOrt) then
           do 1117 j=1,IADN(n)
             QN=QN+A(j,n)*hNew(IAD(j,n))
 1117        continue
+
         else
         QN=QN+A(1,n)*hNew(n)
         Do 219 j=2,MBand
@@ -306,8 +309,6 @@ c
         End if
         Q(n)=QN
 220   Continue
-
-
 
 c
 c     Complete construction of RHS vector and form effective matrix
@@ -347,7 +348,7 @@ c
       Endif
 c
 c     Modify conditions on Drainage boundaries
-c
+
       If (NDrain.ne.0) then
         Do 3120 i=1,NDrain
           NDS=NDR(i)

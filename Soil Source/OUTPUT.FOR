@@ -59,7 +59,7 @@ C*** FROM HourlyOut.for BEGIN
 	  Open(81,file=NodeGraphics)
 	  open(82,file=ElemGraphics)  
 	  Open(83,file=SurfaceGraphics)
-        Open(84,file=FluxGraphics)
+      Open(84,file=FluxGraphics)
          
       Write(81,5) "Date_time,", "Date,", "X,", "Y,", "hNew,","thNew,",
      &  "VZ,", "VX,","Q,", "ConcN,", "Temp,","GasConc"  

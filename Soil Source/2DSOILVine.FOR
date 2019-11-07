@@ -1,4 +1,4 @@
-*||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*
+!||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*
 *                                                                      *
 *     2DSOIL  - Numerical model of two-dimensional soil environment    *
 *                           for field crops                            *
@@ -54,6 +54,8 @@ c        write(*, *) "Return from Output"
 c      endif
       
       cycleno = cycleno + 1
-c      write(*,*) 'Cycle No = ', cycleno
+      if( modulo(cycleno, 100) == 0) then
+        write(*,*) 'Cycle No = ', cycleno
+      end if
         Goto 1
       End program soil2d_grape

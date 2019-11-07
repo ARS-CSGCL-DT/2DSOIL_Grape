@@ -481,12 +481,6 @@ c convert MPa into bar, this is how we have 19.26//(LAI*rowsp)
      &         *0.02275*(24.5 + Tmpr(n))
                     
              ELSE
-<<<<<<< HEAD
-             write(*,*) "line no = 483", RDenM(n)
-             WUPM(n)=(PSIS(n)-PSILT)/((SR(n)+RRRM+RVR(n))
-     &        /(nodeArea(n)*RDenM(n)*0.02275*(24.5+Tmpr(n)))
-     &        +19.26/(LAI*ROWSP))
-=======
 c              write(*,*) "line no = 483", n, nodeArea(n), RDenM(n),
 c     &        Tmpr(n)
              if (RDenM(n).GT.0) Then
@@ -494,7 +488,6 @@ c     &        Tmpr(n)
      &           /(nodeArea(n)*RDenM(n)*0.02275*(24.5+Tmpr(n)))
      &           +19.26/(LAI*ROWSP))
              End If
->>>>>>> 6ebca3d857927c8ed5b09122b3585baf8f79e606
     
              WUPN(n)=(PSIS(n)-PSILT)/((SR(n)+RRRY+RVR(n))
      &        /(nodeArea(n)*RDenY(n)*0.02275*(24.5+Tmpr(n)))

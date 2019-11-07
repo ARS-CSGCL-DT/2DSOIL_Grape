@@ -57,10 +57,10 @@ c|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*
         If(tFix-t.ne.dt.and.dt.gt.(tFix-t)/2.) dt=(tFix-t)/2.
         Step = dt
       Endif
-c       WRITE(LINE,       CALL COUP@(LINE,5,1,24)
-      if (modulo(int(time),4).eq.0) then
-         write(*,*) Time
-       endif
+c       WRITE(LINE,      CALL COUP@(LINE,5,1,24)
+C$$$$$$       if (modulo(int(time),10).eq.0) then
+C$$$$$$          write(*,*) 'Time = ', Time
+C$$$$$$        endif
        
       Time = Time + Step
 
