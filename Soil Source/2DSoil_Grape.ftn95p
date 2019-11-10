@@ -703,7 +703,7 @@
     "Vparam" = ""
     "Fpp" = "No"
     "Statistics" = "No"
-    "CompilerExtras" = "/FI"
+    "CompilerExtras" = "/FIXED_FORM "
     "LaunchArguments" = ""
     "OutputFile" = "2DSoil_Grape.exe"
     "FileType" = "EXE"
@@ -735,14 +735,6 @@
         "FileGUID" = ""
         }
         ".\\wateruptake.FOR"
-        {
-        "ProjRelPath" = "T"
-        "CustomCompilerOptions" = "0"
-        "CustomSwitches" = ""
-        "ExcludeFromBuild" = "F"
-        "FileGUID" = ""
-        }
-        ".\\SYNCHRON.FOR"
         {
         "ProjRelPath" = "T"
         "CustomCompilerOptions" = "0"
@@ -783,14 +775,6 @@
         "FileGUID" = ""
         }
         ".\\root_diff_new.for"
-        {
-        "ProjRelPath" = "T"
-        "CustomCompilerOptions" = "0"
-        "CustomSwitches" = ""
-        "ExcludeFromBuild" = "F"
-        "FileGUID" = ""
-        }
-        ".\\OUTPUT.FOR"
         {
         "ProjRelPath" = "T"
         "CustomCompilerOptions" = "0"
@@ -863,6 +847,22 @@
         "FileGUID" = ""
         }
         ".\\2DSOILVine.FOR"
+        {
+        "ProjRelPath" = "T"
+        "CustomCompilerOptions" = "0"
+        "CustomSwitches" = ""
+        "ExcludeFromBuild" = "F"
+        "FileGUID" = ""
+        }
+        ".\\OUTPUT.FOR"
+        {
+        "ProjRelPath" = "T"
+        "CustomCompilerOptions" = "0"
+        "CustomSwitches" = ""
+        "ExcludeFromBuild" = "F"
+        "FileGUID" = ""
+        }
+        ".\\SYNCHRON.FOR"
         {
         "ProjRelPath" = "T"
         "CustomCompilerOptions" = "0"

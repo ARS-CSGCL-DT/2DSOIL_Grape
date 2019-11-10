@@ -209,7 +209,8 @@ c      EOMult=1.
 c      If(xBSTEM.le.xMin.or.xBSTEM.ge.xMax) EOMult=0.5
 cccz zhuangji EOMult is to mark if the plant is on the edge.
       
-      PSISM=PSISM/float(icount)
+!      PSISM=PSISM/float(icount)
+      PSISM=PSISM/icount
       PPSIL = -0.5
       PPSILT = -0.5
       TPLT = 2.0

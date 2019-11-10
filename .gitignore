@@ -279,6 +279,7 @@ Soil Source/*.htm
 Soil Source/*.lis
 Soil Source/*.lst
 Soil Source/*.XRF
+Soil Sorice/X.gitignore
 Soil Source/BuildLog
 Soil Source/ErrorLog
 2dsoil.exe

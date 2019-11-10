@@ -1,12 +1,13 @@
 c|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*
 ! TM 14-18 October 2019
 ! compile check       
-      Subroutine Synchronizer()
+      Subroutine Synchronizer(finished)
       Include 'public.ins'
 
       character line*40
       Character*10 SDate,FDate
       double precision tFix,tRigid,dt,t,dtmax
+      logical :: finished
 
       If (lInput.eq.1) then
         If (NumMod.eq.-1) then
@@ -50,9 +51,12 @@ c|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*
      &  dtOpt=dmax1(dtMin,dMul2*dtOpt)
         dt=dmin1(dtOpt,tFix-t)
         If ((abs(dt/t).lt.1.E-20).or.(RunFlag.eq.0)) then
-	    write(*,*) 'Finished at',time
-          Stop
-        Endif
+          finished = .TRUE.
+          return
+C$$$$$$         write(*,*) 'Finished at',time
+C$$$$$$           Stop
+        end if
+        
         dt=dmin1((tFix-t)/anint((tFix-t)/dt),dtMax)
         If(tFix-t.ne.dt.and.dt.gt.(tFix-t)/2.) dt=(tFix-t)/2.
         Step = dt
