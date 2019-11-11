@@ -60,28 +60,27 @@ C*** FROM HourlyOut.for BEGIN
 	  open(82,file=ElemGraphics)  
 	  Open(83,file=SurfaceGraphics)
       Open(84,file=FluxGraphics)
-         
-      Write(81,5) "Date_time", "Date", "X", "Y", "hNew","thNew",
+
+! TM revised write statements replacing "<var>," with "<var>"
+        
+      Write(81,5) "Date_time", "Date", "X", "Y", "hNew", "thNew",
      &  "VZ", "VX","Q", "ConcN", "Temp","GasConc"  
      
-      Write(82,6) "Date_time,", "Date,", "X,", "Y,", "Node,", 
-     &      "RMassM,",
-     &      "RMassY,", "RDenM,", "RDenY,",
-     &      "WaterSink,", "NitSink,", "GasSink,", "Area"
+      Write(82,6) "Date_time", "Date", "X", "Y", "Node", 
+     &      "RMassM", "RMassY", "RDenM", "RDenY",
+     &      "WaterSink", "NitSink", "GasSink", "Area"
          
-        Write(83,20) "Date_time,", "Date,", "PSoilEvap,", 
-     &         "ASoilEVap,", "PET_PEN,",
-     &         "PE_T_int,","transp,",
-     &         "CumRain,","infil,",
-     &         "FLuxAct,", "Runoff,",
-     &         "cover,","PSIM,", "SeasPSoEv,",
-     $         "SeasASoEv," ,"SeasPTran,",
-     &         "SeasATran,","SeasRain,","SeasInfil" 
-       Write(84,20) "Date_time,", "Date,","Flux,","SoilEA,",
-     &    "WattSM,", "RNS,","RNC,","WATPOT,","WATACT,",
-     &    "WATRAT,", "UpwardLW,","DifWat,","Cloud,",
-     &     "Shadow,","DIfInt,","Rowinc,", "PARInt,","RADInt"
-      Endif     !end initialization
+        Write(83,20) "Date_time", "Date", "PSoilEvap", 
+     &         "ASoilEVap", "PET_PEN", "PE_T_int","transp",
+     &         "CumRain", "infil",  "FLuxAct", "Runoff",
+     &         "cover", "PSIM", "SeasPSoEv", "SeasASoEv" ,"SeasPTran",
+     &         "SeasATran", "SeasRain", "SeasInfil"
+      
+       Write(84,20) "Date_time", "Date", "Flux", "SoilEA",
+     &    "WattSM", "RNS", "RNC", "WATPOT", "WATACT",
+     &    "WATRAT", "UpwardLW", "DifWat", "Cloud",
+     &     "Shadow", "DIfInt", "Rowinc", "PARInt", "RADInt"
+      end if     !end initialization
 C
 C Routine calculations every time step
 C
@@ -255,15 +254,17 @@ C*** FROM HourlyOut.for END
            
       Return
 C10    Call errmes(im,il)
+
+!=============================== format statements ====================
 C format 5 is water, 6 is roots
-  5   Format (1x,A12, T20, A6, T37, A2, T47,A2, T56, 
-     &        A4, T68,A5, T82, A2, T90, A3, T102, 
-     &        A2, T112, A5, T124, A5, T136, A6)   ! format for nodal data header
+  5   Format (1x,A12, T20, A6, T37, A2, T47,A2, T56, A4, T68,A5, T82, A2,
+     &        T90, A3, T102, A2, T112, A5, T124, A5, T136, A6)   ! format for nodal data header
   6   Format (1x,A16,T20,A5,T36,A2,T46,A2,T56,A5,T65,A7,T78,A7, T90,A6,
      &        T102, A6, T112, A11, T124, A8, T136, A8, T146, A5 )
- 10   Format (1x,F17.6,',', A15,',',16(F16.3, ','), F16.3)  !format for flux data
- 13   Format (1x,F17.6,',',A15,',',15(F16.3, ','), F16.3)  ! format for second flux data
+ 10   Format (1x,F17.6, A15, 17(F16.3))  !format for flux data
+ 13   Format (1x,F17.6, A15, 16(F16.3))  ! format for second flux data
  20   Format (1x,19A16)              !format for flux header
+!============================== end format statements =====================
       End subroutine Output
               
 C/***************************************************/
@@ -282,10 +283,11 @@ CDT !0/24/2018 modified to output nodal values for roots
      &      SinkArr(n),cSinkArr(n),gSinkArr(n),Area(n)
         Enddo
 C      Endif     
-130   format('     Time           x             y     Temp   RTWT_',
-     &        '          Sink_       cSink       gSink'/)
- 140   format(1x,f14.6,',', A12,',', 2(f11.2,','),i8,',',
-     &   7(G11.3,','),G11.3)
+!130   format('     Time           x             y     Temp   RTWT_',
+!     &        '          Sink_       cSink       gSink'/)
+
+  140   format(1x,f14.6, A12, 2(f11.2),i8, 8(G11.3))
+ 
       Return
       End Subroutine ArrRootOut
       
@@ -304,7 +306,7 @@ C/***************************************************/
      &                 TemprArr(n),gArr(n)
         Enddo
       
-  140   format(1x, f14.6, a12, 2(f11.2),7(G11.3), G11.3)
+  140   format(1x, f14.6, a12, 2(f11.2), 7(G11.3), G11.3)
        Return
        End subroutine ArrNodOut
  

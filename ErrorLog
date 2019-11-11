@@ -1,3 +1,3 @@
-D:\2DSOIL_Grape\Soil Source\public.INS(1) : error 32 - Statement not recognised
-D:\2DSOIL_Grape\Soil Source\public.INS(2) : error 32 - Statement not recognised
-D:\2DSOIL_Grape\Soil Source\public.INS(3) : error 399 - Unrecognised statement, did you forget to add /FIXED_FORMAT?
+[SLINK64 v2.10, Copyright (c) Silverfrost Ltd. 2015-2018]
+Loading D:\2DSOIL_Grape\CheckMate\x64\reduction.obj
+Creating executable file D:\2DSOIL_Grape\CheckMate\x64\read2DsoilOut.exe

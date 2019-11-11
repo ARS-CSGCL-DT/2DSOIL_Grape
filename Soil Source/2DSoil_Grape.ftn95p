@@ -667,7 +667,7 @@
     "SuppressArgCheck" = "No"
     "Timing" = "No"
     "Underflow" = "No"
-    "Optimise" = "No"
+    "Optimise" = "Yes"
     "DefintKind" = ""
     "DeflogKind" = ""
     "DefrealKind" = ""
@@ -726,127 +726,7 @@
     "Source Files"
     {
     "Folder" = "T"
-        ".\\Watmov.for"
-        {
-        "ProjRelPath" = "T"
-        "CustomCompilerOptions" = "0"
-        "CustomSwitches" = ""
-        "ExcludeFromBuild" = "F"
-        "FileGUID" = ""
-        }
-        ".\\wateruptake.FOR"
-        {
-        "ProjRelPath" = "T"
-        "CustomCompilerOptions" = "0"
-        "CustomSwitches" = ""
-        "ExcludeFromBuild" = "F"
-        "FileGUID" = ""
-        }
-        ".\\SETTDB.FOR"
-        {
-        "ProjRelPath" = "T"
-        "CustomCompilerOptions" = "0"
-        "CustomSwitches" = ""
-        "ExcludeFromBuild" = "F"
-        "FileGUID" = ""
-        }
-        ".\\SETSUR02.FOR"
-        {
-        "ProjRelPath" = "T"
-        "CustomCompilerOptions" = "0"
-        "CustomSwitches" = ""
-        "ExcludeFromBuild" = "F"
-        "FileGUID" = ""
-        }
-        ".\\SETMAT01.FOR"
-        {
-        "ProjRelPath" = "T"
-        "CustomCompilerOptions" = "0"
-        "CustomSwitches" = ""
-        "ExcludeFromBuild" = "F"
-        "FileGUID" = ""
-        }
-        ".\\root_grow_c.FOR"
-        {
-        "ProjRelPath" = "T"
-        "CustomCompilerOptions" = "0"
-        "CustomSwitches" = ""
-        "ExcludeFromBuild" = "F"
-        "FileGUID" = ""
-        }
-        ".\\root_diff_new.for"
-        {
-        "ProjRelPath" = "T"
-        "CustomCompilerOptions" = "0"
-        "CustomSwitches" = ""
-        "ExcludeFromBuild" = "F"
-        "FileGUID" = ""
-        }
-        ".\\ORTHOFEM.FOR"
-        {
-        "ProjRelPath" = "T"
-        "CustomCompilerOptions" = "0"
-        "CustomSwitches" = ""
-        "ExcludeFromBuild" = "F"
-        "FileGUID" = ""
-        }
-        ".\\hourwea.for"
-        {
-        "ProjRelPath" = "T"
-        "CustomCompilerOptions" = "0"
-        "CustomSwitches" = ""
-        "ExcludeFromBuild" = "F"
-        "FileGUID" = ""
-        }
-        ".\\GRID_BND.FOR"
-        {
-        "ProjRelPath" = "T"
-        "CustomCompilerOptions" = "0"
-        "CustomSwitches" = ""
-        "ExcludeFromBuild" = "F"
-        "FileGUID" = ""
-        }
-        ".\\ERRMES.FOR"
-        {
-        "ProjRelPath" = "T"
-        "CustomCompilerOptions" = "0"
-        "CustomSwitches" = ""
-        "ExcludeFromBuild" = "F"
-        "FileGUID" = ""
-        }
-        ".\\dateFunctions.for"
-        {
-        "ProjRelPath" = "T"
-        "CustomCompilerOptions" = "0"
-        "CustomSwitches" = ""
-        "ExcludeFromBuild" = "F"
-        "FileGUID" = ""
-        }
-        ".\\Crop.for"
-        {
-        "ProjRelPath" = "T"
-        "CustomCompilerOptions" = "0"
-        "CustomSwitches" = ""
-        "ExcludeFromBuild" = "F"
-        "FileGUID" = ""
-        }
-        ".\\carbon_partitioning.FOR"
-        {
-        "ProjRelPath" = "T"
-        "CustomCompilerOptions" = "0"
-        "CustomSwitches" = ""
-        "ExcludeFromBuild" = "F"
-        "FileGUID" = ""
-        }
-        ".\\Init.for"
-        {
-        "ProjRelPath" = "T"
-        "CustomCompilerOptions" = "0"
-        "CustomSwitches" = ""
-        "ExcludeFromBuild" = "F"
-        "FileGUID" = ""
-        }
-        ".\\2DSOILVine.FOR"
+        ".\\SYNCHRON.FOR"
         {
         "ProjRelPath" = "T"
         "CustomCompilerOptions" = "0"
@@ -862,7 +742,127 @@
         "ExcludeFromBuild" = "F"
         "FileGUID" = ""
         }
-        ".\\SYNCHRON.FOR"
+        ".\\2DSOILVine.FOR"
+        {
+        "ProjRelPath" = "T"
+        "CustomCompilerOptions" = "0"
+        "CustomSwitches" = ""
+        "ExcludeFromBuild" = "F"
+        "FileGUID" = ""
+        }
+        ".\\Init.for"
+        {
+        "ProjRelPath" = "T"
+        "CustomCompilerOptions" = "0"
+        "CustomSwitches" = ""
+        "ExcludeFromBuild" = "F"
+        "FileGUID" = ""
+        }
+        ".\\carbon_partitioning.FOR"
+        {
+        "ProjRelPath" = "T"
+        "CustomCompilerOptions" = "0"
+        "CustomSwitches" = ""
+        "ExcludeFromBuild" = "F"
+        "FileGUID" = ""
+        }
+        ".\\Crop.for"
+        {
+        "ProjRelPath" = "T"
+        "CustomCompilerOptions" = "0"
+        "CustomSwitches" = ""
+        "ExcludeFromBuild" = "F"
+        "FileGUID" = ""
+        }
+        ".\\dateFunctions.for"
+        {
+        "ProjRelPath" = "T"
+        "CustomCompilerOptions" = "0"
+        "CustomSwitches" = ""
+        "ExcludeFromBuild" = "F"
+        "FileGUID" = ""
+        }
+        ".\\ERRMES.FOR"
+        {
+        "ProjRelPath" = "T"
+        "CustomCompilerOptions" = "0"
+        "CustomSwitches" = ""
+        "ExcludeFromBuild" = "F"
+        "FileGUID" = ""
+        }
+        ".\\GRID_BND.FOR"
+        {
+        "ProjRelPath" = "T"
+        "CustomCompilerOptions" = "0"
+        "CustomSwitches" = ""
+        "ExcludeFromBuild" = "F"
+        "FileGUID" = ""
+        }
+        ".\\hourwea.for"
+        {
+        "ProjRelPath" = "T"
+        "CustomCompilerOptions" = "0"
+        "CustomSwitches" = ""
+        "ExcludeFromBuild" = "F"
+        "FileGUID" = ""
+        }
+        ".\\ORTHOFEM.FOR"
+        {
+        "ProjRelPath" = "T"
+        "CustomCompilerOptions" = "0"
+        "CustomSwitches" = ""
+        "ExcludeFromBuild" = "F"
+        "FileGUID" = ""
+        }
+        ".\\root_diff_new.for"
+        {
+        "ProjRelPath" = "T"
+        "CustomCompilerOptions" = "0"
+        "CustomSwitches" = ""
+        "ExcludeFromBuild" = "F"
+        "FileGUID" = ""
+        }
+        ".\\root_grow_c.FOR"
+        {
+        "ProjRelPath" = "T"
+        "CustomCompilerOptions" = "0"
+        "CustomSwitches" = ""
+        "ExcludeFromBuild" = "F"
+        "FileGUID" = ""
+        }
+        ".\\SETMAT01.FOR"
+        {
+        "ProjRelPath" = "T"
+        "CustomCompilerOptions" = "0"
+        "CustomSwitches" = ""
+        "ExcludeFromBuild" = "F"
+        "FileGUID" = ""
+        }
+        ".\\SETSUR02.FOR"
+        {
+        "ProjRelPath" = "T"
+        "CustomCompilerOptions" = "0"
+        "CustomSwitches" = ""
+        "ExcludeFromBuild" = "F"
+        "FileGUID" = ""
+        }
+        ".\\SETTDB.FOR"
+        {
+        "ProjRelPath" = "T"
+        "CustomCompilerOptions" = "0"
+        "CustomSwitches" = ""
+        "ExcludeFromBuild" = "F"
+        "FileGUID" = ""
+        }
+        ".\\wateruptake.FOR"
+        {
+        "ProjRelPath" = "T"
+        "CustomCompilerOptions" = "0"
+        "CustomSwitches" = ""
+        "ExcludeFromBuild" = "F"
+        "FileGUID" = ""
+        }
+        ".\\Watmov.for"
         {
         "ProjRelPath" = "T"
         "CustomCompilerOptions" = "0"

@@ -56,8 +56,10 @@ C SetSurfaceH --  reading hourly weather
             Call Output()
           end if
 
-          if(mod(cycleno, 1000) == 0) print *, 'iteration=', cycleno, 
-     &                                         'finished=', finished
+          if(mod(cycleno, 1000) == 0) then
+            print *, 'iteration=', cycleno, ' finished=', finished
+          end if
+          
           cycleno = cycleno + 1
           if (finished) then
             print *, 'iteration=', cycleno, ' finished=', finished
